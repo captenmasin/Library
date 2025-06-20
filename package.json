@@ -1,0 +1,62 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "php artisan ziggy:generate; vite build",
+        "build:ssr": "php artisan ziggy:generate; vite build && vite build --ssr",
+        "dev": "php artisan ziggy:generate; vite",
+        "format": "prettier --write resources/",
+        "format:check": "prettier --check resources/",
+        "lint": "eslint . --fix"
+    },
+    "devDependencies": {
+        "@types/node": "^22.13.5",
+        "eslint": "^8.57.1",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-config-standard-with-typescript": "^35.0.0",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-n": "^15.7.0",
+        "eslint-plugin-optimize-regex": "^1.2.1",
+        "eslint-plugin-prettier": "^5.2.3",
+        "eslint-plugin-pretty-imports": "^1.3.0",
+        "eslint-plugin-promise": "^6.6.0",
+        "eslint-plugin-sonarjs": "^0.19.0",
+        "eslint-plugin-unused-imports": "^4.1.4",
+        "eslint-plugin-vue": "^9.33.0",
+        "prettier": "^3.4.2",
+        "prettier-plugin-organize-imports": "^4.1.0",
+        "prettier-plugin-tailwindcss": "^0.6.11",
+        "vue-tsc": "^2.2.4"
+    },
+    "dependencies": {
+        "@inertiajs/vue3": "^2.0.0",
+        "@tailwindcss/vite": "^4.1.1",
+        "@teckel/vue-barcode-reader": "^1.1.8",
+        "@typescript-eslint/parser": "^5.62.0",
+        "@vitejs/plugin-vue": "^5.2.1",
+        "@vue/eslint-config-typescript": "^12.0.0",
+        "@vueuse/core": "^12.8.2",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^1.0",
+        "lucide-vue-next": "^0.468.0",
+        "mitt": "^3.0.1",
+        "radix-vue": "^1.9.17",
+        "reka-ui": "^2.3.1",
+        "tailwind-merge": "^3.2.0",
+        "tailwindcss": "^4.1.1",
+        "tw-animate-css": "^1.2.5",
+        "typescript": "^5.2.2",
+        "vite": "^6.2.0",
+        "vite-plugin-run": "^0.6.1",
+        "vue": "^3.5.13",
+        "vue-sonner": "^2.0.0",
+        "ziggy-js": "^2.4.2"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": "4.9.5",
+        "@tailwindcss/oxide-linux-x64-gnu": "^4.0.1",
+        "lightningcss-linux-x64-gnu": "^1.29.1"
+    }
+}

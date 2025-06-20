@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Resources;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class BookResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'codes' => $this->codes,
+            'authors' => AuthorResource::collection($this->whenLoaded('authors')),
+            'description' => $this->description,
+            'cover' => $this->getCover($request->user()),
+            'notes' => $this->whenLoaded('notes', function () use ($request) {
+                return $this->notes->where('user_id', $request->user()->id)->first();
+            }),
+            'user_review' => $this->whenLoaded('reviews', function () use ($request) {
+                return $this->reviews->where('user_id', $request->user()->id)->first();
+            }),
+            'has_custom_cover' => $request->user()->book_covers()->where('book_id', $this->id)->exists(),
+            'is_read' => $this->getIsRead($request->user()),
+            'colour' => $this->settings()->get('colour', '#000000'),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
+
+    public function getCover(User $user)
+    {
+        $hasCustomCover = $user->book_covers()->where('book_id', $this->id)->exists();
+        if ($hasCustomCover) {
+            $hasCustomCoverImage = $user->book_covers()->where('book_id', $this->id)->first()->hasMedia('image');
+            if ($hasCustomCoverImage) {
+                return $user->book_covers()->where('book_id', $this->id)->first()->image;
+            }
+        }
+
+        return $this->primary_cover;
+    }
+
+    public function getIsRead(User $user): bool
+    {
+        return $user->books()
+            ->where('book_id', $this->id)
+            ->wherePivot('read_at', '!=', null)
+            ->exists();
+    }
+}
