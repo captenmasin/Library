@@ -26,9 +26,6 @@ defineProps({
                     :src="book.cover"
                     :height="355"
                     :width="200"
-                    format="webp"
-                    :scale="true"
-                    :quality="1"
                     class="h-full w-full object-cover"
                 />
             </div>

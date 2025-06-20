@@ -24,7 +24,8 @@ export interface OptionalImageProps {
     background?: string
     width?: number | string | null
     height?: number | string | null
-    placeholder?: string
+    placeholder?: string,
+    showPlaceholder?: boolean,
 }
 
 export type ImageProps = RequiredImageProps & OptionalImageProps

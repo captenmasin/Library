@@ -9,6 +9,7 @@ import { Link, usePage } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { getInitials } from '@/composables/useInitials'
+import { useImageTransform } from '@/composables/useImageTransform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -23,6 +24,8 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     breadcrumbs: () => []
 })
+
+const { getImageUrl } = useImageTransform()
 
 const page = usePage()
 const auth = computed(() => page.props.auth)
@@ -182,10 +185,7 @@ const rightNavItems: NavItem[] = []
                                 <Avatar class="size-8 overflow-hidden rounded-full">
                                     <AvatarImage
                                         v-if="auth.user.avatar"
-                                        :src="useRoute('image.transform', {
-                                            path: auth.user.avatar,
-                                            options: 'quality=4'
-                                        })"
+                                        :src="getImageUrl(auth.user.avatar, { width: 32, height: 32, crop: 'center' })"
                                         :alt="auth.user.name"
                                     />
                                     <AvatarFallback class="rounded-lg bg-neutral-200 font-semibold text-black dark:bg-neutral-700 dark:text-white">
