@@ -1,6 +1,7 @@
 <script setup>
 import Icon from '@/components/Icon.vue'
 import Loader from '@/components/Loader.vue'
+import LoadingGif from '~/images/book-loader.gif'
 import { computed, ref } from 'vue'
 import { watchDebounced } from '@vueuse/core'
 import { useRoute } from '@/composables/useRoute'
@@ -116,7 +117,9 @@ function select (book) {
                     class="w-full"
                     placeholder="Search for books by title, author, or publisher" />
 
-                <Loader v-if="loading" />
+                <Loader
+                    v-if="loading"
+                    class="w-12 mx-auto" />
 
                 <ul
                     v-if="!loading"

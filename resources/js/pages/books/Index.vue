@@ -146,7 +146,7 @@ defineOptions({
                 <ul class="w-full flex flex-wrap items-stretch">
                     <li
                         v-for="book in filteredBooks"
-                        :key="book.id"
+                        :key="book.identifier"
                         class="flex w-1/2 flex-col p-2 sm:w-1/2 md:w-1/5">
                         <BookCard :book="book" />
                     </li>

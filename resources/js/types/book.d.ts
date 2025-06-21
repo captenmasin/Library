@@ -1,7 +1,8 @@
 import { Author } from '@/types/author'
 
 export type Book = {
-    uuid: string,
+    path: string,
+    identifier: string,
     links: {
         show: string,
     },
