@@ -5,19 +5,14 @@ const props = defineProps<ToasterProps>()
 </script>
 
 <template>
-    <Sonner
-        class="toaster group"
-        v-bind="props"
-        position="bottom-center"
-        :toast-options="{
-            classes: {
-                toast: 'app-toast',
-                description: 'group-[.toast]:text-muted-foreground',
-                actionButton:
-                    'group-[.toast]:bg-primary group-[.toast]:text-primary-foreground',
-                cancelButton:
-                    'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground',
-            },
-        }"
-    />
+  <Sonner
+    class="toaster group"
+    v-bind="props"
+    :style="{
+      '--normal-bg': 'var(--popover)',
+      '--normal-text': 'var(--popover-foreground)',
+      '--normal-border': 'var(--border)',
+
+    }"
+  />
 </template>

@@ -2,9 +2,8 @@
 
 namespace App\Actions;
 
-use App\Services\BooksApiService;
+use App\Services\GoogleBooksService;
 use Cache;
-use Captenmasin\GoogleBooks\GoogleBooks;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -13,11 +12,24 @@ class SearchBooksFromApi
 {
     use AsAction;
 
-    public function handle(Request $request): JsonResponse
+    public function handle(?string $query = null, ?string $author = null, bool $cache = true): array
     {
-        $results = Cache::remember('books:search:' . $request->query('q'), 60 * 60, function () use ($request) {
-            return (new BooksApiService())->search($request->query('q'));
+        $cacheKey = 'books:search:'.md5(strtolower(trim($query)).'__'.strtolower(trim($author)));
+        $cacheTTL = $cache ? now()->addDay() : null;
+
+        return Cache::remember($cacheKey, $cacheTTL, function () use ($query, $author) {
+            return GoogleBooksService::search(
+                $query, $author
+            );
         });
+    }
+
+    public function asController(Request $request): JsonResponse
+    {
+        $results = $this->handle(
+            $request->query('q'),
+            $request->query('author'),
+        );
 
         return response()->json($results);
     }

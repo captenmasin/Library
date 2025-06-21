@@ -9,7 +9,6 @@
         "php": "^8.2",
         "ext-exif": "*",
         "ext-gd": "*",
-        "captenmasin/google-books": "^0.0.4",
         "filament/filament": "^4.0",
         "glorand/laravel-model-settings": "^8.0",
         "hashids/hashids": "^5.0",
@@ -22,6 +21,7 @@
         "lorisleiva/laravel-actions": "^2.9",
         "spatie/laravel-medialibrary": "^11.13",
         "spatie/laravel-permission": "^6.20",
+        "spatie/laravel-tags": "^4.10",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {

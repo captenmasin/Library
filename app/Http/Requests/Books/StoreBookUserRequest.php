@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests\Books;
 
-use App\Enums\UserBookStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateBookRequest extends FormRequest
+class StoreBookUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +23,7 @@ class UpdateBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'notes' => ['sometimes', 'nullable', 'string', 'max:1000'],
-            'status' => ['sometimes', 'nullable', 'string', 'in:'.implode(',', UserBookStatus::values())],
+            'identifier' => ['required', 'exists:books,identifier'],
         ];
     }
 }

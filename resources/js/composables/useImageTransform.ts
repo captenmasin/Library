@@ -24,7 +24,8 @@ export function useImageTransform () {
     const { pixelRatio } = useDevicePixelRatio()
 
     const cleanPath = (rawPath: string): string => {
-        const storageUrl = props.app?.storage_url || ''
+        /* eslint-disable-next-line no-useless-escape */
+        const storageUrl = (props as any).app.storage_url || ''
         let path = rawPath.replace(storageUrl, '')
 
         if (path.startsWith('/storage/')) path = path.slice(9)
@@ -33,7 +34,8 @@ export function useImageTransform () {
         return path.startsWith('/') ? path.slice(1) : path
     }
 
-    const baseOptions = (props: ImageProps): ImageTransformOptions => {
+    // eslint-disable-next-line sonarjs/cognitive-complexity
+    const baseOptions = (props: ImageProps): Record<string, string | number> | null => {
         const result: Record<string, string | number> = {}
 
         for (const key of [
@@ -56,9 +58,11 @@ export function useImageTransform () {
                 continue
             }
 
-            let processed: string | number
+            let processed: string | number | number[]
 
-            if (typeof val === 'boolean') {
+            if (Array.isArray(val)) {
+                processed = val.join(',')
+            } else if (typeof val === 'boolean') {
                 processed = val ? 'true' : 'false'
             } else if (typeof val === 'string') {
                 processed = val.toLowerCase()
@@ -96,6 +100,10 @@ export function useImageTransform () {
     const getImageUrl = (path: string, options: ImageTransformOptions = {}) => {
         const cleaned = cleanPath(path)
         const optString = buildOptionsString(options)
+
+        if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) {
+            return path
+        }
 
         if (!optString) {
             return `/storage/${cleaned}`

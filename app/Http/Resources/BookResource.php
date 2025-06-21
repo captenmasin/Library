@@ -11,9 +11,10 @@ class BookResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'path' => $this->path,
+            'identifier' => $this->identifier,
             'title' => $this->title,
-            'codes' => $this->codes,
+            //            'codes' => $this->codes,
             'authors' => AuthorResource::collection($this->whenLoaded('authors')),
             'description' => $this->description,
             'cover' => $this->getCover($request->user()),
@@ -24,10 +25,12 @@ class BookResource extends JsonResource
                 return $this->reviews->where('user_id', $request->user()->id)->first();
             }),
             'has_custom_cover' => $request->user()->book_covers()->where('book_id', $this->id)->exists(),
-            'is_read' => $this->getIsRead($request->user()),
             'colour' => $this->settings()->get('colour', '#000000'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'links' => [
+                'show' => route('books.show', $this),
+            ],
         ];
     }
 
@@ -42,13 +45,5 @@ class BookResource extends JsonResource
         }
 
         return $this->primary_cover;
-    }
-
-    public function getIsRead(User $user): bool
-    {
-        return $user->books()
-            ->where('book_id', $this->id)
-            ->wherePivot('read_at', '!=', null)
-            ->exists();
     }
 }

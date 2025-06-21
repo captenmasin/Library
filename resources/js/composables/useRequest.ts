@@ -1,5 +1,4 @@
 import { usePage } from '@inertiajs/vue3'
-import { SharedData } from '@/types'
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
@@ -10,7 +9,7 @@ export async function useRequest<T = ApiResponse> (
     method: RequestMethod = 'POST',
     data: Record<string, any> = {}
 ): Promise<T> {
-    const page = usePage<SharedData>()
+    const page = usePage()
     data._token = page.props.csrf_token
 
     // eslint-disable-next-line no-useless-catch

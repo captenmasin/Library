@@ -1,20 +1,45 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/app/AppHeaderLayout.vue';
+import 'vue-sonner/style.css'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
+import { watch } from 'vue'
+import { toast } from 'vue-sonner'
+import { usePage } from '@inertiajs/vue3'
 import { Toaster } from '@/components/ui/sonner'
-import type { BreadcrumbItemType } from '@/types';
+import type { BreadcrumbItemType } from '@/types'
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
 }
 
 withDefaults(defineProps<Props>(), {
-    breadcrumbs: () => [],
-});
+    breadcrumbs: () => []
+})
+
+const page = usePage()
+
+watch(
+    () => page.props.flash,
+    (flash) => {
+        if (flash?.success) {
+            toast.success(flash.success)
+        }
+        if (flash?.error) {
+            toast.error(flash.error)
+        }
+        if (flash?.warning) {
+            toast.warning(flash.warning)
+        }
+        if (flash?.info) {
+            toast.info(flash.info)
+        }
+    },
+    { immediate: true }
+)
 </script>
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
         <slot />
-        <Toaster />
+        <Toaster class="pointer-events-auto" />
     </AppLayout>
 </template>

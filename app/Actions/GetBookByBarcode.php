@@ -2,12 +2,10 @@
 
 namespace App\Actions;
 
-use App\Services\BooksApiService;
-use Captenmasin\GoogleBooks\GoogleBooks;
+use App\Services\GoogleBooksService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Jetstream\Jetstream;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class GetBookByBarcode
@@ -22,17 +20,17 @@ class GetBookByBarcode
 
         if ($validator->fails()) {
             return response()->json([
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
-        $book = (new BooksApiService())->getByCode($request->get('code'));
+        $book = (new GoogleBooksService)->getByCode($request->get('code'));
 
-        if (!$book) {
+        if (! $book) {
             return response()->json([
                 'errors' => [
-                    'code' => 'Book not found'
-                ]
+                    'code' => 'Book not found',
+                ],
             ], 422);
         }
 

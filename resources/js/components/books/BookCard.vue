@@ -16,22 +16,26 @@ defineProps({
 
 <template>
     <div
-        class="group flex h-full flex-col book-card rounded-md overflow-hidden shadow-xs"
+        class="group flex flex-col rounded-md overflow-hidden shadow-sm"
         :style="{ backgroundColor: book.colour }"
         :class="[useContrast(book.colour, 'text-zinc-900', 'text-white')]"
     >
-        <Link :href="useRoute('books.edit', book)">
-            <div class="w-full aspect-[10/16] relative overflow-hidden">
+        <Link :href="book.links.show">
+            <div class="w-full aspect-[16/25] relative overflow-hidden">
                 <Image
+                    v-if="book.cover"
                     :src="book.cover"
-                    :height="355"
+                    :height="315"
                     :width="200"
                     class="h-full w-full object-cover"
                 />
             </div>
-            <div class="p-2">
-                {{ book.title }}
-            </div>
+            <!--            <div class="p-2 font-serif italic">-->
+            <!--                {{ book.title }}-->
+            <!--            </div>-->
+            <!--            <div>-->
+            <!--                {{ book.authors.map(author => author.name).join(', ') }}s-->
+            <!--            </div>-->
         </Link>
     </div>
 </template>

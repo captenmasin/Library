@@ -35,6 +35,7 @@ class User extends Authenticatable implements HasMedia
     protected $fillable = [
         'name',
         'email',
+        'email_verified_at',
         'password',
     ];
 
@@ -87,7 +88,9 @@ class User extends Authenticatable implements HasMedia
 
     public function books(): BelongsToMany
     {
-        return $this->belongsToMany(Book::class);
+        return $this->belongsToMany(Book::class)
+            ->withPivot(['status'])
+            ->withTimestamps();
     }
 
     public function notes(): HasMany

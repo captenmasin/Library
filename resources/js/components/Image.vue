@@ -6,9 +6,9 @@ import { useImageTransform } from '@/composables/useImageTransform'
 
 const props = withDefaults(defineProps<ImageProps>(), {
     alt: '',
-    enableSrcset: false,
     srcsetSizes: () => [320, 640, 960],
     srcsetMaxWidth: 1280,
+    scale: true,
     placeholder: PlaceholderImage,
     showPlaceholder: true
 })

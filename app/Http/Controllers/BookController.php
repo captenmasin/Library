@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateOrFetchBook;
+use App\Enums\UserBookStatus;
 use App\Http\Requests\Books\StoreBookRequest;
 use App\Http\Requests\Books\UpdateBookRequest;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\BookResource;
-use App\Models\Author;
 use App\Models\Book;
-use App\Models\Publisher;
-use App\Services\BooksApiService;
 use Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -80,88 +79,16 @@ class BookController extends Controller
      */
     public function store(StoreBookRequest $request)
     {
-        $identifier = $request->get('identifier');
+        $identifier = $request->string('identifier');
+        CreateOrFetchBook::run($identifier);
 
-        $query = Book::where('identifier', $identifier)->whereNotNull('identifier');
-
-        $book = $query->firstOr(function () use ($identifier) {
-            $data = (new BooksApiService)->getById($identifier);
-
-            if (! $data) {
-                return redirect()->route('books.index');
-                //                    ->dangerBanner('Book cannot be found via barcode');
-            }
-
-            if (! empty($data)) {
-                $book = Book::create([
-                    'identifier' => $identifier,
-                    'codes' => $data['codes'],
-                    'title' => $data['title'],
-                    'published_date' => $data['publishedDate'],
-                    'description' => $data['description'],
-                ]);
-
-                $primaryCover = $book->covers()->create([
-                    'is_primary' => true,
-                ]);
-
-                $primaryCover->addMediaFromUrl($data['cover'])
-                    ->toMediaCollection('image');
-
-                $book->updateColour();
-
-                if (! empty($data['authors'])) {
-                    foreach ($data['authors'] as $name) {
-                        if (! Author::where('name', $name)->exists()) {
-                            $author = Author::create(['name' => $name]);
-                        } else {
-                            $author = Author::where('name', $name)->first();
-                        }
-
-                        $book->authors()->attach($author);
-                    }
-                }
-
-                if (! empty($data['publisher'])) {
-                    $publisherName = $data['publisher'];
-                    if (! Publisher::where('name', $publisherName)->exists()) {
-                        $publisher = Publisher::create(['name' => $publisherName]);
-                    } else {
-                        $publisher = Publisher::where('name', $publisherName)->first();
-                    }
-
-                    $book->publisher()->associate($publisher);
-                }
-
-                return $book;
-            }
-
-            return null;
-        });
-
-        if ($book && ! Auth::user()->books->contains($book)) {
-            Auth::user()->books()->attach($book);
-
-            return redirect()->route('books.index');
-            //                ->banner('Book '.$book?->code.' added successfully');
-        } else {
-            return redirect()->route('books.index');
-            //                ->dangerBanner('Book '.$book?->code.' has already been added');
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Book $book)
-    {
-        //
+        return redirect()->back();
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Book $book)
+    public function show(Book $book)
     {
         $book->load([
             'reviews',
@@ -178,6 +105,8 @@ class BookController extends Controller
             'reviews' => $book->reviews,
             'averageRating' => $averageRating,
             'reviewCount' => $reviewCount,
+            'userBookStatuses' => UserBookStatus::options(),
+            'initialUserBookStatus' => Auth::user()->books()->where('book_id', $book->id)->first()?->pivot?->status,
         ]);
     }
 
@@ -193,27 +122,14 @@ class BookController extends Controller
                 ['title' => 'test', 'content' => $notes]
             );
         }
-    }
 
-    public function toggleRead(Request $request, Book $book)
-    {
-        $user = Auth::user();
-
-        $isRead = $user->books()
-            ->where('book_id', $book->id)
-            ->wherePivot('read_at', '!=', null)
-            ->exists();
-
-        if ($isRead) {
-            $user->books()->updateExistingPivot($book->id, ['read_at' => null]);
-            $message = 'marked as unread';
-        } else {
-            $user->books()->updateExistingPivot($book->id, ['read_at' => now()]);
-            $message = 'marked as read';
+        if ($request->has('status')) {
+            $status = $request->get('status');
+            Auth::user()->books()->updateExistingPivot($book, ['status' => $status]);
         }
 
-        return redirect()->back();
-        //            ->banner("Book {$book->code} has been {$message}.");
+        return redirect()->back()
+            ->with('success', 'Book updated successfully');
     }
 
     public function destroy(Book $book)

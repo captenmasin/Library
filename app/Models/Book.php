@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Observers\BookObserver;
 use Glorand\Model\Settings\Traits\HasSettingsField;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\Vite;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+#[ObservedBy([BookObserver::class])]
 class Book extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\BookFactory> */
@@ -26,6 +29,11 @@ class Book extends Model implements HasMedia
         return [
             'codes' => 'json',
         ];
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'path';
     }
 
     protected static function booted(): void
