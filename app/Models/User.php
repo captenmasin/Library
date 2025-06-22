@@ -70,6 +70,13 @@ class User extends Authenticatable implements HasMedia
         ];
     }
 
+    public function getBookIdentifiers(): array
+    {
+        $books = $this->books()->withPivot('status')->get();
+
+        return $books->pluck('pivot.status', 'identifier')->toArray();
+    }
+
     public function getAvatarAttribute(): string
     {
         return $this->getFirstMediaUrl('avatar');

@@ -55,6 +55,11 @@ class Book extends Model implements HasMedia
         $this->settings()->set('colour', $colour);
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
@@ -70,12 +75,12 @@ class Book extends Model implements HasMedia
         return $this->belongsTo(Publisher::class);
     }
 
-    public function reviews()
+    public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
     }
 
-    public function averageRating()
+    public function averageRating(): float|int|null
     {
         return $this->reviews()->avg('rating');
     }

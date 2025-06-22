@@ -8,8 +8,7 @@ import type { Book } from '@/types/book'
 import { useForm } from '@inertiajs/vue3'
 import { type PropType, watch } from 'vue'
 import { useRoute } from '@/composables/useRoute'
-import { UserBookStatusEnum } from '@/enums/UserBookStatusEnum'
-import { UserBookStatusOption } from '@/types/user-book-status'
+import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const props = defineProps({
@@ -20,16 +19,13 @@ const props = defineProps({
         default: () => []
     },
     initialUserBookStatus: {
-        type: String as PropType<UserBookStatusEnum>,
+        type: String as PropType<string>,
         required: false,
         default: null
-    },
-    userBookStatuses: {
-        type: Array as PropType<Array<UserBookStatusOption>>,
-        required: false,
-        default: () => []
     }
 })
+
+const { possibleStatuses, updateStatus } = useUserBookStatus()
 
 const statusForm = useForm({
     status: props.initialUserBookStatus
@@ -39,9 +35,7 @@ watch(
     () => statusForm.status,
     (newStatus, oldStatus) => {
         if (newStatus && newStatus !== oldStatus) {
-            statusForm.patch(useRoute('books.update', props.book), {
-                preserveScroll: true
-            })
+            updateStatus(props.book, newStatus)
         }
     }
 )
@@ -54,7 +48,7 @@ defineOptions({
 <template>
     <div>
         <UpdateBookCover :book />
-        {{ book.author }}
+        {{ book.authors }}
         {{ book.title }}
 
         <Select v-model="statusForm.status">
@@ -64,7 +58,7 @@ defineOptions({
             <SelectContent>
                 <SelectGroup>
                     <SelectItem
-                        v-for="status in userBookStatuses"
+                        v-for="status in possibleStatuses"
                         :key="status.value"
                         :value="status.value">
                         {{ status.label }}

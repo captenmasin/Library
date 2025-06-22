@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Actions\CreateOrFetchBook;
-use App\Enums\UserBookStatus;
 use App\Http\Requests\Books\StoreBookRequest;
 use App\Http\Requests\Books\UpdateBookRequest;
 use App\Http\Resources\AuthorResource;
@@ -92,6 +91,7 @@ class BookController extends Controller
     {
         $book->load([
             'reviews',
+            'categories',
             'notes' => function ($query) {
                 $query->where('user_id', Auth::id());
             },
@@ -105,7 +105,6 @@ class BookController extends Controller
             'reviews' => $book->reviews,
             'averageRating' => $averageRating,
             'reviewCount' => $reviewCount,
-            'userBookStatuses' => UserBookStatus::options(),
             'initialUserBookStatus' => Auth::user()->books()->where('book_id', $book->id)->first()?->pivot?->status,
         ]);
     }
@@ -121,11 +120,6 @@ class BookController extends Controller
                 ['book_id' => $book->id],
                 ['title' => 'test', 'content' => $notes]
             );
-        }
-
-        if ($request->has('status')) {
-            $status = $request->get('status');
-            Auth::user()->books()->updateExistingPivot($book, ['status' => $status]);
         }
 
         return redirect()->back()

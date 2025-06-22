@@ -17,11 +17,37 @@ class GoogleBooksService
         'smallThumbnail',
     ];
 
-    public static function search(?string $query = null, ?string $author = null, int $maxResults = 15, $pageIndex = 0): array
+    protected const FIELDS = [
+        'items' => [
+            'id',
+            'volumeInfo' => [
+                'title',
+                'pageCount',
+                'publisher',
+                'description',
+                'authors',
+                'publishedDate',
+                'categories',
+                'maturityRating',
+                'industryIdentifiers' => [
+                    'type',
+                    'identifier',
+                ],
+                'imageLinks',
+            ],
+        ],
+    ];
+
+    public static function search(
+        ?string $query = null,
+        ?string $author = null,
+        int $maxResults = 15,
+        $pageIndex = 0): array
     {
         $response = Http::get(self::$baseUrl.'/volumes', [
             'q' => $query.($author ? (' inauthor:"'.$author.'"') : ''),
             'startIndex' => $pageIndex * $maxResults,
+            'fields' => self::buildFieldsString(),
             'maxResults' => $maxResults,
         ]);
 
@@ -57,6 +83,24 @@ class GoogleBooksService
         return $response->json();
     }
 
+    protected static function buildFieldsString(?array $fields = null)
+    {
+        if (! $fields) {
+            $fields = self::FIELDS;
+        }
+
+        return collect($fields)
+            ->map(function ($value, $key) {
+                // Numeric keys → scalar values (leaf nodes)
+                if (is_int($key)) {
+                    return $value;
+                }
+
+                return $key.'('.self::buildFieldsString($value).')';
+            })
+            ->implode(',');
+    }
+
     protected static function transform(?array $volume = null): ?array
     {
         if (! $volume || empty($volume['volumeInfo'])) {
@@ -71,6 +115,8 @@ class GoogleBooksService
             'identifier' => $book['id'] ?? null,
             'title' => $book['title'] ?? null,
             'pageCount' => $book['pageCount'] ?? null,
+            'categories' => $book['categories'] ?? null,
+            'maturityRating' => $book['maturityRating'] ?? null,
             'publisher' => $book['publisher'] ?? null,
             'description' => $book['description'] ?? null,
             'authors' => $book['authors'] ?? null,

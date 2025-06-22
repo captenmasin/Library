@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Books;
 
 use App\Enums\UserBookStatus;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +26,12 @@ class UpdateBookRequest extends FormRequest
     {
         return [
             'notes' => ['sometimes', 'nullable', 'string', 'max:1000'],
-            'status' => ['sometimes', 'nullable', 'string', 'in:'.implode(',', UserBookStatus::values())],
+            'status' => ['sometimes', 'nullable', 'string', 'in:'.implode(',', UserBookStatus::names())],
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        dd($validator->errors(), implode(',', UserBookStatus::names()));
     }
 }

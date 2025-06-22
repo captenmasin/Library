@@ -47,7 +47,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
                 'user_books' => $request->user()
-                    ? $request->user()->books->pluck('identifier')
+                    ? $request->user()->getBookIdentifiers()
                     : [],
             ],
             'authed' => Auth::check(),

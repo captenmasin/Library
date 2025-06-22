@@ -43,6 +43,8 @@ Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () 
     Route::prefix('books')->name('books.')->controller(UserBookController::class)->group(function () {
         Route::post('/', 'store')->name('store');
 
+        Route::patch('{book:identifier}/status', 'updateStatus')->name('update_status');
+
         Route::delete('{book:identifier}', 'destroy')->name('destroy');
     });
 });

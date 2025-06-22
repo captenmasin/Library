@@ -47,6 +47,11 @@ return [
             'report' => false,
         ],
 
+        'enum-js' => [
+            'driver' => 'local',
+            'root' => resource_path().'/js/enums',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

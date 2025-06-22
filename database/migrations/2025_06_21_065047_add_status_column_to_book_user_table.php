@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserBookStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,8 +17,8 @@ return new class extends Migration
                 Schema::dropColumns('book_user', ['read_at']);
             }
 
-            $table->enum('status', ['reading', 'completed', 'dropped', 'on_hold', 'plan_to_read'])
-                ->default('plan_to_read')
+            $table->text('status')
+                ->default(UserBookStatus::PlanToRead->name)
                 ->after('book_id');
         });
     }

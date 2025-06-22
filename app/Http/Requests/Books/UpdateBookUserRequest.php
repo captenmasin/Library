@@ -6,14 +6,14 @@ use App\Enums\UserBookStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class StoreBookUserRequest extends FormRequest
+class UpdateBookUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return Auth::check() && $this->user()->books()->whereKey($this->book->id)->exists();
     }
 
     /**
@@ -24,8 +24,7 @@ class StoreBookUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'identifier' => ['required', 'exists:books,identifier'],
-            'status' => ['required', 'string', 'in:'.implode(',', UserBookStatus::names())],
+            'status' => ['sometimes', 'string', 'in:'.implode(',', UserBookStatus::names())],
         ];
     }
 }

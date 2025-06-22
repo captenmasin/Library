@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Book;
-use App\Models\Publisher;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('publisher_book', function (Blueprint $table) {
+        Schema::create('book_category', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Publisher::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Book::class)->constrained()->cascadeOnDelete();
+            $table->foreignId('book_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
+
+            $table->unique(['book_id', 'category_id']);
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('publisher_book');
+        Schema::dropIfExists('book_category');
     }
 };
