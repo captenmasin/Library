@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
@@ -8,7 +8,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-sans: Instrument Sans, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-serif: Literata, ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
 
     --radius-lg: var(--radius);
@@ -41,13 +41,8 @@
 
     --color-border: var(--border);
     --color-input: var(--input);
+    --color-input-background: var(--input-background);
     --color-ring: var(--ring);
-
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
 
     --color-sidebar: var(--sidebar-background);
     --color-sidebar-foreground: var(--sidebar-foreground);
@@ -58,7 +53,35 @@
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
 
-    --aspect-book: 16/25
+    --aspect-book: 16/25;
+
+    --shadow-2xs: 0 1px rgb(var(--shadow-color-rgb) / 0.05);
+    --shadow-xs: 0 1px 2px 0 rgb(var(--shadow-color-rgb) / 0.05);
+    --shadow-sm: 0 1px 3px 0 rgb(var(--shadow-color-rgb) / 0.1), 0 1px 2px -1px rgb(var(--shadow-color-rgb) / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(var(--shadow-color-rgb) / 0.1), 0 2px 4px -2px rgb(var(--shadow-color-rgb) / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(var(--shadow-color-rgb) / 0.1), 0 4px 6px -4px rgb(var(--shadow-color-rgb) / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(var(--shadow-color-rgb) / 0.1), 0 8px 10px -6px rgb(var(--shadow-color-rgb) / 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgb(var(--shadow-color-rgb) / 0.25);
+
+    --inset-shadow-2xs: inset 0 1px rgb(var(--shadow-color-rgb) / 0.05);
+    --inset-shadow-xs: inset 0 1px 1px rgb(var(--shadow-color-rgb) / 0.05);
+    --inset-shadow-sm: inset 0 2px 4px rgb(var(--shadow-color-rgb) / 0.05);
+
+    --drop-shadow-xs: 0 1px 1px rgb(var(--shadow-color-rgb) / 0.05);
+    --drop-shadow-sm: 0 1px 2px rgb(var(--shadow-color-rgb) / 0.15);
+    --drop-shadow-md: 0 3px 3px rgb(var(--shadow-color-rgb) / 0.12);
+    --drop-shadow-lg: 0 4px 4px rgb(var(--shadow-color-rgb) / 0.15);
+    --drop-shadow-xl: 0 9px 7px rgb(var(--shadow-color-rgb) / 0.1);
+    --drop-shadow-2xl: 0 25px 25px rgb(var(--shadow-color-rgb) / 0.15);
+
+    --text-shadow-2xs: 0px 1px 0px rgb(var(--shadow-color-rgb) / 0.15);
+    --text-shadow-xs: 0px 1px 1px rgb(var(--shadow-color-rgb) / 0.2);
+    --text-shadow-sm:
+        0px 1px 0px rgb(var(--shadow-color-rgb) / 0.075), 0px 1px 1px rgb(var(--shadow-color-rgb) / 0.075), 0px 2px 2px rgb(var(--shadow-color-rgb) / 0.075);
+    --text-shadow-md:
+        0px 1px 1px rgb(var(--shadow-color-rgb) / 0.1), 0px 1px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 2px 4px rgb(var(--shadow-color-rgb) / 0.1);
+    --text-shadow-lg:
+        0px 1px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 3px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 4px 8px rgb(var(--shadow-color-rgb) / 0.1);
 }
 
 /*
@@ -87,41 +110,6 @@
 }
 
 :root {
-    /*--background: hsl(0 0% 100%);*/
-    /*--foreground: hsl(0 0% 3.9%);*/
-    /*--card: hsl(0 0% 100%);*/
-    /*--card-foreground: hsl(0 0% 3.9%);*/
-    /*--popover: hsl(0 0% 100%);*/
-    /*--popover-foreground: hsl(0 0% 3.9%);*/
-    /*--primary: hsl(0 0% 9%);*/
-    /*--primary-foreground: hsl(0 0% 98%);*/
-    /*--secondary: hsl(0 0% 92.1%);*/
-    /*--secondary-foreground: hsl(0 0% 9%);*/
-    /*--muted: hsl(0 0% 96.1%);*/
-    /*--muted-foreground: hsl(0 0% 45.1%);*/
-    /*--accent: hsl(0 0% 96.1%);*/
-    /*--accent-foreground: hsl(0 0% 9%);*/
-    /*--destructive: hsl(0 84.2% 60.2%);*/
-    /*--destructive-foreground: hsl(0 0% 98%);*/
-    /*--border: hsl(0 0% 92.8%);*/
-    /*--input: hsl(0 0% 89.8%);*/
-    /*--ring: hsl(0 0% 3.9%);*/
-    /*--chart-1: hsl(12 76% 61%);*/
-    /*--chart-2: hsl(173 58% 39%);*/
-    /*--chart-3: hsl(197 37% 24%);*/
-    /*--chart-4: hsl(43 74% 66%);*/
-    /*--chart-5: hsl(27 87% 67%);*/
-    /*--radius: 0.5rem;*/
-    /*--sidebar-background: hsl(0 0% 98%);*/
-    /*--sidebar-foreground: hsl(240 5.3% 26.1%);*/
-    /*--sidebar-primary: hsl(0 0% 10%);*/
-    /*--sidebar-primary-foreground: hsl(0 0% 98%);*/
-    /*--sidebar-accent: hsl(0 0% 94%);*/
-    /*--sidebar-accent-foreground: hsl(0 0% 30%);*/
-    /*--sidebar-border: hsl(0 0% 91%);*/
-    /*--sidebar-ring: hsl(217.2 91.2% 59.8%);*/
-    /*--sidebar: hsl(0 0% 98%);*/
-
     --background: hsl(40, 50%, 98%); /* warm ivory */
     --foreground: hsl(20, 10%, 10%); /* very dark brown-black */
 
@@ -134,27 +122,24 @@
     --primary: hsl(20, 90%, 30%); /* deep terracotta */
     --primary-foreground: hsl(45, 100%, 95%); /* pale yellow-beige */
 
-    --secondary: hsl(30, 30%, 90%);
-    --secondary-foreground: hsl(20, 10%, 20%);
+    --secondary: hsl(40, 50%, 85%); /* warm ivory */
+    --secondary-foreground: hsl(20, 10%, 35%); /* very dark brown-black */
 
     --muted: hsl(30, 20%, 94%);
     --muted-foreground: hsl(20, 5%, 50%);
 
-    --accent: hsl(45, 100%, 80%); /* warm yellow accent */
-    --accent-foreground: hsl(25, 30%, 20%);
+    --accent: hsl(24, 35%, 90%);
+    --accent-foreground: hsl(24, 20%, 25%);
 
     --destructive: hsl(0, 70%, 50%);
     --destructive-foreground: hsl(0, 0%, 98%);
 
     --border: hsl(30, 10%, 85%);
     --input: hsl(30, 15%, 88%);
+    --input-background: hsl(0, 0%, 100%);
     --ring: hsl(20, 10%, 10%);
-
-    --chart-1: hsl(12, 76%, 61%);
-    --chart-2: hsl(43, 74%, 66%);
-    --chart-3: hsl(27, 87%, 67%);
-    --chart-4: hsl(94, 40%, 60%);
-    --chart-5: hsl(25, 15%, 35%);
+    --shadow-color: hsl(30, 15%, 70%);
+    --shadow-color-rgb: 77 57 38;
 
     --radius: 0.5rem;
 

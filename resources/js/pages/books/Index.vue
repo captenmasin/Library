@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useUrlSearchParams } from '@vueuse/core'
 import { useRoute } from '@/composables/useRoute'
-import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, type PropType, ref, watch } from 'vue'
+import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import { useUserSettings } from '@/composables/useUserSettings'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
@@ -36,7 +36,9 @@ const publisher = ref<string>((params.publisher as string) || '')
 const sort = ref<string>((params.sort as string) || '')
 const order = ref<string>((params.order as string) || 'asc')
 
-const view = ref<string>('grid')
+const page = usePage()
+
+const view = ref<string>(page.props.auth.user.settings.books.view)
 
 const sortOptions = ref([
     { label: 'Title', value: 'title' },
@@ -209,12 +211,12 @@ defineOptions({
                     </div>
                     <div>
                         <Button
-                            :class="{ 'bg-blue-500 text-white': view === 'grid' }"
+                            :variant="view === 'grid' ? 'default' : 'secondary'"
                             @click="setView('grid')">
                             Grid
                         </Button>
                         <Button
-                            :class="{ 'bg-blue-500 text-white': view === 'list' }"
+                            :variant="view === 'list' ? 'default' : 'secondary'"
                             @click="setView('list')">
                             List
                         </Button>

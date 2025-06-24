@@ -54,7 +54,6 @@ class HandleInertiaRequests extends Middleware
                     : [],
             ],
             'authed' => Auth::check(),
-            'settings' => Auth::check() ? Auth::user()->settings()->all() : null,
 
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

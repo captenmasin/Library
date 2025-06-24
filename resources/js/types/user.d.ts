@@ -3,5 +3,6 @@ export type User = {
     username: string;
     email?: string;
     avatar?: string;
-    email_verified: boolean
+    email_verified: boolean,
+    settings?: Record<string, any>;
 }
