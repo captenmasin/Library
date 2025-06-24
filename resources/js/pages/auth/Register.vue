@@ -11,6 +11,7 @@ import { useRoute } from '@/composables/useRoute'
 
 const form = useForm({
     name: '',
+    username: '',
     email: '',
     password: '',
     password_confirmation: ''
@@ -45,6 +46,20 @@ const submit = () => {
                         autocomplete="name"
                         placeholder="Full name" />
                     <InputError :message="form.errors.name" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label for="name">Username</Label>
+                    <Input
+                        id="username"
+                        v-model="form.username"
+                        type="text"
+                        required
+                        autofocus
+                        :tabindex="1"
+                        autocomplete="username"
+                        placeholder="Username" />
+                    <InputError :message="form.errors.username" />
                 </div>
 
                 <div class="grid gap-2">

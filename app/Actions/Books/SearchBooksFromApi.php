@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Books;
 
 use App\Contracts\BookApiServiceInterface;
 use Cache;
@@ -20,10 +20,15 @@ class SearchBooksFromApi
         $cacheTTL = $cache ? now()->addDay() : null;
 
         return Cache::remember($cacheKey, $cacheTTL, function () use ($query, $author) {
-            return $this->booksApi::search(
+            $results = $this->booksApi::search(
                 $query, $author
             );
+
+            ImportBooksFromArray::dispatch($results);
+
+            return $results;
         });
+
     }
 
     public function asController(Request $request): JsonResponse

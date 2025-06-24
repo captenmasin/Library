@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select/index.js'
 
 const keyword = ref('')
-const author = ref('Michael')
+const author = ref('')
 const recent = ref([])
 const filteredBooks = ref([])
 const loading = ref(false)
@@ -36,7 +36,7 @@ const form = useForm({
 async function addBookToUser (identifier, status) {
     adding.value.push(identifier)
     try {
-        const response = await useRequest(useRoute('api.books.create_or_fetch'), 'POST', { identifier })
+        const response = await useRequest(useRoute('api.books.fetch_or_create'), 'POST', { identifier })
 
         if (response?.book?.identifier) {
             const book = response.book
@@ -128,18 +128,25 @@ onMounted(() => {
     <div>
         <Dialog>
             <DialogTrigger as-child>
-                <Button> Search</Button>
+                <Button class="w-full">
+                    <Icon
+                        name="Plus"
+                        class="w-4" />
+                    Add Book
+                </Button>
             </DialogTrigger>
             <DialogContent class="sm:max-w-4xl">
-                <DialogTitle> Add a book</DialogTitle>
+                <DialogTitle>Add a new book to your library</DialogTitle>
 
                 <div class="flex gap-4">
                     <div class="flex flex-col w-1/3">
                         <Input
+                            id="keyword-search"
                             v-model="keyword"
                             class="w-full"
                             placeholder="Search for books by title, author, or publisher" />
                         <Input
+                            id="author-search"
                             v-model="author"
                             class="w-full"
                             placeholder="Author..." />

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
@@ -45,7 +46,7 @@ class HandleInertiaRequests extends Middleware
                 'storage_url' => config('filesystems.disks.public.url'),
             ],
             'auth' => [
-                'user' => $request->user(),
+                'user' => new UserResource($request->user())->asUser(),
                 'user_books' => $request->user()
                     ? $request->user()->getBookIdentifiers()
                     : [],

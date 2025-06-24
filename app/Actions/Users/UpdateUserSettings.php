@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Users;
 
 use App\Models\User;
 use Illuminate\Http\JsonResponse;

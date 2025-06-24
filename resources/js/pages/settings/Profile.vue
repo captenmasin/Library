@@ -35,6 +35,7 @@ const user = page.props.auth.user as User
 
 const form = useForm({
     name: user.name,
+    username: user.username,
     email: user.email,
     avatar: user.avatar
 })
@@ -93,7 +94,7 @@ const submit = () => {
                 <form
                     class="space-y-6"
                     @submit.prevent="submit">
-                    <div class="grid gap-2">
+                    <div class="grid">
                         <Label for="name">Name</Label>
                         <Input
                             id="name"
@@ -105,6 +106,20 @@ const submit = () => {
                         <InputError
                             class="mt-2"
                             :message="form.errors.name" />
+                    </div>
+
+                    <div class="grid">
+                        <Label for="name">Username</Label>
+                        <Input
+                            id="username"
+                            v-model="form.username"
+                            required
+                            class="mt-1 block w-full"
+                            autocomplete="username"
+                            placeholder="Username" />
+                        <InputError
+                            class="mt-2"
+                            :message="form.errors.username" />
                     </div>
 
                     <div>
@@ -148,7 +163,7 @@ const submit = () => {
                             :message="form.errors.avatar" />
                     </div>
 
-                    <div class="grid gap-2">
+                    <div class="grid">
                         <Label for="email">Email address</Label>
                         <Input
                             id="email"
@@ -164,13 +179,14 @@ const submit = () => {
                             :message="form.errors.email" />
                     </div>
 
-                    <div v-if="mustVerifyEmail && !user.email_verified_at">
+                    <div v-if="mustVerifyEmail && !user.email_verified">
                         <p class="-mt-4 text-sm text-muted-foreground">
                             Your email address is unverified.
                             <Link
                                 :href="useRoute('verification.send')"
                                 method="post"
                                 as="button"
+                                preserve-scroll
                                 class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                             >
                                 Click here to resend the verification email.

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\CreateOrFetchBook;
+use App\Actions\Books\FetchOrCreateBook;
 use App\Http\Requests\Books\StoreBookRequest;
 use App\Http\Requests\Books\UpdateBookRequest;
 use App\Http\Resources\AuthorResource;
@@ -85,7 +85,7 @@ class BookController extends Controller
     public function store(StoreBookRequest $request)
     {
         $identifier = $request->string('identifier');
-        CreateOrFetchBook::run($identifier);
+        FetchOrCreateBook::run($identifier);
 
         return redirect()->back();
     }

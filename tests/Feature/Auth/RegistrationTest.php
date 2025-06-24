@@ -11,6 +11,7 @@ test('registration screen can be rendered', function () {
 test('new users can register', function () {
     $response = $this->post('/register', [
         'name' => 'Test User',
+        'username' => \Illuminate\Support\Str::random(),
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
@@ -23,4 +24,28 @@ test('new users can register', function () {
     $this->followRedirects($response)->assertInertia(fn (AssertableInertia $page) => $page
         ->component('books/Index')
     );
+});
+
+test('username field is required during registration', function () {
+    $response = $this->post('/register', [
+        // 'username' => '', // omit username
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ]);
+
+    $response->assertSessionHasErrors('username');
+});
+
+test('username field must be valid', function () {
+    $response = $this->post('/register', [
+        'username' => 'name with space',
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ]);
+
+    $response->assertSessionHasErrors('username');
 });

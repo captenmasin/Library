@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\FetchBookByIdentifier;
+use App\Actions\Books\FetchBookByIdentifier;
 use App\Enums\UserBookStatus;
 use App\Http\Requests\Books\DestroyBookUserRequest;
 use App\Http\Requests\Books\StoreBookUserRequest;

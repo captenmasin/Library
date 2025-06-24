@@ -36,25 +36,25 @@ watch(
     { immediate: true }
 )
 
-if (document.startViewTransition) {
-    function handleInertiaStart () {
-        document.startViewTransition(async () => {
-            return new Promise((resolve) => {
-                document.addEventListener(
-                    'inertia:finish',
-                    () => {
-                        resolve()
-                    },
-                    { once: true }
-                )
-            })
-        })
-    }
-    document.addEventListener('inertia:start', handleInertiaStart)
-    onUnmounted(() => {
-        document.removeEventListener('inertia:start', handleInertiaStart)
-    })
-}
+// if (document.startViewTransition) {
+//     function handleInertiaStart () {
+//         document.startViewTransition(async () => {
+//             return new Promise((resolve) => {
+//                 document.addEventListener(
+//                     'inertia:finish',
+//                     () => {
+//                         resolve()
+//                     },
+//                     { once: true }
+//                 )
+//             })
+//         })
+//     }
+//     document.addEventListener('inertia:start', handleInertiaStart)
+//     onUnmounted(() => {
+//         document.removeEventListener('inertia:start', handleInertiaStart)
+//     })
+// }
 </script>
 
 <template>

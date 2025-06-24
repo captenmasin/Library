@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\Books;
 
 use App\Models\Book;
 use Illuminate\Http\JsonResponse;

@@ -45,5 +45,11 @@ class AppServiceProvider extends ServiceProvider
                 ->waitForLocation('/login')
                 ->assertPathIs('/login');
         });
+
+        Browser::macro('disableClientSideValidation', function () {
+            $this->script('for(var f=document.forms,i=f.length;i--;)f[i].setAttribute("novalidate",i)');
+
+            return $this;
+        });
     }
 }
