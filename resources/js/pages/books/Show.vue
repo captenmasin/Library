@@ -47,34 +47,40 @@ defineOptions({
 
 <template>
     <div>
-        <UpdateBookCover :book />
-        {{ book.authors }}
-        {{ book.title }}
+        <div class="flex">
+            <div>
+                <UpdateBookCover :book />
+                {{ book.authors }}
+                {{ book.title }}
 
-        <Select v-model="statusForm.status">
-            <SelectTrigger class="w-full">
-                <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectGroup>
-                    <SelectItem
-                        v-for="status in possibleStatuses"
-                        :key="status.value"
-                        :value="status.value">
-                        {{ status.label }}
-                    </SelectItem>
-                </SelectGroup>
-            </SelectContent>
-        </Select>
-        <div
-            class="prose"
-            v-html="book.description" />
-        <hr>
-        <NoteForm :book="book" />
-        <ReviewForm
-            :book="book"
-            :existing-review="book.user_review" />
+                <Select v-model="statusForm.status">
+                    <SelectTrigger class="w-full">
+                        <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectItem
+                                v-for="status in possibleStatuses"
+                                :key="status.value"
+                                :value="status.value">
+                                {{ status.label }}
+                            </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+            </div>
+            <div>
+                <div
+                    class="prose"
+                    v-html="book.description" />
+                <hr>
+                <NoteForm :book="book" />
+                <ReviewForm
+                    :book="book"
+                    :existing-review="book.user_review" />
 
-        {{ reviews }}
+                {{ reviews }}
+            </div>
+        </div>
     </div>
 </template>

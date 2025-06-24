@@ -1,6 +1,7 @@
 <script setup>
 import Icon from '@/components/Icon.vue'
 import Loader from '@/components/Loader.vue'
+import DefaultCover from '~/images/default-cover.svg'
 import { watchDebounced } from '@vueuse/core'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from '@/composables/useRoute'
@@ -13,7 +14,8 @@ import { DialogClose, DialogTitle } from '@/components/ui/dialog/index.js'
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select/index.js'
 
-const query = ref('jurassic park')
+const keyword = ref('')
+const author = ref('Michael')
 const recent = ref([])
 const filteredBooks = ref([])
 const loading = ref(false)
@@ -83,12 +85,13 @@ async function removeBookFromUser (book) {
 }
 
 async function searchBooks () {
-    if (!query.value) {
+    if (!keyword.value && !author.value) {
         filteredBooks.value = []
         return
     }
+
     loading.value = true
-    useRequest(useRoute('api.books.search', { q: query.value }), 'GET').then((response) => {
+    useRequest(useRoute('api.books.search', { q: keyword.value, author: author.value }), 'GET').then((response) => {
         filteredBooks.value = response
     }).catch((error) => {
         console.error('Error searching for books:', error)
@@ -101,7 +104,11 @@ async function searchBooks () {
 
 const { possibleStatuses, updateStatus } = useUserBookStatus()
 
-watchDebounced(query, searchBooks, { debounce: 500 })
+watchDebounced([keyword, author], searchBooks, { debounce: 500 })
+
+const hasSearch = computed(() => {
+    return keyword.value !== '' || author.value !== ''
+})
 
 function select (book, status) {
     if (book?.identifier) {
@@ -113,15 +120,13 @@ function select (book, status) {
 }
 
 onMounted(() => {
-    searchBooks()
     selectedStatuses.value = { ...added.value }
 })
 </script>
 
 <template>
     <div>
-        <Dialog
-            :default-open="true">
+        <Dialog>
             <DialogTrigger as-child>
                 <Button> Search</Button>
             </DialogTrigger>
@@ -131,30 +136,38 @@ onMounted(() => {
                 <div class="flex gap-4">
                     <div class="flex flex-col w-1/3">
                         <Input
-                            v-model="query"
+                            v-model="keyword"
                             class="w-full"
                             placeholder="Search for books by title, author, or publisher" />
+                        <Input
+                            v-model="author"
+                            class="w-full"
+                            placeholder="Author..." />
                     </div>
                     <div class="flex flex-col w-2/3">
                         <Loader
                             v-if="loading"
                             class="w-12 mx-auto" />
-
                         <ul
                             v-if="!loading"
                             class="max-h-[calc(100dvh-10rem)] divide-y divide-gray-200 overflow-y-auto">
                             <li
-                                v-for="book in query === '' ? recent : filteredBooks"
+                                v-for="book in hasSearch ? filteredBooks : recent"
                                 :key="book.id">
-                                <div class="flex cursor-pointer items-center gap-4 p-2 ">
-                                    <img
-                                        :src="book.cover"
-                                        :alt="`Book cover image for ${book.title}`"
-                                        class="h-24 w-16 rounded-sm">
-                                    <div>
-                                        {{ book.title }}
-                                        <br>
-                                        By {{ book.authors ? book.authors.join(', ') : 'Unknown Author' }}
+                                <div class="flex items-center gap-4 p-2 ">
+                                    <div class="aspect-book w-16 shrink-0 shadow-sm rounded-sm overflow-hidden">
+                                        <img
+                                            :src="book.cover ?? DefaultCover"
+                                            :alt="`Book cover image for ${book.title}`"
+                                            class="size-full bg-gray-200 object-cover">
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <h3 class="font-serif">
+                                            {{ book.title }}
+                                        </h3>
+                                        <p class="text-sm text-gray-500">
+                                            By {{ book.authors ? book.authors.join(', ') : 'Unknown Author' }}
+                                        </p>
                                     </div>
                                     <div class="ml-auto flex items-center gap-2 px-2">
                                         <div

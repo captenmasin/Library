@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
-import Loader from '@/components/Loader.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import BookCard from '@/components/books/BookCard.vue'
-import BookForm from '@/components/books/BookForm.vue'
 import BookSearch from '@/components/books/BookSearch.vue'
 import { Author } from '@/types/author'
 import type { Book } from '@/types/book'
@@ -11,13 +9,18 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useUrlSearchParams } from '@vueuse/core'
 import { useRoute } from '@/composables/useRoute'
+import { Head, Link, router } from '@inertiajs/vue3'
 import { computed, type PropType, ref, watch } from 'vue'
-import { Head, Link, router, WhenVisible } from '@inertiajs/vue3'
+import { useUserSettings } from '@/composables/useUserSettings'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const props = defineProps({
     books: Object as PropType<Book[]>,
     authors: {
+        type: Array as PropType<Author[]>,
+        default: () => []
+    },
+    publishers: {
         type: Array as PropType<Author[]>,
         default: () => []
     }
@@ -26,9 +29,14 @@ const props = defineProps({
 const params = useUrlSearchParams('history')
 
 const search = ref<string>((params.search as string) || '')
+const currentSearch = ref<string>((params.search as string) || '')
+
 const author = ref<string>((params.author as string) || '')
-const sort = ref<string>((params.sort as string) || 'title')
+const publisher = ref<string>((params.publisher as string) || '')
+const sort = ref<string>((params.sort as string) || '')
 const order = ref<string>((params.order as string) || 'asc')
+
+const view = ref<string>('grid')
 
 const sortOptions = ref([
     { label: 'Title', value: 'title' },
@@ -36,31 +44,54 @@ const sortOptions = ref([
     { label: 'Published Date', value: 'published_date' }
 ])
 
-watch([search, author, sort, order], ([newSearch, newAuthor, newSort, newOrder]) => {
-    params.search = newSearch
+watch([author, publisher, sort, order], ([newAuthor, newPublisher, newSort, newOrder]) => {
     params.author = newAuthor
+    params.publisher = newPublisher
     params.sort = newSort
     params.order = newOrder
 
+    submitForm()
+})
+
+const { updateSingleSettings } = useUserSettings()
+
+function setView (newView: string) {
+    view.value = newView
+
+    updateSingleSettings('books.view', newView)
+}
+
+function submitForm () {
+    currentSearch.value = search.value
     router.get(
         useRoute('books.index'),
         {
-            search: newSearch,
-            author: newAuthor,
-            sort: newSort,
-            order: newOrder
+            search: search.value,
+            author: author.value,
+            publisher: publisher.value,
+            sort: sort.value,
+            order: order.value
         },
         {
             preserveScroll: true,
+            preserveState: true,
             replace: true
         }
     )
-})
+}
 
 const filteredBooks = computed(() => {
     if (!props.books) return []
 
     return props.books
+})
+
+const hasFiltered = computed(() => {
+    return currentSearch.value !== '' ||
+        author.value !== '' ||
+        publisher.value !== '' ||
+        sort.value !== '' ||
+        order.value !== 'asc'
 })
 
 defineOptions({
@@ -75,22 +106,33 @@ defineOptions({
         <BookSearch />
 
         <div class="flex gap-4">
-            <div class="flex w-3/12 flex-col bg-red-200">
+            <div class="flex w-3/12 flex-col gap-2">
                 <div class="w-full">
-                    <Input
-                        v-model="search"
-                        placeholder="Search" />
+                    <form @submit.prevent="submitForm">
+                        <div class="flex relative">
+                            <Input
+                                v-model="search"
+                                class="pr-10"
+                                placeholder="Search" />
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-1">
+                                <Button
+                                    type="submit"
+                                    variant="link"
+                                    class="cursor-pointer"
+                                    size="icon">
+                                    <Icon name="Search" />
+                                </Button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="w-full">
                     <Select v-model="author">
                         <SelectTrigger class="w-full">
-                            <SelectValue placeholder="Select author" />
+                            <SelectValue placeholder="Filter by author" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem :value="null">
-                                    All
-                                </SelectItem>
                                 <SelectItem
                                     v-for="singleAuthor in authors"
                                     :key="singleAuthor.uuid"
@@ -102,24 +144,61 @@ defineOptions({
                     </Select>
                 </div>
                 <div class="w-full">
-                    <Select v-model="sort">
+                    <Select v-model="publisher">
                         <SelectTrigger class="w-full">
-                            <SelectValue placeholder="Sort books" />
+                            <SelectValue placeholder="Filter by publisher" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
                                 <SelectItem
-                                    v-for="sortOption in sortOptions"
-                                    :key="sortOption.value"
-                                    :value="sortOption.value">
-                                    {{ sortOption.label }}
+                                    v-for="singlePublisher in publishers"
+                                    :key="singlePublisher.uuid"
+                                    :value="singlePublisher.uuid">
+                                    {{ singlePublisher.name }}
                                 </SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
                 </div>
-                <div class="w-full">
-                    <div>
+                <div
+                    v-if="hasFiltered"
+                    class="w-full">
+                    <Button
+                        class="w-full"
+                        as-child
+                        variant="secondary">
+                        <Link
+                            :href="useRoute('books.index')"
+                            preserve-scroll>
+                            Reset
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+
+            <div class="flex w-9/12 flex-col">
+                <div class="flex items-center">
+                    <h2
+                        v-if="currentSearch"
+                        class="font-semibold text-2xl mb-4">
+                        Search results for "{{ currentSearch }}"
+                    </h2>
+                    <div class="w-full flex items-center gap-2">
+                        <Select v-model="sort">
+                            <SelectTrigger class="w-full">
+                                <SelectValue placeholder="Sort books" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectItem
+                                        v-for="sortOption in sortOptions"
+                                        :key="sortOption.value"
+                                        :value="sortOption.value">
+                                        {{ sortOption.label }}
+                                    </SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                         <Button
                             type="button"
                             variant="outline"
@@ -130,42 +209,27 @@ defineOptions({
                     </div>
                     <div>
                         <Button
-                            as-child
-                            variant="outline">
-                            <Link
-                                :href="useRoute('books.index')"
-                                preserve-scroll>
-                                Reset
-                            </Link>
+                            :class="{ 'bg-blue-500 text-white': view === 'grid' }"
+                            @click="setView('grid')">
+                            Grid
+                        </Button>
+                        <Button
+                            :class="{ 'bg-blue-500 text-white': view === 'list' }"
+                            @click="setView('list')">
+                            List
                         </Button>
                     </div>
                 </div>
-            </div>
-
-            <div class="flex w-9/12">
-                <ul class="w-full flex flex-wrap items-stretch">
+                <ul
+                    :class="view === 'list' ? 'flex flex-col gap-y-4' : ''"
+                    class="w-full flex gap-y-4 flex-wrap items-stretch">
                     <li
                         v-for="book in filteredBooks"
                         :key="book.identifier"
-                        class="flex w-1/2 flex-col p-2 sm:w-1/2 md:w-1/5">
+                        class="flex w-1/2 px-2 flex-col sm:w-1/2 md:w-1/5">
                         <BookCard :book="book" />
                     </li>
                 </ul>
-            <!--            <WhenVisible data="books">-->
-            <!--                <template #fallback>-->
-            <!--                    <Loader class="scale-50" />-->
-            <!--                </template>-->
-
-            <!--                <ul class="-mx-2 flex flex-wrap items-stretch">-->
-            <!--                    <li-->
-            <!--                        v-for="book in filteredBooks"-->
-            <!--                        :key="book.id"-->
-            <!--                        class="flex h-full w-1/2 flex-col p-2 sm:w-1/2 md:w-1/6"-->
-            <!--                    >-->
-            <!--                        <BookCard :book="book" />-->
-            <!--                    </li>-->
-            <!--                </ul>-->
-            <!--            </WhenVisible>-->
             </div>
         </div>
     </div>

@@ -21,9 +21,15 @@ const form = useForm({
     remember: false
 })
 
-const submit = () => {
+const submit = async () => {
+    await fetch('/sanctum/csrf-cookie', {
+        credentials: 'include'
+    })
+
     form.post(useRoute('login'), {
-        onFinish: () => form.reset('password')
+        onFinish: () => {
+            form.reset('password')
+        }
     })
 }
 </script>
@@ -50,7 +56,6 @@ const submit = () => {
                         id="email"
                         v-model="form.email"
                         type="email"
-                        required
                         autofocus
                         :tabindex="1"
                         autocomplete="email"
@@ -74,7 +79,6 @@ const submit = () => {
                         id="password"
                         v-model="form.password"
                         type="password"
-                        required
                         :tabindex="2"
                         autocomplete="current-password"
                         placeholder="Password"

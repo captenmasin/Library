@@ -19,7 +19,7 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $books = Auth::user()->books()->with(['authors', 'reviews'])->get();
+        $books = Auth::user()->books()->with(['authors', 'reviews', 'publisher'])->get();
         $books = $books->sortByDesc('id');
 
         if ($request->filled('search')) {
@@ -31,37 +31,43 @@ class BookController extends Controller
             });
         }
 
-        if ($request->filled('sort')) {
-            $sort = $request->get('sort');
-            $direction = $request->get('order', 'asc');
+        $sort = $request->get('sort');
+        $direction = $request->get('order', 'asc');
 
-            $desc = $direction === 'desc';
+        $desc = $direction === 'desc';
 
-            if ($sort === 'title') {
-                $books = $books->sortBy(function ($book) {
-                    return strtolower($book->title);
-                }, SORT_NATURAL | SORT_FLAG_CASE, $desc);
-            } elseif ($sort === 'rating') {
-                $books = $books->sortBy(function ($book) {
-                    return $book->reviews->avg('rating') ?? 0;
-                }, SORT_REGULAR, $desc);
-            } elseif ($sort === 'published_date') {
-                $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
-            }
+        if ($sort === 'title') {
+            $books = $books->sortBy(function ($book) {
+                return strtolower($book->title);
+            }, SORT_NATURAL | SORT_FLAG_CASE, $desc);
+        } elseif ($sort === 'rating') {
+            $books = $books->sortBy(function ($book) {
+                return $book->reviews->avg('rating') ?? 0;
+            }, SORT_REGULAR, $desc);
+        } elseif ($sort === 'published_date') {
+            $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
         }
 
         if ($request->filled('author')) {
-            $authorId = $request->get('author');
-            $books = $books->filter(function ($book) use ($authorId) {
-                return $book->authors->contains('uuid', $authorId);
+            $authorUuid = $request->get('author');
+            $books = $books->filter(function ($book) use ($authorUuid) {
+                return $book->authors->contains('uuid', $authorUuid);
+            });
+        }
+
+        if ($request->filled('publisher')) {
+            $publisherUuid = $request->get('publisher');
+            $books = $books->filter(function ($book) use ($publisherUuid) {
+                return $book->publisher->uuid === $publisherUuid;
             });
         }
 
         return Inertia::render('books/Index', [
             'books' => BookResource::collection($books->values()),
-            'authors' => AuthorResource::collection(Auth::user()->books->flatMap(function ($book) {
-                return $book->authors;
-            })->unique('uuid')),
+            'authors' => AuthorResource::collection(Auth::user()->books
+                ->flatMap(fn ($book) => $book->authors)->unique('uuid')),
+            'publishers' => Auth::user()->books()->with('publisher')->get()
+                ->map(fn ($book) => $book->publisher)->unique('uuid'),
         ]);
     }
 

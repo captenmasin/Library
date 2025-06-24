@@ -26,12 +26,25 @@ export async function useRequest<T = ApiResponse> (
 
         url = url.toString()
 
+        function getCookie (name: string): string | undefined {
+            return document.cookie
+                .split('; ')
+                .find(row => row.startsWith(name + '='))
+                ?.split('=')[1]
+        }
+
+        const csrfToken = decodeURIComponent(getCookie('XSRF-TOKEN') || '')
+
         const response = await fetch(url, {
             method,
             mode: 'cors',
             cache: 'no-cache',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-XSRF-TOKEN': csrfToken
+            },
             redirect: 'follow',
             referrerPolicy: 'no-referrer',
             body: method !== 'GET' ? JSON.stringify(data) : null

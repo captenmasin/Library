@@ -4,7 +4,6 @@ PlanToRead = "Plan to Read",
 Reading = "Reading",
 Completed = "Completed",
 OnHold = "On Hold",
-Dropped = "Dropped",
-PENIS = "PENIS"
+Dropped = "Dropped"
 }
 /* eslint-disable no-unused-vars */

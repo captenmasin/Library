@@ -70,6 +70,17 @@ class User extends Authenticatable implements HasMedia
         ];
     }
 
+    public array $defaultSettings = [
+        'books' => [
+            'view' => 'grid',
+        ],
+    ];
+
+    public array $settingsRules = [
+        'books' => 'array',
+        'books.view' => ['string', 'in:grid,list'],
+    ];
+
     public function getBookIdentifiers(): array
     {
         $books = $this->books()->withPivot('status')->get();

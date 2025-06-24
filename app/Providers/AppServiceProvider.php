@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Contracts\BookApiServiceInterface;
+use App\Services\GoogleBooksService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Response;
+use Laravel\Dusk\Browser;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(BookApiServiceInterface::class, GoogleBooksService::class);
     }
 
     /**
@@ -35,6 +38,12 @@ class AppServiceProvider extends ServiceProvider
             })->values();
 
             return $this->with('breadcrumbs', $breadcrumbs);
+        });
+
+        Browser::macro('fullLogout', function () {
+            $this->visit('/test-logout')
+                ->waitForLocation('/login')
+                ->assertPathIs('/login');
         });
     }
 }

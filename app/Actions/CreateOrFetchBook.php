@@ -2,12 +2,12 @@
 
 namespace App\Actions;
 
+use App\Contracts\BookApiServiceInterface;
 use App\Http\Resources\BookResource;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Publisher;
-use App\Services\GoogleBooksService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -15,6 +15,8 @@ use Lorisleiva\Actions\Concerns\AsAction;
 class CreateOrFetchBook
 {
     use AsAction;
+
+    public function __construct(protected BookApiServiceInterface $booksApi) {}
 
     public function handle(string $identifier)
     {
@@ -44,7 +46,7 @@ class CreateOrFetchBook
 
     protected function createBookFromApi(string $identifier): Book
     {
-        $data = GoogleBooksService::get($identifier);
+        $data = $this->booksApi::get($identifier);
         abort_if(! $data, 404, 'Book not found from API');
 
         $book = Book::create([

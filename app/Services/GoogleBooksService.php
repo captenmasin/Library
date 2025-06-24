@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Contracts\BookApiServiceInterface;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-class GoogleBooksService
+class GoogleBooksService implements BookApiServiceInterface
 {
     protected static string $baseUrl = 'https://www.googleapis.com/books/v1';
 
@@ -41,11 +42,14 @@ class GoogleBooksService
     public static function search(
         ?string $query = null,
         ?string $author = null,
-        int $maxResults = 15,
+        int $maxResults = 30,
         $pageIndex = 0): array
     {
+        $query = $query.($author ? (' inauthor:"'.$author.'"') : '');
+        $query = trim($query);
+
         $response = Http::get(self::$baseUrl.'/volumes', [
-            'q' => $query.($author ? (' inauthor:"'.$author.'"') : ''),
+            'q' => $query,
             'startIndex' => $pageIndex * $maxResults,
             'fields' => self::buildFieldsString(),
             'maxResults' => $maxResults,
@@ -59,10 +63,10 @@ class GoogleBooksService
             ->all();
     }
 
-    public static function get(string $volumeId): ?array
+    public static function get(string $id): ?array
     {
-        return Cache::remember('books:id:'.$volumeId, now()->addWeek(), function () use ($volumeId) {
-            return self::transform(self::getFromApi($volumeId));
+        return Cache::remember('books:id:'.$id, now()->addWeek(), function () use ($id) {
+            return self::transform(self::getFromApi($id));
         });
     }
 
@@ -73,9 +77,9 @@ class GoogleBooksService
         return $results[0] ?? null;
     }
 
-    protected static function getFromApi(string $volumeId): ?array
+    public static function getFromApi(string $id): ?array
     {
-        $response = Http::get(self::$baseUrl."/volumes/{$volumeId}");
+        $response = Http::get(self::$baseUrl."/volumes/{$id}");
         if (! $response->ok()) {
             return null;
         }
@@ -83,7 +87,7 @@ class GoogleBooksService
         return $response->json();
     }
 
-    protected static function buildFieldsString(?array $fields = null)
+    protected static function buildFieldsString(?array $fields = null): string
     {
         if (! $fields) {
             $fields = self::FIELDS;

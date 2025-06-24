@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import 'vue-sonner/style.css'
 import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
-import { watch } from 'vue'
 import { toast } from 'vue-sonner'
+import { watch, onUnmounted } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import { Toaster } from '@/components/ui/sonner'
 import type { BreadcrumbItemType } from '@/types'
@@ -35,6 +35,26 @@ watch(
     },
     { immediate: true }
 )
+
+if (document.startViewTransition) {
+    function handleInertiaStart () {
+        document.startViewTransition(async () => {
+            return new Promise((resolve) => {
+                document.addEventListener(
+                    'inertia:finish',
+                    () => {
+                        resolve()
+                    },
+                    { once: true }
+                )
+            })
+        })
+    }
+    document.addEventListener('inertia:start', handleInertiaStart)
+    onUnmounted(() => {
+        document.removeEventListener('inertia:start', handleInertiaStart)
+    })
+}
 </script>
 
 <template>

@@ -9,7 +9,6 @@ enum UserBookStatus: string
     case Completed = 'Completed';
     case OnHold = 'On Hold';
     case Dropped = 'Dropped';
-    case PENIS = 'PENIS';
 
     public static function values(): array
     {

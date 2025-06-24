@@ -17,11 +17,14 @@ defineProps({
 <template>
     <div
         class="group flex flex-col rounded-md overflow-hidden shadow-sm"
-        :style="{ backgroundColor: book.colour }"
+        :style="{
+            backgroundColor: book.colour,
+            viewTransitionName: `book-cover-${book.identifier}`
+        }"
         :class="[useContrast(book.colour, 'text-zinc-900', 'text-white')]"
     >
         <Link :href="book.links.show">
-            <div class="w-full aspect-[16/25] relative overflow-hidden">
+            <div class="w-full aspect-book relative overflow-hidden">
                 <Image
                     v-if="book.cover"
                     :src="book.cover"

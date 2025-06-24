@@ -87,12 +87,12 @@ const clearCoverFileInput = () => {
                     v-show="! coverPreview"
                     class="mt-2">
                     <Image
+                        :style="`view-transition-name: book-cover-${book.identifier};`"
                         :src="book.cover"
                         width="80"
                         class="rounded-md w-20 aspect-cover" />
                 </div>
 
-                <!-- New Profile Avatar Preview -->
                 <div
                     v-show="coverPreview"
                     class="mt-2">

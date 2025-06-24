@@ -2,7 +2,7 @@
 
 namespace App\Actions;
 
-use App\Services\GoogleBooksService;
+use App\Contracts\BookApiServiceInterface;
 use Cache;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,13 +12,15 @@ class SearchBooksFromApi
 {
     use AsAction;
 
+    public function __construct(protected BookApiServiceInterface $booksApi) {}
+
     public function handle(?string $query = null, ?string $author = null, bool $cache = true): array
     {
         $cacheKey = 'books:search:'.md5(strtolower(trim($query)).'__'.strtolower(trim($author)));
         $cacheTTL = $cache ? now()->addDay() : null;
 
         return Cache::remember($cacheKey, $cacheTTL, function () use ($query, $author) {
-            return GoogleBooksService::search(
+            return $this->booksApi::search(
                 $query, $author
             );
         });
