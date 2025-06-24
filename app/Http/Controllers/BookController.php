@@ -20,13 +20,14 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $books = Auth::user()->books()->with(['authors', 'reviews', 'publisher'])->get();
+        $books = Auth::user()->books()->with(['authors', 'reviews', 'publisher', 'covers'])->get();
         $books = $books->sortByDesc('id');
 
         if ($request->filled('search')) {
             $search = $request->get('search');
             $books = $books->filter(function ($book) use ($search) {
                 return str_contains(strtolower($book->title), strtolower($search)) ||
+                    str_contains(strtolower($book->description), strtolower($search)) ||
                     str_contains(strtolower(implode(', ', $book->authors->pluck('name')->toArray())), strtolower($search)) ||
                     str_contains(strtolower($book->identifier), strtolower($search));
             });

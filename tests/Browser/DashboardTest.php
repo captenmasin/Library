@@ -29,8 +29,8 @@ test('user can see open new book modal', function () {
 
         $browser->visit('/books')
             ->press('Add Book')
+            ->pause(500)
             ->assertSee('Add a new book to your library')
-            ->type('#keyword-search', 'Jurassic Park')
-            ->pause(10000);
+            ->type('#keyword-search', 'Jurassic Park');
     });
 });

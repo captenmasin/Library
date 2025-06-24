@@ -2,7 +2,6 @@
 
 use SoloTerm\Solo\Commands\Command;
 use SoloTerm\Solo\Commands\EnhancedTailCommand;
-use SoloTerm\Solo\Commands\MakeCommand;
 use SoloTerm\Solo\Hotkeys;
 use SoloTerm\Solo\Themes;
 
@@ -49,15 +48,13 @@ return [
         'Vite' => 'npm run dev',
         'Queue' => Command::from('php artisan horizon')->lazy(),
         'Logs' => EnhancedTailCommand::file(storage_path('logs/laravel.log')),
-        'Nightwatch' => Command::from('php artisan nightwatch:agent'),
-        //        'Make' => new MakeCommand,
-        // 'HTTP' => 'php artisan serve',
 
         // Lazy commands do not automatically start when Solo starts.
         //        'Dumps' => Command::from('php artisan solo:dumps')->lazy(),
         //        'Reverb' => Command::from('php artisan reverb:start --debug')->lazy(),
         //        'Pint' => Command::from('./vendor/bin/pint --ansi')->lazy(),
-        //        'Tests' => Command::from('php artisan test --colors=always')->withEnv(['APP_ENV' => 'testing'])->lazy(),
+        'Tests' => Command::from('./vendor/bin/pest --watch --parallel')->withEnv(['APP_ENV' => 'testing'])->lazy(),
+        'Nightwatch' => Command::from('php artisan nightwatch:agent')->lazy(),
     ],
 
     /**

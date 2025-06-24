@@ -16,14 +16,14 @@ class BookResource extends JsonResource
             'path' => $this->path,
             'identifier' => $this->identifier,
             'title' => $this->title,
-            'authors' => $this->whenLoaded('authors', fn () => AuthorResource::collection($this->whenLoaded('authors'))),
             'description' => $this->description,
 
-            'cover' => $this->whenLoaded('covers', fn () => $this->getCover($user)),
             'has_custom_cover' => $user ? $this->hasCustomCover($user) : false,
-
-            'notes' => $this->whenLoaded('notes', fn () => $this->notes->firstWhere('user_id', $user?->id)),
+            'cover' => $this->whenLoaded('covers', fn () => $this->getCover($user)),
+            'authors' => $this->whenLoaded('authors', fn () => $this->getAuthors()),
+            'notes' => $this->whenLoaded('notes', fn () => $this->getNote($user)),
             'user_review' => $this->whenLoaded('reviews', fn () => $this->getUserReview($user)),
+
             'in_library' => $user && $this->isInLibrary($user),
             'user_status' => $user ? $this->getUserStatus($user) : null,
 
@@ -37,8 +37,17 @@ class BookResource extends JsonResource
         ];
     }
 
-    protected function getCover(User $user): ?string
+    protected function getAuthors()
     {
+        return AuthorResource::collection($this->authors);
+    }
+
+    protected function getCover(?User $user = null): ?string
+    {
+        if (! $user) {
+            return $this->primary_cover;
+        }
+
         $cover = $user->book_covers->where('book_id', $this->id)->first();
 
         return $cover?->hasMedia('image')
@@ -46,25 +55,40 @@ class BookResource extends JsonResource
             : $this->primary_cover;
     }
 
-    protected function hasCustomCover(User $user): bool
+    protected function hasCustomCover(?User $user = null): bool
     {
         return $user->book_covers->contains('book_id', $this->id);
     }
 
     protected function isInLibrary(User $user): bool
     {
-        return $this->users()->where('user_id', $user->id)->exists();
+        return $this->users->contains($user);
     }
 
     protected function getUserStatus(User $user): ?string
     {
-        return $this->users()->where('user_id', $user->id)->first()?->pivot?->status;
+        return $this->users->where('user_id', $user->id)->first()?->pivot?->status;
     }
 
-    protected function getUserReview(User $user): ?ReviewResource
+    protected function getUserReview(?User $user = null): ?ReviewResource
     {
+        if (! $user) {
+            return null;
+        }
+
         $review = $this->reviews->firstWhere('user_id', $user?->id);
 
         return $review ? new ReviewResource($review) : null;
+    }
+
+    protected function getNote(?User $user = null): ?NoteResource
+    {
+        if (! $user) {
+            return null;
+        }
+
+        $note = $this->notes->firstWhere('user_id', $user?->id);
+
+        return $note ? new NoteResource($note) : null;
     }
 }
