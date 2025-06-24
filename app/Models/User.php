@@ -101,8 +101,8 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public function books(): BelongsToMany
     {
         return $this->belongsToMany(Book::class)
-            ->withPivot(['status'])
-            ->withTimestamps();
+            ->using(BookUser::class)
+            ->withPivot(['status', 'tags', 'created_at', 'updated_at']);
     }
 
     public function notes(): HasMany

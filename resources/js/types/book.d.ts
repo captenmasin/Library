@@ -14,6 +14,7 @@ export type Book = {
     authors: Author[],
     user_status: UserBookStatus | null,
     user_review: Review | null,
+    user_tags: string[] | null,
     colour?: string,
     in_library: boolean,
     has_custom_cover?: boolean,

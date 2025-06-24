@@ -26,7 +26,8 @@ Route::prefix('books')->name('books.')->controller(BookController::class)->middl
     ->group(function () {
         Route::get('/', 'index')->name('index');
 
-        Route::get('{book}', 'show')->name('show');
+        Route::get('{book}', 'show')->name('show')
+            ->withoutMiddleware(['auth']);
 
         Route::post('{book}/notes', [NoteController::class, 'store'])
             ->name('notes.store');
@@ -44,6 +45,8 @@ Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () 
         Route::post('/', 'store')->name('store');
 
         Route::patch('{book:identifier}/status', 'updateStatus')->name('update_status');
+
+        Route::put('{book:identifier}/tags', 'updateTags')->name('update_tags');
 
         Route::delete('{book:identifier}', 'destroy')->name('destroy');
     });

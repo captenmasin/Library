@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Book } from '@/types/book'
+import { Review } from '@/types/review'
 import { computed, PropType } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
+import { Textarea } from '@/components/ui/textarea'
 
 const props = defineProps({
     book: Object as PropType<Book>,
-    existingReview: Object
+    existingReview: Object as PropType<Review | null>
 })
 
 const hasExistingReview = computed(() => !!props.existingReview)
@@ -46,7 +48,7 @@ function submit () {
             <label
                 class="block mb-1"
                 for="content">Review (optional)</label>
-            <textarea
+            <Textarea
                 id="content"
                 v-model="form.content"
                 class="w-full border rounded p-2"

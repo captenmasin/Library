@@ -63,8 +63,8 @@ class Book extends Model implements HasMedia
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
-            ->withPivot(['status'])
-            ->withTimestamps();
+            ->using(BookUser::class)
+            ->withPivot(['status', 'tags', 'created_at', 'updated_at']);
     }
 
     public function notes(): HasMany

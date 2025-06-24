@@ -5,10 +5,10 @@ import DefaultCover from '~/images/default-cover.svg'
 import { watchDebounced } from '@vueuse/core'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from '@/composables/useRoute'
-import { useForm, usePage } from '@inertiajs/vue3'
 import { Input } from '@/components/ui/input/index.js'
 import { Button } from '@/components/ui/button/index.js'
 import { useRequest } from '@/composables/useRequest.js'
+import { router, useForm, usePage } from '@inertiajs/vue3'
 import { useUserBookStatus } from '@/composables/useUserBookStatus.js'
 import { DialogClose, DialogTitle } from '@/components/ui/dialog/index.js'
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/ui/dialog'
@@ -66,9 +66,7 @@ async function removeBookFromUser (book) {
         .then((response) => {
             const fetchedBook = response.data
             if (fetchedBook) {
-                form.identifier = fetchedBook.identifier
-
-                form.delete(useRoute('users.books.destroy', fetchedBook), {
+                router.delete(useRoute('users.books.destroy', fetchedBook), {
                     onSuccess: () => {
                         delete added.value[fetchedBook.identifier]
                         delete selectedStatuses.value[fetchedBook.identifier]

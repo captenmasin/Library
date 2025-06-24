@@ -22,8 +22,6 @@ class DestroyBookUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'identifier' => ['required', 'exists:books,identifier'],
-        ];
+        return [];
     }
 }

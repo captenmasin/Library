@@ -22,7 +22,6 @@
         "lorisleiva/laravel-actions": "^2.9",
         "spatie/laravel-medialibrary": "^11.13",
         "spatie/laravel-permission": "^6.20",
-        "spatie/laravel-tags": "^4.10",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {

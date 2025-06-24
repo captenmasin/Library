@@ -26,6 +26,7 @@ class BookResource extends JsonResource
 
             'in_library' => $user && $this->isInLibrary($user),
             'user_status' => $user ? $this->getUserStatus($user) : null,
+            'user_tags' => $user ? $this->getUserTags($user) : [],
 
             'colour' => $this->settings()->get('colour', '#000000'),
             'created_at' => $this->created_at,
@@ -62,12 +63,17 @@ class BookResource extends JsonResource
 
     protected function isInLibrary(User $user): bool
     {
-        return $this->users->contains($user);
+        return $this->users()->get()->contains($user);
     }
 
     protected function getUserStatus(User $user): ?string
     {
-        return $this->users->where('user_id', $user->id)->first()?->pivot?->status;
+        return $this->users()->where('user_id', $user->id)->first()?->pivot?->status;
+    }
+
+    protected function getUserTags(User $user): ?array
+    {
+        return $this->users()->where('user_id', $user->id)->first()?->pivot?->tags;
     }
 
     protected function getUserReview(?User $user = null): ?ReviewResource

@@ -8,6 +8,7 @@ use App\Http\Requests\Books\DestroyBookUserRequest;
 use App\Http\Requests\Books\StoreBookUserRequest;
 use App\Http\Requests\Books\UpdateBookUserRequest;
 use App\Models\Book;
+use Illuminate\Http\Request;
 
 class UserBookController extends Controller
 {
@@ -42,6 +43,16 @@ class UserBookController extends Controller
 
         return redirect()->back()
             ->with('success', 'Book status updated successfully');
+    }
+
+    public function updateTags(Request $request, Book $book)
+    {
+        $bookUser = $request->user()->books()->where('book_id', $book->id)->first()?->pivot;
+        $bookUser->tags = $request->get('tags', []);
+        $bookUser->save();
+
+        return redirect()->back()
+            ->with('success', 'Tags updated successfully');
     }
 
     public function destroy(DestroyBookUserRequest $request, Book $book)
