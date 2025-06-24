@@ -22,7 +22,7 @@ class Book extends Model implements HasMedia
 
     protected static $unguarded = true;
 
-    protected $with = ['authors', 'covers'];
+    protected $with = [];
 
     protected function casts(): array
     {
@@ -45,7 +45,7 @@ class Book extends Model implements HasMedia
 
     public function primaryCover()
     {
-        return $this->covers()->where('is_primary', true)->first();
+        return $this->covers->where('is_primary', true)->first();
     }
 
     public function updateColour(): void
@@ -62,7 +62,9 @@ class Book extends Model implements HasMedia
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)
+            ->withPivot(['status'])
+            ->withTimestamps();
     }
 
     public function notes(): HasMany

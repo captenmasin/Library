@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         JsonResource::withoutWrapping();
 
-        Model::shouldBeStrict();
+        Model::preventLazyLoading();
 
         Response::macro('withBreadcrumbs', function ($breadcrumbs) {
             $breadcrumbs = collect($breadcrumbs)->map(function ($url, $name) {

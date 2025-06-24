@@ -46,7 +46,9 @@ class HandleInertiaRequests extends Middleware
                 'storage_url' => config('filesystems.disks.public.url'),
             ],
             'auth' => [
-                'user' => new UserResource($request->user())->asUser(),
+                'user' => $request->user()
+                    ? new UserResource($request->user())->asUser()
+                    : [],
                 'user_books' => $request->user()
                     ? $request->user()->getBookIdentifiers()
                     : [],

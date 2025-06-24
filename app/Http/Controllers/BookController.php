@@ -7,6 +7,7 @@ use App\Http\Requests\Books\StoreBookRequest;
 use App\Http\Requests\Books\UpdateBookRequest;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\BookResource;
+use App\Http\Resources\ReviewResource;
 use App\Models\Book;
 use Auth;
 use Illuminate\Http\Request;
@@ -95,23 +96,12 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book->load([
-            'reviews',
-            'categories',
-            'notes' => function ($query) {
-                $query->where('user_id', Auth::id());
-            },
-        ]);
-
-        $averageRating = round($book->reviews->avg('rating'), 1);
-        $reviewCount = $book->reviews->count();
+        $book->load(['authors', 'reviews', 'notes', 'covers']);
 
         return Inertia::render('books/Show', [
             'book' => new BookResource($book),
-            'reviews' => $book->reviews,
-            'averageRating' => $averageRating,
-            'reviewCount' => $reviewCount,
-            'initialUserBookStatus' => Auth::user()->books()->where('book_id', $book->id)->first()?->pivot?->status,
+            'averageRating' => round($book->reviews->avg('rating'), 1),
+            'reviews' => Inertia::defer(fn () => ReviewResource::collection($book->reviews)),
         ]);
     }
 
