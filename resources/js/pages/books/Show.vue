@@ -4,11 +4,10 @@ import TagForm from '@/components/books/TagForm.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
-import { toast } from 'vue-sonner'
 import { Review } from '@/types/review'
 import type { Book } from '@/types/book'
-import { type PropType, watch } from 'vue'
 import { Button } from '@/components/ui/button'
+import { type PropType, ref, watch } from 'vue'
 import { useRoute } from '@/composables/useRoute'
 import { Link, router, useForm } from '@inertiajs/vue3'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
@@ -24,20 +23,18 @@ const props = defineProps({
 
 const { possibleStatuses, updateStatus } = useUserBookStatus()
 
-const statusForm = useForm({
-    status: props.book.user_status
-})
-
-function removeBook () {
-    router.delete(useRoute('users.books.destroy', props.book), {
+const reload = () => {
+    router.reload({
+        only: ['book'],
         onSuccess: () => {
-            toast.success('Book removed from library')
-        },
-        onError: (error) => {
-            toast.error(error.response.data.message || 'Failed to remove book')
+            statusForm.status = props.book?.user_status
         }
     })
 }
+
+const statusForm = useForm({
+    status: props.book.user_status
+})
 
 watch(
     () => statusForm.status,
@@ -64,6 +61,8 @@ defineOptions({
                 {{ book.authors }}
                 {{ book.title }}
 
+                {{ statusForm.status }}
+
                 <Select
                     v-if="book.in_library"
                     v-model="statusForm.status">
@@ -82,15 +81,34 @@ defineOptions({
                     </SelectContent>
                 </Select>
 
-                <form
+                <Button
                     v-if="book.in_library"
-                    @submit.prevent="removeBook">
-                    <Button
-                        type="submit"
-                        variant="destructive">
+                    as-child
+                    variant="destructive">
+                    <Link
+                        method="delete"
+                        preserve-scroll
+                        :href="useRoute('users.books.destroy', props.book)">
                         Remove from library
-                    </Button>
-                </form>
+                    </Link>
+                </Button>
+
+                <Button
+                    v-else
+                    as-child
+                    variant="default">
+                    <Link
+                        method="post"
+                        :on-success="reload"
+                        :data="{
+                            identifier: book.identifier,
+                            status: 'PlanToRead'
+                        }"
+                        preserve-scroll
+                        :href="useRoute('users.books.store')">
+                        Add to library
+                    </Link>
+                </Button>
             </div>
             <div>
                 <div

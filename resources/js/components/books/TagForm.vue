@@ -39,7 +39,7 @@ const submit = () => {
                     <TagsInputItemDelete />
                 </TagsInputItem>
 
-                <TagsInputInput placeholder="Fruits..." />
+                <TagsInputInput placeholder="Tags..." />
             </TagsInput>
             <Button> Save </Button>
             <InputError
