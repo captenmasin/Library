@@ -52,6 +52,7 @@ class GoogleBooksService implements BookApiServiceInterface
             'q' => $query,
             'startIndex' => $pageIndex * $maxResults,
             'fields' => self::buildFieldsString(),
+            'langRestrict' => 'en',
             'maxResults' => $maxResults,
         ]);
 
