@@ -1,11 +1,10 @@
 <script setup>
 import BarcodeScanned from '~/audio/barcode-scanned.mp3'
 import { useSound } from '@vueuse/sound'
-import { useForm } from '@inertiajs/vue3'
+import { useVibrate } from '@vueuse/core'
 import { onBeforeUnmount, ref } from 'vue'
 import { useRoute } from '@/composables/useRoute'
 import { useRequest } from '@/composables/useRequest'
-import { Button } from '@/components/ui/button/index.js'
 import { BrowserMultiFormatReader } from '@zxing/browser'
 import { useUserBookStatus } from '@/composables/useUserBookStatus.js'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select/index.js'
@@ -22,6 +21,7 @@ const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, 
 let controls = null
 
 const { play } = useSound(BarcodeScanned)
+const { vibrate, stop, isSupported } = useVibrate({ pattern: [300, 100] })
 
 // single shared reader instance
 const codeReader = new BrowserMultiFormatReader()
@@ -34,11 +34,6 @@ async function startScan () {
     result.value = null
     book.value = null
     scanning.value = true
-
-    useRequest(useRoute('api.books.fetch_by_identifier', '9781367798540'), 'GET')
-        .then(response => {
-            book.value = response.data
-        })
 
     try {
         controls = await codeReader.decodeFromConstraints(
@@ -57,6 +52,7 @@ async function startScan () {
                 book.value = await useRequest(useRoute('api.books.test', raw), 'GET')
 
                 play()
+                vibrate()
 
                 stopScan() // tidy up
             }

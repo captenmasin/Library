@@ -56,6 +56,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/captenmasin/GoogleBooks.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/captenmasin/laravel-open-library.git"
         }
     ],
     "autoload-dev": {
@@ -108,6 +112,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "beta",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
