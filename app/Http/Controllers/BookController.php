@@ -33,7 +33,11 @@ class BookController extends Controller
             });
         }
 
-        $sort = $request->get('sort');
+        $sort = $request->get('sort', 'id');
+        if (! in_array($sort, ['title', 'rating', 'published_date'])) {
+            $sort = 'id';
+        }
+
         $direction = $request->get('order', 'asc');
 
         $desc = $direction === 'desc';
@@ -48,6 +52,8 @@ class BookController extends Controller
             }, SORT_REGULAR, $desc);
         } elseif ($sort === 'published_date') {
             $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
+        } elseif ($sort === 'id') {
+            $books = $books->sortBy('id', SORT_REGULAR, $desc);
         }
 
         if ($request->filled('author')) {
