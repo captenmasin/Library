@@ -4,6 +4,8 @@ import { useRoute } from '@/composables/useRoute.js'
 import { useRequest } from '@/composables/useRequest.js'
 import { BrowserMultiFormatReader } from '@zxing/browser'
 
+const devicesOutput = ref(null)
+
 const result = ref(null)
 const book = ref(null)
 const video = ref(null)
@@ -19,6 +21,8 @@ async function startScan () {
 
     try {
         const devices = await BrowserMultiFormatReader.listVideoInputDevices()
+        console.log('Available devices:', devices)
+        devicesOutput.value = devices
         const selectedDeviceId = devices[0]?.deviceId
 
         if (!selectedDeviceId) {
@@ -62,11 +66,6 @@ function stopScan () {
             autoplay
             playsinline
             muted />
-        <div
-            v-if="scanning"
-            class="absolute top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center text-white">
-            <span>Scanning...</span>
-        </div>
         <button
             class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
             @click="startScan">
@@ -77,6 +76,10 @@ function stopScan () {
             class="mt-2">
             Scanned ISBN: <strong>{{ result }}</strong>
         </p>
+        <hr>
+        {{ devicesOutput }}
+        <hr>
         {{ book }}
+        <hr>
     </div>
 </template>
