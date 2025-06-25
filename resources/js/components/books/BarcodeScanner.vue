@@ -1,77 +1,89 @@
 <script setup>
-import { ref } from 'vue'
-import { useRoute } from '@/composables/useRoute.js'
-import { useRequest } from '@/composables/useRequest.js'
+import { onBeforeUnmount, ref } from 'vue'
+import { useRoute } from '@/composables/useRoute'
+import { useRequest } from '@/composables/useRequest'
 import { BrowserMultiFormatReader } from '@zxing/browser'
 
-const devicesOutput = ref(null)
-
-const result = ref(null)
-const book = ref(null)
+// refs for UI state
 const video = ref(null)
 const scanning = ref(false)
+const result = ref(null)
+const book = ref(null)
 
-let codeReader
+// single shared reader instance
+const codeReader = new BrowserMultiFormatReader()
 
+// start scanning ------------------------------------------------------------
 async function startScan () {
+    // reset UI
     result.value = null
+    book.value = null
     scanning.value = true
 
-    const codeReader = new BrowserMultiFormatReader()
-
     try {
-        await navigator.mediaDevices.getUserMedia({ video: true })
+        await codeReader.decodeFromConstraints(
+            {
+                video: { facingMode: { ideal: 'environment' } } // rear cam preferred
+            },
+            video.value,
+            async (output) => {
+                if (!output) return
 
-        await codeReader.decodeFromVideoDevice(undefined, video.value, (output, _) => {
-            if (output) {
-                result.value = output.getText()
+                // we have a barcode!
+                const raw = output.getText()
+                result.value = raw
 
-                useRequest(useRoute('api.books.test', result.value), 'GET').then((response) => {
-                    console.log('API response:', response)
-                    book.value = response
-                    // Handle the API response as needed
-                })
+                // hit your API
+                const response = await useRequest(
+                    useRoute('api.books.test', raw), 'GET'
+                )
+                book.value = response
 
-                stopScan()
-                // emit to parent or make API call to auto-fill
+                stopScan() // tidy up
             }
-        })
+        )
     } catch (err) {
         console.error('Barcode scanning error:', err)
         scanning.value = false
     }
 }
 
+// stop scanning -------------------------------------------------------------
 function stopScan () {
     scanning.value = false
-    if (codeReader) {
-        codeReader.reset()
-    }
+    codeReader?.reset()
 }
+
+// cleanup if user navigates away --------------------------------------------
+onBeforeUnmount(stopScan)
 </script>
 
 <template>
     <div class="relative">
+        <!-- mirrored only on front cam -->
         <video
             ref="video"
             class="w-full rounded border shadow"
             autoplay
             playsinline
-            muted />
+            muted
+            :style="{ transform: result ? 'scaleX(1)' : 'scaleX(-1)' }"
+        />
+
         <button
             class="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
-            @click="startScan">
-            Start Scan
+            :disabled="scanning"
+            @click="startScan"
+        >
+            {{ scanning ? 'Scanning…' : 'Start Scan' }}
         </button>
+
         <p
             v-if="result"
             class="mt-2">
-            Scanned ISBN: <strong>{{ result }}</strong>
+            Scanned code: <strong>{{ result }}</strong>
         </p>
-        <hr>
-        {{ devicesOutput }}
-        <hr>
-        {{ book }}
-        <hr>
+
+        <pre v-if="book">{{ book }}</pre>
     </div>
 </template>
