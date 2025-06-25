@@ -88,8 +88,8 @@ const clearCoverFileInput = () => {
                     class="mt-2">
                     <Image
                         :src="book.cover"
-                        width="80"
-                        class="rounded-md w-20 aspect-cover" />
+                        width="250"
+                        class="rounded-md shadow-sm w-full aspect-cover" />
                 </div>
 
                 <div

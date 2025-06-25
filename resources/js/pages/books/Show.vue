@@ -53,16 +53,16 @@ defineOptions({
 
 <template>
     <div>
-        <div class="flex">
-            <div>
+        <div class="flex gap-8">
+            <div class="flex flex-col gap-4 w-1/5">
                 <UpdateBookCover
                     v-if="book.in_library"
                     :book
                 />
                 <Image
                     v-else
-                    width="80"
-                    class="rounded-md w-20 aspect-cover"
+                    width="250"
+                    class="rounded-md w-full aspect-cover"
                     :src="book.cover" />
 
                 {{ book.authors }}
@@ -117,9 +117,9 @@ defineOptions({
                     </Link>
                 </Button>
             </div>
-            <div>
+            <div class="flex flex-col w-4/5">
                 <div
-                    class="prose"
+                    class="prose max-w-none font-serif"
                     v-html="book.description" />
                 <hr>
                 <NoteForm
