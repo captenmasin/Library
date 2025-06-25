@@ -3,6 +3,7 @@ import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import BookSearch from '@/components/books/BookSearch.vue'
+import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
 import { Author } from '@/types/author'
 import type { Book } from '@/types/book'
 import { Input } from '@/components/ui/input'
@@ -113,6 +114,7 @@ defineOptions({
 
     <div class="container mx-auto">
         <BookSearch />
+        <BarcodeScanner class="w-48" />
 
         <div class="flex gap-4">
             <div class="flex w-3/12 flex-col gap-2">
