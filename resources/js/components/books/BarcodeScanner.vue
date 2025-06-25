@@ -12,8 +12,6 @@ const scanning = ref(false)
 const result = ref(null)
 const book = ref(null)
 
-const { play } = useSound(BarcodeScanned)
-
 // single shared reader instance
 const codeReader = new BrowserMultiFormatReader()
 
@@ -40,6 +38,7 @@ async function startScan () {
                 // hit your API
                 book.value = await useRequest(useRoute('api.books.test', raw), 'GET')
 
+                const { play } = useSound(BarcodeScanned)
                 play()
 
                 stopScan() // tidy up
