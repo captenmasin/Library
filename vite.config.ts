@@ -17,12 +17,12 @@ export default defineConfig({
             {
                 name: 'generate routes',
                 run: ['php', 'artisan', 'ziggy:generate'],
-                pattern: ['app/Enums/*.php']
+                pattern: ['routes/*.php']
             },
             {
                 name: 'generate enums for frontend',
                 run: ['php', 'artisan', 'frontend:enums'],
-                pattern: ['routes/*.php']
+                pattern: ['app/Enums/*.php']
             }
         ]),
         vue({

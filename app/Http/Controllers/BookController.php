@@ -66,7 +66,7 @@ class BookController extends Controller
 
         return Inertia::render('books/Index', [
             'books' => BookResource::collection($books->values()),
-            'authors' => AuthorResource::collection(Auth::user()->books
+            'authors' => AuthorResource::collection(Auth::user()->books()->with('authors')->get()
                 ->flatMap(fn ($book) => $book->authors)->unique('uuid')),
             'publishers' => Auth::user()->books()->with('publisher')->get()
                 ->map(fn ($book) => $book->publisher)->unique('uuid'),

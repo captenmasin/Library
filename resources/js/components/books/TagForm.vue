@@ -20,7 +20,7 @@ const tagForm = useForm({
 })
 
 const submit = () => {
-    tagForm.put(useRoute('users.books.update_tags', props.book), {
+    tagForm.put(useRoute('user.books.update_tags', props.book), {
         preserveScroll: true
     })
 }

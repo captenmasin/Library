@@ -5,8 +5,11 @@ use App\Http\Controllers\BookCoverController;
 use App\Http\Controllers\ImageTransformerController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Settings\PasswordController;
+use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\UserBookController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('image-transform/{options}/{path}', ImageTransformerController::class)
     ->where('options', '([a-zA-Z]+=-?[a-zA-Z0-9]+,?)+')
@@ -40,8 +43,8 @@ Route::prefix('books')->name('books.')->controller(BookController::class)->middl
         Route::delete('{book}', 'destroy')->name('destroy');
     });
 
-Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () {
-    Route::prefix('books')->name('books.')->controller(UserBookController::class)->group(function () {
+Route::name('user.')->middleware(['auth'])->group(function () {
+    Route::prefix('user/books')->name('books.')->controller(UserBookController::class)->group(function () {
         Route::post('/', 'store')->name('store');
 
         Route::patch('{book:identifier}/status', 'updateStatus')->name('update_status');
@@ -50,8 +53,22 @@ Route::prefix('users')->name('users.')->middleware(['auth'])->group(function () 
 
         Route::delete('{book:identifier}', 'destroy')->name('destroy');
     });
+
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('profile', [ProfileController::class, 'update'])->name('profile.update');
+
+        Route::get('danger', [ProfileController::class, 'danger'])->name('profile.danger');
+        Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
+        Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+        Route::get('appearance', function () {
+            return Inertia::render('settings/Appearance');
+        })->name('appearance');
+    });
 });
 
-require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/testing.php';

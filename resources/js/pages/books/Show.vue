@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Image from '@/components/Image.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import TagForm from '@/components/books/TagForm.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
@@ -58,6 +59,12 @@ defineOptions({
                     v-if="book.in_library"
                     :book
                 />
+                <Image
+                    v-else
+                    width="80"
+                    class="rounded-md w-20 aspect-cover"
+                    :src="book.cover" />
+
                 {{ book.authors }}
                 {{ book.title }}
 
@@ -88,7 +95,7 @@ defineOptions({
                     <Link
                         method="delete"
                         preserve-scroll
-                        :href="useRoute('users.books.destroy', props.book)">
+                        :href="useRoute('user.books.destroy', props.book)">
                         Remove from library
                     </Link>
                 </Button>
@@ -105,7 +112,7 @@ defineOptions({
                             status: 'PlanToRead'
                         }"
                         preserve-scroll
-                        :href="useRoute('users.books.store')">
+                        :href="useRoute('user.books.store')">
                         Add to library
                     </Link>
                 </Button>

@@ -42,7 +42,7 @@ async function addBookToUser (identifier, status) {
             const book = response.book
             form.identifier = book.identifier
             form.status = status || 'PlanToRead'
-            form.post(useRoute('users.books.store'), {
+            form.post(useRoute('user.books.store'), {
                 onSuccess: () => {
                     added.value[book.identifier] = form.status
                     adding.value = adding.value.filter((id) => id !== identifier)
@@ -66,7 +66,7 @@ async function removeBookFromUser (book) {
         .then((response) => {
             const fetchedBook = response.data
             if (fetchedBook) {
-                router.delete(useRoute('users.books.destroy', fetchedBook), {
+                router.delete(useRoute('user.books.destroy', fetchedBook), {
                     onSuccess: () => {
                         delete added.value[fetchedBook.identifier]
                         delete selectedStatuses.value[fetchedBook.identifier]

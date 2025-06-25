@@ -24,6 +24,11 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function danger(Request $request): Response
+    {
+        return Inertia::render('settings/Danger');
+    }
+
     /**
      * Update the user's profile information.
      */
@@ -42,7 +47,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return to_route('settings.profile.edit');
+        return to_route('user.settings.profile.edit');
     }
 
     /**

@@ -44,8 +44,12 @@ namespace App\Models{
      * @property string|null $identifier
      * @property array<array-key, mixed>|null $codes
      * @property string|null $path
+     * @property int|null $page_count
+     * @property int|null $publisher_id
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Author> $authors
      * @property-read int|null $authors_count
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
+     * @property-read int|null $categories_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Cover> $covers
      * @property-read int|null $covers_count
      * @property-read string $primary_cover
@@ -56,6 +60,7 @@ namespace App\Models{
      * @property-read \App\Models\Publisher|null $publisher
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
      * @property-read int|null $reviews_count
+     * @property-read \App\Models\BookUser|null $pivot
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
      * @property-read int|null $users_count
      *
@@ -68,13 +73,59 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereDescription($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereIdentifier($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Book wherePageCount($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book wherePath($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book wherePublishedDate($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Book wherePublisherId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereSettings($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereTitle($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereUpdatedAt($value)
      */
     class Book extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
+}
+
+namespace App\Models{
+    /**
+     * @property int $id
+     * @property int $book_id
+     * @property int $user_id
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property string $status
+     * @property array<array-key, mixed>|null $tags
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser query()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser whereBookId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser whereStatus($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser whereTags($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser whereUpdatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|BookUser whereUserId($value)
+     */
+    class BookUser extends \Eloquent {}
+}
+
+namespace App\Models{
+    /**
+     * @property int $id
+     * @property string $name
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Book> $books
+     * @property-read int|null $books_count
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereName($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
+     */
+    class Category extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -136,6 +187,7 @@ namespace App\Models{
      * @property string $name
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property string|null $uuid
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Book> $books
      * @property-read int|null $books_count
      *
@@ -146,6 +198,7 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Publisher whereId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Publisher whereName($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Publisher whereUpdatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Publisher whereUuid($value)
      */
     class Publisher extends \Eloquent {}
 }
@@ -191,6 +244,7 @@ namespace App\Models{
      * @property-read string $avatar
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Cover> $book_covers
      * @property-read int|null $book_covers_count
+     * @property-read \App\Models\BookUser|null $pivot
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Book> $books
      * @property-read int|null $books_count
      * @property-read string $has_avatar
@@ -228,5 +282,5 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
      */
-    class User extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
+    class User extends \Eloquent implements \Illuminate\Contracts\Auth\MustVerifyEmail, \Spatie\MediaLibrary\HasMedia {}
 }

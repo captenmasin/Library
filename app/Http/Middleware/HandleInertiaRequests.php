@@ -45,6 +45,8 @@ class HandleInertiaRequests extends Middleware
                 'url' => config('app.url'),
                 'storage_url' => config('filesystems.disks.public.url'),
             ],
+            'currentUrl' => url()->full(),
+            'currentPath' => request()->path(),
             'auth' => [
                 'user' => $request->user()
                     ? new UserResource($request->user())->asUser()

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue'
 import useEmitter from '@/composables/useEmitter'
-import DeleteUser from '@/components/DeleteUser.vue'
 import InputError from '@/components/InputError.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
@@ -71,7 +70,7 @@ const submit = () => {
         }
 
         return data
-    }).post(useRoute('settings.profile.update'), {
+    }).post(useRoute('user.settings.profile.update'), {
         preserveScroll: true,
         onSuccess: params => {
             useEmitter.emit('avatar:updated')
@@ -233,8 +232,6 @@ const submit = () => {
                     </div>
                 </form>
             </div>
-
-            <DeleteUser />
         </SettingsLayout>
     </AppLayout>
 </template>

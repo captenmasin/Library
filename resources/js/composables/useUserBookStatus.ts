@@ -18,7 +18,7 @@ export function useUserBookStatus () {
             status
         })
 
-        statusForm.patch(useRoute('users.books.update_status', book), {
+        statusForm.patch(useRoute('user.books.update_status', book), {
             preserveScroll: true
         })
     }

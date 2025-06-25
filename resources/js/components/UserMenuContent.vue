@@ -30,7 +30,7 @@ defineProps<Props>()
         <DropdownMenuItem :as-child="true">
             <Link
                 class="block w-full"
-                :href="useRoute('settings.profile.edit')"
+                :href="useRoute('user.settings.profile.edit')"
                 prefetch
                 as="button">
                 <Settings class="mr-2 h-4 w-4" />

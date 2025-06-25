@@ -86,7 +86,11 @@ export function useImageTransform () {
                 return value !== null && value !== undefined && value !== '' && value !== 0 && value !== 'auto'
             })
             .map(([key, value]) => {
-                if ((key === 'width' || key === 'height') && typeof value === 'number') {
+                if ((key === 'width' || key === 'height')) {
+                    if (typeof value !== 'number') {
+                        value = parseInt(value as string, 10)
+                    }
+
                     value = Math.round(value * pixelRatio.value)
                 }
 
