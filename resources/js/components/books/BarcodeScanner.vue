@@ -23,7 +23,9 @@ async function startScan () {
         await navigator.mediaDevices.getUserMedia({ video: true })
 
         await codeReader.decodeFromConstraints({
-            facingMode: 'environment'
+            video: {
+                facingMode: { ideal: 'environment' } // prefers back camera
+            }
         }, video.value, (output, _) => {
             if (output) {
                 result.value = output.getText()
