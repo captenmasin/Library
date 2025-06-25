@@ -95,7 +95,6 @@ onBeforeUnmount(stopScan)
             autoplay
             playsinline
             muted
-            :style="{ transform: result ? 'scaleX(1)' : 'scaleX(-1)' }"
         />
 
         <button
