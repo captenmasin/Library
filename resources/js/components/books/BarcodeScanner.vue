@@ -1,4 +1,6 @@
 <script setup>
+import BarcodeScanned from '~/audio/barcode-scanned.mp3'
+import { useSound } from '@vueuse/sound'
 import { onBeforeUnmount, ref } from 'vue'
 import { useRoute } from '@/composables/useRoute'
 import { useRequest } from '@/composables/useRequest'
@@ -9,6 +11,8 @@ const video = ref(null)
 const scanning = ref(false)
 const result = ref(null)
 const book = ref(null)
+
+const { play } = useSound(BarcodeScanned)
 
 // single shared reader instance
 const codeReader = new BrowserMultiFormatReader()
@@ -34,10 +38,9 @@ async function startScan () {
                 result.value = raw
 
                 // hit your API
-                const response = await useRequest(
-                    useRoute('api.books.test', raw), 'GET'
-                )
-                book.value = response
+                book.value = await useRequest(useRoute('api.books.test', raw), 'GET')
+
+                play()
 
                 stopScan() // tidy up
             }
@@ -73,8 +76,7 @@ onBeforeUnmount(stopScan)
         <button
             class="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
             :disabled="scanning"
-            @click="startScan"
-        >
+            @click="startScan">
             {{ scanning ? 'Scanning…' : 'Start Scan' }}
         </button>
 
