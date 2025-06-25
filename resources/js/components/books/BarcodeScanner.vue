@@ -22,34 +22,22 @@ async function startScan () {
     try {
         await navigator.mediaDevices.getUserMedia({ video: true })
 
-        const devices = await BrowserMultiFormatReader.listVideoInputDevices()
-        devicesOutput.value = devices
-        const selectedDeviceId = devices[0]?.deviceId
+        await codeReader.decodeFromConstraints({
+            facingMode: 'environment'
+        }, video.value, (output, _) => {
+            if (output) {
+                result.value = output.getText()
 
-        if (!selectedDeviceId) {
-            throw new Error('No camera found')
-        }
+                useRequest(useRoute('api.books.test', result.value), 'GET').then((response) => {
+                    console.log('API response:', response)
+                    book.value = response
+                    // Handle the API response as needed
+                })
 
-        await codeReader.decodeFromConstraints(
-            {
-                video: {
-                    facingMode: { exact: 'environment' } // <- forces rear camera
-                }
-            },
-            video.value,
-            (output) => {
-                if (output) {
-                    result.value = output.getText()
-
-                    useRequest(useRoute('api.books.test', result.value), 'GET')
-                        .then(response => {
-                            console.log('API response:', response)
-                            book.value = response
-                            // Handle the API response as needed
-                        })
-                }
+                stopScan()
+                // emit to parent or make API call to auto-fill
             }
-        )
+        })
     } catch (err) {
         console.error('Barcode scanning error:', err)
         scanning.value = false
@@ -68,12 +56,12 @@ function stopScan () {
     <div class="relative">
         <video
             ref="video"
-            class="rounded w-full border shadow"
+            class="w-full rounded border shadow"
             autoplay
             playsinline
             muted />
         <button
-            class="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+            class="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
             @click="startScan">
             Start Scan
         </button>
