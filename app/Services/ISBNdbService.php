@@ -38,11 +38,13 @@ class ISBNdbService implements BookApiServiceInterface
 
         return collect($items)
             ->filter(function ($book) use ($author) {
-                if (! empty($author) && ! empty($book['authors'])) {
+                if (! empty($author)) {
                     $authors = array_map('strtolower', $book['authors']);
 
                     return in_array(strtolower($author), $authors);
                 }
+
+                return true;
             })
             ->map(fn ($book) => self::transform($book))
             ->filter()
