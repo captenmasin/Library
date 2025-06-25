@@ -24,7 +24,7 @@ async function startScan () {
 
         await codeReader.decodeFromConstraints({
             video: {
-                facingMode: { ideal: 'environment' } // prefers back camera
+                facingMode: 'environment'
             }
         }, video.value, (output, _) => {
             if (output) {
