@@ -1,14 +1,14 @@
-<script setup>
+<script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import Loader from '@/components/Loader.vue'
 import DefaultCover from '~/images/default-cover.svg'
+import { computed, ref } from 'vue'
+import { usePage } from '@inertiajs/vue3'
 import { watchDebounced } from '@vueuse/core'
-import { computed, onMounted, ref } from 'vue'
 import { useRoute } from '@/composables/useRoute'
 import { Input } from '@/components/ui/input/index.js'
 import { Button } from '@/components/ui/button/index.js'
 import { useRequest } from '@/composables/useRequest.js'
-import { router, useForm, usePage } from '@inertiajs/vue3'
 import { useUserBookStatus } from '@/composables/useUserBookStatus.js'
 import { DialogClose, DialogTitle } from '@/components/ui/dialog/index.js'
 import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@/components/ui/dialog'
@@ -20,67 +20,7 @@ const recent = ref([])
 const filteredBooks = ref([])
 const loading = ref(false)
 
-const added = ref({ ...usePage().props.auth.user_books })
-const adding = ref([])
-const selectedStatuses = ref({})
-
-const addedIdentifiers = computed(() =>
-    new Set(Object.keys(usePage().props.auth.user_books || {}))
-)
-
-const form = useForm({
-    identifier: '',
-    status: 'PlanToRead'
-})
-
-async function addBookToUser (identifier, status) {
-    adding.value.push(identifier)
-    try {
-        const response = await useRequest(useRoute('api.books.fetch_or_create'), 'POST', { identifier })
-
-        if (response?.book?.identifier) {
-            const book = response.book
-            form.identifier = book.identifier
-            form.status = status || 'PlanToRead'
-            form.post(useRoute('user.books.store'), {
-                onSuccess: () => {
-                    added.value[book.identifier] = form.status
-                    adding.value = adding.value.filter((id) => id !== identifier)
-                    recent.value.push(book)
-                }
-            })
-        } else {
-            adding.value = adding.value.filter((id) => id !== identifier)
-            form.setError('identifier', 'Failed to create or fetch book')
-            console.error('Missing identifier in book data:', response)
-        }
-    } catch (error) {
-        adding.value = adding.value.filter((id) => id !== identifier)
-        form.setError('identifier', 'Failed to create or fetch book')
-        console.error('Error creating/fetching book:', error)
-    }
-}
-
-async function removeBookFromUser (book) {
-    useRequest(useRoute('api.books.fetch_by_identifier', { identifier: book.identifier }), 'GET')
-        .then((response) => {
-            const fetchedBook = response.data
-            if (fetchedBook) {
-                router.delete(useRoute('user.books.destroy', fetchedBook), {
-                    onSuccess: () => {
-                        delete added.value[fetchedBook.identifier]
-                        delete selectedStatuses.value[fetchedBook.identifier]
-                        form.identifier = ''
-                    }
-                })
-            } else {
-                console.error('Fetched book data is missing:', response)
-            }
-        })
-        .catch((error) => {
-            console.error('Error fetching book by identifier:', error)
-        })
-}
+const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, addingBooks, addBookToUser, removeBookFromUser } = useUserBookStatus()
 
 async function searchBooks () {
     if (!keyword.value && !author.value) {
@@ -100,8 +40,6 @@ async function searchBooks () {
     })
 }
 
-const { possibleStatuses, updateStatus } = useUserBookStatus()
-
 watchDebounced([keyword, author], searchBooks, { debounce: 500 })
 
 const hasSearch = computed(() => {
@@ -110,16 +48,12 @@ const hasSearch = computed(() => {
 
 function select (book, status) {
     if (book?.identifier) {
-        if (addedIdentifiers.value.has(book.identifier)) {
+        if (addedBookIdentifiers.value.has(book.identifier)) {
             updateStatus(book, status)
         }
         addBookToUser(book.identifier, status)
     }
 }
-
-onMounted(() => {
-    selectedStatuses.value = { ...added.value }
-})
 </script>
 
 <template>
@@ -176,7 +110,7 @@ onMounted(() => {
                                     </div>
                                     <div class="ml-auto flex items-center gap-2 px-2">
                                         <div
-                                            v-if="adding.includes(book.identifier)"
+                                            v-if="addingBooks.includes(book.identifier)"
                                             class="rounded-full border p-1 animate-spin border-gray-200 bg-gray-100 text-gray-600"
                                         >
                                             <Icon
@@ -186,7 +120,7 @@ onMounted(() => {
                                         </div>
 
                                         <Button
-                                            v-if="addedIdentifiers.has(book.identifier)"
+                                            v-if="addedBookIdentifiers.has(book.identifier)"
                                             @click="removeBookFromUser(book)">
                                             Remove
                                         </Button>

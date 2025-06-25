@@ -15,7 +15,7 @@ class ImportBookFromData
 
     public function __construct(protected BookApiServiceInterface $booksApi) {}
 
-    public function handle(string $identifier, ?array $data, bool $force = false): Book
+    public function handle(string $identifier, ?array $data = null, bool $force = false): Book
     {
         if (Book::where('identifier', $identifier)->exists() && ! $force) {
             return Book::where('identifier', $identifier)->first();

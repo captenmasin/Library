@@ -95,7 +95,7 @@ class ISBNdbService implements BookApiServiceInterface
             'description' => $book['overview'] ?? $book['synopsis'] ?? null,
             'authors' => $book['authors'] ?? null,
             'publishedDate' => $book['date_published'] ?? null,
-            'cover' => $book['image'] ?? null,
+            'cover' => $book['image_original'] ?? $book['image'] ?? null,
             'service' => self::ServiceName,
         ];
     }

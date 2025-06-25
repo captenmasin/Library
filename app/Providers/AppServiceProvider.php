@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Contracts\BookApiServiceInterface;
 use App\Services\GoogleBooksService;
 use App\Services\ISBNdbService;
+use App\Services\OpenLibraryService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
@@ -19,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //        $this->app->bind(BookApiServiceInterface::class, GoogleBooksService::class);
-        $this->app->bind(BookApiServiceInterface::class, ISBNdbService::class);
+        //        $this->app->bind(BookApiServiceInterface::class, ISBNdbService::class);
+        $this->app->bind(BookApiServiceInterface::class, OpenLibraryService::class);
     }
 
     /**
