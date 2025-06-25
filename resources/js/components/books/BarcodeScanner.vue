@@ -20,6 +20,8 @@ async function startScan () {
     codeReader = new BrowserMultiFormatReader()
 
     try {
+        await navigator.mediaDevices.getUserMedia({ video: true })
+
         const devices = await BrowserMultiFormatReader.listVideoInputDevices()
         console.log('Available devices:', devices)
         devicesOutput.value = devices
