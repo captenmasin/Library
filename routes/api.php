@@ -1,6 +1,5 @@
 <?php
 
-use App\Actions\Books\FetchBookByIdentifier;
 use App\Actions\Books\FetchOrCreateBook;
 use App\Actions\Books\GetBookByBarcode;
 use App\Actions\Books\ImportBookFromData;
@@ -35,9 +34,7 @@ Route::name('api.')->group(function () {
             return $response->json();
         })->name('test2');
 
-        Route::get('identifier/{identifier}', FetchBookByIdentifier::class)->name('fetch_by_identifier');
-
-        Route::post('/', FetchOrCreateBook::class)->name('fetch_or_create');
+        Route::get('/', FetchOrCreateBook::class)->name('fetch_or_create');
     });
 
     Route::prefix('user')->name('user.')->group(function () {

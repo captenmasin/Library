@@ -4,6 +4,7 @@ namespace App\Actions\Books;
 
 use App\Contracts\BookApiServiceInterface;
 use App\Http\Resources\BookResource;
+use App\Models\Book;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -16,7 +17,7 @@ class FetchOrCreateBook
 
     public function handle(string $identifier)
     {
-        $book = FetchBookByIdentifier::run($identifier);
+        $book = Book::where('identifier', $identifier)->firstOr(fn () => null);
 
         return $book ?: ImportBookFromData::run($identifier);
     }

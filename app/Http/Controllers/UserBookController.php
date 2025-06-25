@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Books\FetchBookByIdentifier;
 use App\Enums\UserBookStatus;
 use App\Http\Requests\Books\DestroyBookUserRequest;
 use App\Http\Requests\Books\StoreBookUserRequest;
@@ -14,7 +13,7 @@ class UserBookController extends Controller
 {
     public function store(StoreBookUserRequest $request)
     {
-        $book = FetchBookByIdentifier::run($request->get('identifier'));
+        $book = Book::where('identifier', $request->get('identifier'))->firstOr(fn () => null);
 
         if (! $book) {
             return redirect()->back()->with('message', 'Book not found.');

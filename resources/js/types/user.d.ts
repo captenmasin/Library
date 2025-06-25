@@ -5,4 +5,5 @@ export type User = {
     avatar?: string;
     email_verified: boolean,
     settings?: Record<string, any>;
+    user_books?: Record<string, string>;
 }

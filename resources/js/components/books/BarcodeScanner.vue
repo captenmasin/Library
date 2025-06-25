@@ -21,7 +21,7 @@ const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, 
 let controls = null
 
 const { play } = useSound(BarcodeScanned)
-const { vibrate, stop, isSupported } = useVibrate({ pattern: [300, 100] })
+const { vibrate } = useVibrate({ pattern: [300, 100] })
 
 // single shared reader instance
 const codeReader = new BrowserMultiFormatReader()
@@ -49,7 +49,9 @@ async function startScan () {
                 result.value = raw
 
                 // hit your API
-                book.value = await useRequest(useRoute('api.books.fetch_by_identifier', raw), 'GET')
+                useRequest(useRoute('api.books.fetch_or_create', {
+                    identifier: raw
+                }), 'GET').then(r => book.value = r.book)
 
                 play()
                 vibrate()

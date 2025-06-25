@@ -3,13 +3,15 @@ import { router, useForm, usePage } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { useRequest } from '@/composables/useRequest'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, Ref, ref } from 'vue'
 
 export function useUserBookStatus () {
+    type StatusMap = Record<string, UserBookStatus>
+
     const page = usePage()
     const addedBooks = ref({ ...page.props.auth.user_books })
-    const addingBooks = ref([])
-    const selectedStatuses = ref({})
+    const selectedStatuses = ref<StatusMap>({})
+    const addingBooks = ref<string[]>([])
     const addedBookIdentifiers = computed(() =>
         new Set(Object.keys(usePage().props.auth.user_books || {}))
     )
@@ -33,7 +35,7 @@ export function useUserBookStatus () {
         })
     }
 
-    async function addBookToUser (identifier, status) {
+    async function addBookToUser (identifier: string, status: UserBookStatus) {
         const form = useForm({
             identifier: '',
             status: 'PlanToRead'
@@ -41,7 +43,9 @@ export function useUserBookStatus () {
 
         addingBooks.value.push(identifier)
         try {
-            const response = await useRequest(useRoute('api.books.fetch_or_create'), 'POST', { identifier })
+            const response = await useRequest(useRoute('api.books.fetch_or_create', {
+                identifier
+            }), 'GET')
 
             if (response?.book?.identifier) {
                 const book = response.book
@@ -65,10 +69,10 @@ export function useUserBookStatus () {
         }
     }
 
-    async function removeBookFromUser (book) {
-        useRequest(useRoute('api.books.fetch_by_identifier', { identifier: book.identifier }), 'GET')
+    async function removeBookFromUser (book: Book) {
+        useRequest(useRoute('api.books.fetch_or_create', { identifier: book.identifier }), 'GET')
             .then((response) => {
-                const fetchedBook = response.data
+                const fetchedBook = response.book
                 if (fetchedBook) {
                     router.delete(useRoute('user.books.destroy', fetchedBook), {
                         onSuccess: () => {
@@ -86,7 +90,9 @@ export function useUserBookStatus () {
     }
 
     onMounted(() => {
-        selectedStatuses.value = { ...addedBooks.value }
+        selectedStatuses.value = {
+            ...(addedBooks.value as unknown as Record<string, UserBookStatus>)
+        }
     })
 
     return {

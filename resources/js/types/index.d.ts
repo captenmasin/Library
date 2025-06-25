@@ -4,6 +4,7 @@ import { User } from '@/types/user'
 
 export interface Auth {
     user: User;
+    user_books: string[]
 }
 
 export interface BreadcrumbItem {
