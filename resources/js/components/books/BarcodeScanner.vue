@@ -26,6 +26,8 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRoute } from '@/composables/useRoute.js'
+import { useRequest } from '@/composables/useRequest.js'
 import { BrowserMultiFormatReader } from '@zxing/browser'
 
 const result = ref(null)
@@ -51,7 +53,13 @@ async function startScan () {
         await codeReader.decodeFromVideoDevice(selectedDeviceId, video.value, (output, _) => {
             if (output) {
                 result.value = output.getText()
-                console.log(result.value)
+
+                useRequest(useRoute('api.books.test', result.value), 'GET')
+                    .then(response => {
+                        console.log('API response:', response)
+                        // Handle the API response as needed
+                    })
+
                 stopScan()
                 // emit to parent or make API call to auto-fill
             }
