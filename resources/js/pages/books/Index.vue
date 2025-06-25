@@ -12,6 +12,7 @@ import { useRoute } from '@/composables/useRoute'
 import { computed, type PropType, ref, watch } from 'vue'
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import { useUserSettings } from '@/composables/useUserSettings'
+import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const props = defineProps({
@@ -28,9 +29,12 @@ const props = defineProps({
 
 const params = useUrlSearchParams('history')
 
+const { possibleStatuses } = useUserBookStatus()
+
 const search = ref<string>((params.search as string) || '')
 const currentSearch = ref<string>((params.search as string) || '')
 
+const status = ref<string>((params.status as string) || '')
 const author = ref<string>((params.author as string) || '')
 const publisher = ref<string>((params.publisher as string) || '')
 const sort = ref<string>((params.sort as string) || '')
@@ -46,9 +50,10 @@ const sortOptions = ref([
     { label: 'Published Date', value: 'published_date' }
 ])
 
-watch([author, publisher, sort, order], ([newAuthor, newPublisher, newSort, newOrder]) => {
+watch([author, publisher, status, sort, order], ([newAuthor, newPublisher, newStatus, newSort, newOrder]) => {
     params.author = newAuthor
     params.publisher = newPublisher
+    params.status = newStatus
     params.sort = newSort
     params.order = newOrder
 
@@ -71,6 +76,7 @@ function submitForm () {
             search: search.value,
             author: author.value,
             publisher: publisher.value,
+            status: status.value,
             sort: sort.value,
             order: order.value
         },
@@ -93,6 +99,7 @@ const hasFiltered = computed(() => {
         author.value !== '' ||
         publisher.value !== '' ||
         sort.value !== '' ||
+        status.value !== '' ||
         order.value !== 'desc'
 })
 
@@ -162,6 +169,25 @@ defineOptions({
                         </SelectContent>
                     </Select>
                 </div>
+
+                <div class="w-full">
+                    <Select v-model="status">
+                        <SelectTrigger class="w-full">
+                            <SelectValue placeholder="Filter by status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem
+                                    v-for="singleStatus in possibleStatuses"
+                                    :key="singleStatus.value"
+                                    :value="singleStatus.value">
+                                    {{ singleStatus.label }}
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
+
                 <div
                     v-if="hasFiltered"
                     class="w-full">

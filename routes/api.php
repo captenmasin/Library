@@ -3,6 +3,7 @@
 use App\Actions\Books\FetchBookByIdentifier;
 use App\Actions\Books\FetchOrCreateBook;
 use App\Actions\Books\GetBookByBarcode;
+use App\Actions\Books\ImportBookFromData;
 use App\Actions\Books\SearchBooksFromApi;
 use App\Actions\Users\UpdateUserSettings;
 use App\Contracts\BookApiServiceInterface;
@@ -16,7 +17,14 @@ Route::name('api.')->group(function () {
         //        Route::get('barcode', GetBookByBarcode::class)->name('get_by_barcode');
 
         Route::get('test/{identifier}', function ($identifier, BookApiServiceInterface $booksApi) {
-            return $booksApi::get($identifier);
+            $book = $booksApi::get($identifier);
+
+            ImportBookFromData::dispatch(
+                $book['identifier'],
+                $book
+            );
+
+            return $book;
         })->name('test');
 
         Route::get('test2', function (Request $request) {

@@ -20,7 +20,13 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $books = Auth::user()->books()->with(['authors', 'reviews', 'publisher', 'covers'])->get();
+        $bookQuery = Auth::user()->books()->with(['authors', 'reviews', 'publisher', 'covers']);
+        if ($request->filled('status')) {
+            $bookQuery->wherePivot('status', $request->input('status'));
+        }
+
+        $books = $bookQuery->get();
+
         $books = $books->sortByDesc('id');
 
         if ($request->filled('search')) {
