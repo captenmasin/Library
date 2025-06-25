@@ -49,7 +49,7 @@ async function startScan () {
                 result.value = raw
 
                 // hit your API
-                book.value = await useRequest(useRoute('api.books.test', raw), 'GET')
+                book.value = await useRequest(useRoute('api.books.fetch_by_identifier', raw), 'GET')
 
                 play()
                 vibrate()
@@ -110,7 +110,7 @@ onBeforeUnmount(stopScan)
         </p>
 
         <div v-if="book">
-            {{ selectedStatus }}
+            Book: {{ book.title }}
             <Select
                 v-model="selectedStatuses[book.identifier]"
                 @update:model-value="value => select(book, value)">
