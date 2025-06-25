@@ -38,7 +38,7 @@ class BookController extends Controller
             $sort = 'id';
         }
 
-        $direction = $request->get('order', 'asc');
+        $direction = $request->get('order', 'desc');
 
         $desc = $direction === 'desc';
 

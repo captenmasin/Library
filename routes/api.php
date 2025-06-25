@@ -6,6 +6,8 @@ use App\Actions\Books\GetBookByBarcode;
 use App\Actions\Books\SearchBooksFromApi;
 use App\Actions\Users\UpdateUserSettings;
 use App\Contracts\BookApiServiceInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
 Route::name('api.')->group(function () {
@@ -15,6 +17,14 @@ Route::name('api.')->group(function () {
 
         Route::get('test/{identifier}', function ($identifier, BookApiServiceInterface $booksApi) {
             return $booksApi::get($identifier);
+        })->name('test');
+
+        Route::get('test2', function (Request $request) {
+            $response = Http::withHeaders([
+                'Authorization' => config('services.isbndb.key'),
+            ])->get('https://api2.isbndb.com/author/'.urlencode($request->get('q')));
+
+            return $response->json();
         })->name('test');
 
         Route::get('identifier/{identifier}', FetchBookByIdentifier::class)->name('fetch_by_identifier');

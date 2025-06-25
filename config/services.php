@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'isbndb' => [
+        'key' => env('ISBNDB_API_KEY'),
+    ],
+
 ];

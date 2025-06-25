@@ -34,7 +34,7 @@ const currentSearch = ref<string>((params.search as string) || '')
 const author = ref<string>((params.author as string) || '')
 const publisher = ref<string>((params.publisher as string) || '')
 const sort = ref<string>((params.sort as string) || '')
-const order = ref<string>((params.order as string) || 'asc')
+const order = ref<string>((params.order as string) || 'desc')
 
 const page = usePage()
 
@@ -93,7 +93,7 @@ const hasFiltered = computed(() => {
         author.value !== '' ||
         publisher.value !== '' ||
         sort.value !== '' ||
-        order.value !== 'asc'
+        order.value !== 'desc'
 })
 
 defineOptions({

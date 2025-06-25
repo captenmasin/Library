@@ -8,15 +8,9 @@ use Illuminate\Support\Facades\Http;
 
 class GoogleBooksService implements BookApiServiceInterface
 {
-    protected static string $baseUrl = 'https://www.googleapis.com/books/v1';
+    public const string ServiceName = 'GoogleBooks';
 
-    protected const COVER_SIZES = [
-        'extraLarge',
-        'large',
-        'medium',
-        'thumbnail',
-        'smallThumbnail',
-    ];
+    protected static string $baseUrl = 'https://www.googleapis.com/books/v1';
 
     protected const FIELDS = [
         'items' => [
@@ -29,7 +23,6 @@ class GoogleBooksService implements BookApiServiceInterface
                 'authors',
                 'publishedDate',
                 'categories',
-                'maturityRating',
                 'industryIdentifiers' => [
                     'type',
                     'identifier',
@@ -53,6 +46,7 @@ class GoogleBooksService implements BookApiServiceInterface
             'startIndex' => $pageIndex * $maxResults,
             'fields' => self::buildFieldsString(),
             'langRestrict' => 'en',
+            'printType' => 'books',
             'maxResults' => $maxResults,
         ]);
 
@@ -121,7 +115,6 @@ class GoogleBooksService implements BookApiServiceInterface
             'title' => $book['title'] ?? null,
             'pageCount' => $book['pageCount'] ?? null,
             'categories' => $book['categories'] ?? null,
-            'maturityRating' => $book['maturityRating'] ?? null,
             'publisher' => $book['publisher'] ?? null,
             'description' => $book['description'] ?? null,
             'authors' => $book['authors'] ?? null,
@@ -131,6 +124,7 @@ class GoogleBooksService implements BookApiServiceInterface
                       $book['imageLinks']['medium'] ??
                       $book['imageLinks']['thumbnail'] ??
                       $book['imageLinks']['smallThumbnail'] ?? null,
+            'service' => self::ServiceName,
         ];
     }
 }

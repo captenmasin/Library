@@ -2,16 +2,18 @@
 
 namespace App\Actions\Books;
 
+use App\Contracts\BookApiServiceInterface;
 use App\Models\Author;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Publisher;
-use App\Services\GoogleBooksService;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class ImportBookFromData
 {
     use AsAction;
+
+    public function __construct(protected BookApiServiceInterface $booksApi) {}
 
     public function handle(string $identifier, ?array $data, bool $force = false): Book
     {
@@ -20,7 +22,7 @@ class ImportBookFromData
         }
 
         if (empty($data)) {
-            $data = GoogleBooksService::get($identifier);
+            $data = $this->booksApi->get($identifier);
         }
 
         $book = Book::create([
@@ -30,6 +32,7 @@ class ImportBookFromData
             'title' => $data['title'],
             'published_date' => $data['publishedDate'],
             'description' => $data['description'],
+            'service' => $data['service'] ?? $this->booksApi::ServiceName,
         ]);
 
         $primaryCover = $book->covers()->create([
