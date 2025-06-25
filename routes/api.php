@@ -25,7 +25,7 @@ Route::name('api.')->group(function () {
             ])->get('https://api2.isbndb.com/author/'.urlencode($request->get('q')));
 
             return $response->json();
-        })->name('test');
+        })->name('test2');
 
         Route::get('identifier/{identifier}', FetchBookByIdentifier::class)->name('fetch_by_identifier');
 
