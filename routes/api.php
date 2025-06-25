@@ -34,7 +34,7 @@ Route::name('api.')->group(function () {
             return $response->json();
         })->name('test2');
 
-        Route::get('/', FetchOrCreateBook::class)->name('fetch_or_create');
+        Route::get('{identifier}', FetchOrCreateBook::class)->name('fetch_or_create');
     });
 
     Route::prefix('user')->name('user.')->group(function () {

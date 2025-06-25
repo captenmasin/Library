@@ -43,9 +43,7 @@ export function useUserBookStatus () {
 
         addingBooks.value.push(identifier)
         try {
-            const response = await useRequest(useRoute('api.books.fetch_or_create', {
-                identifier
-            }), 'GET')
+            const response = await useRequest(useRoute('api.books.fetch_or_create', identifier), 'GET')
 
             if (response?.book?.identifier) {
                 const book = response.book
@@ -70,7 +68,7 @@ export function useUserBookStatus () {
     }
 
     async function removeBookFromUser (book: Book) {
-        useRequest(useRoute('api.books.fetch_or_create', { identifier: book.identifier }), 'GET')
+        useRequest(useRoute('api.books.fetch_or_create', book.identifier), 'GET')
             .then((response) => {
                 const fetchedBook = response.book
                 if (fetchedBook) {

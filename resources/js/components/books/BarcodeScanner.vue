@@ -45,13 +45,12 @@ async function startScan () {
                 if (!output) return
 
                 // we have a barcode!
-                const raw = output.getText()
-                result.value = raw
+                const identifier = output.getText()
+                result.value = identifier
 
                 // hit your API
-                useRequest(useRoute('api.books.fetch_or_create', {
-                    identifier: raw
-                }), 'GET').then(r => book.value = r.book)
+                useRequest(useRoute('api.books.fetch_or_create', identifier), 'GET')
+                    .then(r => book.value = r.book)
 
                 play()
                 vibrate()

@@ -22,14 +22,8 @@ class FetchOrCreateBook
         return $book ?: ImportBookFromData::run($identifier);
     }
 
-    public function asController(Request $request): JsonResponse
+    public function asController(Request $request, string $identifier): JsonResponse
     {
-        $identifier = $request->get('identifier');
-
-        if (! $identifier) {
-            abort(400, 'Identifier is required');
-        }
-
         $book = $this->handle($identifier);
 
         return response()->json([
