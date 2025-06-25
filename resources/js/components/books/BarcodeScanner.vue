@@ -17,13 +17,12 @@ async function startScan () {
     result.value = null
     scanning.value = true
 
-    codeReader = new BrowserMultiFormatReader()
+    const codeReader = new BrowserMultiFormatReader()
 
     try {
         await navigator.mediaDevices.getUserMedia({ video: true })
 
         const devices = await BrowserMultiFormatReader.listVideoInputDevices()
-        console.log('Available devices:', devices)
         devicesOutput.value = devices
         const selectedDeviceId = devices[0]?.deviceId
 
@@ -31,21 +30,26 @@ async function startScan () {
             throw new Error('No camera found')
         }
 
-        await codeReader.decodeFromVideoDevice(selectedDeviceId, video.value, (output, _) => {
-            if (output) {
-                result.value = output.getText()
+        await codeReader.decodeFromConstraints(
+            {
+                video: {
+                    facingMode: { exact: 'environment' } // <- forces rear camera
+                }
+            },
+            video.value,
+            (output) => {
+                if (output) {
+                    result.value = output.getText()
 
-                useRequest(useRoute('api.books.test', result.value), 'GET')
-                    .then(response => {
-                        console.log('API response:', response)
-                        book.value = response
-                        // Handle the API response as needed
-                    })
-
-                stopScan()
-                // emit to parent or make API call to auto-fill
+                    useRequest(useRoute('api.books.test', result.value), 'GET')
+                        .then(response => {
+                            console.log('API response:', response)
+                            book.value = response
+                            // Handle the API response as needed
+                        })
+                }
             }
-        })
+        )
     } catch (err) {
         console.error('Barcode scanning error:', err)
         scanning.value = false
