@@ -55,7 +55,8 @@ class AppServiceProvider extends ServiceProvider
             $description = str_replace(["\r", "\n"], '', $description);
             $json = $meta->json ?? '';
             $preload = $meta->preload ?? [];
-            $image = $meta->image ?? Vite::asset('resources/images/social/default.png');
+            //            $image = $meta->image ?? Vite::asset('resources/images/social/default.png');
+            $image = $meta->image ?? null;
             $canonical = $meta->url ?? url()->full();
 
             SEOTools::setTitle($title);
