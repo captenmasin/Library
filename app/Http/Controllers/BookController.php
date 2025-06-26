@@ -40,7 +40,7 @@ class BookController extends Controller
         }
 
         $sort = $request->get('sort', 'id');
-        if (! in_array($sort, ['title', 'rating', 'published_date'])) {
+        if (! in_array($sort, ['title', 'rating', 'published_date', 'added'])) {
             $sort = 'id';
         }
 
@@ -58,7 +58,7 @@ class BookController extends Controller
             }, SORT_REGULAR, $desc);
         } elseif ($sort === 'published_date') {
             $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
-        } elseif ($sort === 'id') {
+        } elseif ($sort === 'added' || $sort === 'id') {
             $books = $books->sortBy('id', SORT_REGULAR, $desc);
         }
 
@@ -79,18 +79,25 @@ class BookController extends Controller
         return Inertia::render('books/Index', [
             'books' => BookResource::collection($books->values()),
             'authors' => AuthorResource::collection(Auth::user()->books()->with('authors')->get()
-                ->flatMap(fn ($book) => $book->authors)->unique('uuid')),
+                ->flatMap(fn ($book) => $book->authors)->unique('uuid'))->values(),
             'publishers' => Auth::user()->books()->with('publisher')->get()
-                ->map(fn ($book) => $book->publisher)->unique('uuid'),
+                ->map(fn ($book) => $book->publisher)->unique('uuid')->values(),
+        ])->withMeta([
+            'title' => 'Books',
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        return Inertia::render('books/Create', [
+            'query' => $request->get('q'),
+        ])->withMeta([
+            'title' => 'Add Book',
+            'description' => 'Add a new book to your collection by providing its identifier (ISBN, Open Library ID, etc.).',
+        ]);
     }
 
     /**
@@ -115,6 +122,19 @@ class BookController extends Controller
             'book' => new BookResource($book),
             'averageRating' => round($book->reviews->avg('rating'), 1),
             'reviews' => Inertia::defer(fn () => ReviewResource::collection($book->reviews)),
+        ])->withMeta([
+            'title' => $book->title,
+        ]);
+    }
+
+    public function temporary(string $identifier)
+    {
+        if (Book::where('identifier', $identifier)->exists()) {
+            return redirect()->route('books.show', Book::where('identifier', $identifier)->first());
+        }
+
+        return Inertia::render('books/Importing', [
+            'identifier' => $identifier,
         ]);
     }
 

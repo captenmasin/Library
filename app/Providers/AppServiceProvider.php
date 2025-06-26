@@ -5,8 +5,12 @@ namespace App\Providers;
 use App\Contracts\BookApiServiceInterface;
 use App\Services\GoogleBooksService;
 use App\Services\ISBNdbService;
+use Artesaos\SEOTools\Facades\JsonLd;
+use Artesaos\SEOTools\Facades\SEOMeta;
+use Artesaos\SEOTools\Facades\SEOTools;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Response;
 use Laravel\Dusk\Browser;
@@ -31,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
 
         Model::preventLazyLoading();
 
+        Vite::prefetch(6);
+
         Response::macro('withBreadcrumbs', function ($breadcrumbs) {
             $breadcrumbs = collect($breadcrumbs)->map(function ($url, $name) {
                 return [
@@ -40,6 +46,39 @@ class AppServiceProvider extends ServiceProvider
             })->values();
 
             return $this->with('breadcrumbs', $breadcrumbs);
+        });
+
+        Response::macro('withMeta', function ($meta) {
+            $meta = (object) $meta;
+            $title = $meta->title ?? 'untitled';
+            $description = $meta->description ?? '';
+            $description = str_replace(["\r", "\n"], '', $description);
+            $json = $meta->json ?? '';
+            $preload = $meta->preload ?? [];
+            $image = $meta->image ?? Vite::asset('resources/images/social/default.png');
+            $canonical = $meta->url ?? url()->full();
+
+            SEOTools::setTitle($title);
+            SEOTools::setCanonical($canonical);
+            SEOTools::setDescription($description);
+            SEOTools::addImages($image);
+
+            JsonLd::setTitle($title);
+            JsonLd::setDescription($description);
+            JsonLd::setImages([$image]);
+
+            return $this->with('meta', [
+                'title' => SEOMeta::getTitle(),
+                'description' => SEOMeta::getDescription(),
+            ])->withViewData('meta', [
+                'feeds' => $meta->feeds ?? null,
+                'title' => SEOMeta::getTitle(),
+                'json' => $json,
+                'description' => $description,
+                'image' => $image,
+                'canonical' => $canonical,
+                'preload' => $preload,
+            ]);
         });
 
         Browser::macro('fullLogout', function () {

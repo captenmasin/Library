@@ -2,9 +2,10 @@
 import BarcodeScanned from '~/audio/barcode-scanned.mp3'
 import { useSound } from '@vueuse/sound'
 import { useVibrate } from '@vueuse/core'
-import { onBeforeUnmount, ref } from 'vue'
 import { useRoute } from '@/composables/useRoute'
 import { useRequest } from '@/composables/useRequest'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { Button } from '@/components/ui/button/index.js'
 import { BrowserMultiFormatReader } from '@zxing/browser'
 import { useUserBookStatus } from '@/composables/useUserBookStatus.js'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select/index.js'
@@ -34,6 +35,9 @@ async function startScan () {
     result.value = null
     book.value = null
     scanning.value = true
+
+    useRequest(useRoute('api.books.fetch_or_create', 9780345381224), 'GET')
+        .then(r => book.value = r.book)
 
     try {
         controls = await codeReader.decodeFromConstraints(
@@ -84,24 +88,27 @@ function select (book, status) {
 
 // cleanup if user navigates away --------------------------------------------
 onBeforeUnmount(stopScan)
+
+onMounted(() => {
+    startScan()
+})
 </script>
 
 <template>
     <div class="relative">
         <!-- mirrored only on front cam -->
         <video
+            v-show="scanning"
             ref="video"
-            class="w-full rounded border shadow"
+            class="w-full rounded border aspect-[16/9] shadow"
             autoplay
             playsinline
             muted
         />
 
-        <button
-            class="mt-4 rounded bg-blue-600 px-4 py-2 text-white"
-            @click="scanning ? stopScan() : startScan()">
-            {{ scanning ? 'Scanning…' : 'Start Scan' }}
-        </button>
+        <Button @click="scanning ? stopScan() : startScan()">
+            {{ scanning ? 'Stop scan' : 'Start Scan' }}
+        </Button>
 
         <p
             v-if="result"

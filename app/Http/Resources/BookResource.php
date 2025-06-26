@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BookResource extends JsonResource
@@ -17,6 +18,8 @@ class BookResource extends JsonResource
             'identifier' => $this->identifier,
             'title' => $this->title,
             'description' => $this->description,
+            'description_clean' => strip_tags($this->description),
+            'categories' => $this->whenLoaded('categories', fn () => $this->categories->pluck('name')->toArray()),
 
             'has_custom_cover' => $user ? $this->hasCustomCover($user) : false,
             'cover' => $this->whenLoaded('covers', fn () => $this->getCover($user)),
@@ -38,7 +41,7 @@ class BookResource extends JsonResource
         ];
     }
 
-    protected function getAuthors()
+    protected function getAuthors(): AnonymousResourceCollection
     {
         return AuthorResource::collection($this->authors);
     }
@@ -49,7 +52,7 @@ class BookResource extends JsonResource
             return $this->primary_cover;
         }
 
-        $cover = $user->book_covers->where('book_id', $this->id)->first();
+        $cover = $user->book_covers->where('book_id', $this->id)->last();
 
         return $cover?->hasMedia('image')
             ? $cover->image

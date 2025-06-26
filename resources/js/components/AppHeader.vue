@@ -7,9 +7,9 @@ import { computed } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Link, usePage } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
-import { LayoutGrid, Menu } from 'lucide-vue-next'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { getInitials } from '@/composables/useInitials'
+import { LayoutGrid, Menu, Plus } from 'lucide-vue-next'
 import { useImageTransform } from '@/composables/useImageTransform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -41,6 +41,11 @@ const mainNavItems: NavItem[] = [
         title: 'Books',
         href: useRoute('books.index'),
         icon: LayoutGrid
+    },
+    {
+        title: 'Add book',
+        href: useRoute('books.create'),
+        icon: Plus
     }
 ]
 

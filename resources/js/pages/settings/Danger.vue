@@ -49,8 +49,6 @@ const closeModal = () => {
 
 <template>
     <AppLayout>
-        <Head title="Profile settings" />
-
         <SettingsLayout>
             <div class="space-y-6">
                 <HeadingSmall

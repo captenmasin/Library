@@ -1,18 +1,22 @@
-<script setup>
-import Image from '@/components/Image.vue'
-import { ref } from 'vue'
+<script setup lang="ts">
+import { Book } from '@/types/book'
+import { computed, PropType, ref } from 'vue'
 import { useRoute } from '@/composables/useRoute'
 import { router, useForm } from '@inertiajs/vue3'
 import { Label } from '@/components/ui/label/index.js'
 import { Button } from '@/components/ui/button/index.js'
 
 const props = defineProps({
-    book: Object
+    book: Object as PropType<Book>
 })
 
 const form = useForm({
-    _method: 'PUT',
     cover: null
+})
+
+const canUpdateCover = computed(() => {
+    return true
+    // return props.book && props.book.in_library
 })
 
 const coverPreview = ref(null)
@@ -67,11 +71,20 @@ const clearCoverFileInput = () => {
 
 <template>
     <div>
-        <form @submit.prevent="updateBookInformation">
+        <div
+            v-show="! coverPreview || ! canUpdateCover"
+            class="mt-2">
+            <slot />
+        </div>
+
+        <form
+            v-if="canUpdateCover"
+            @submit.prevent="updateBookInformation">
             <div
                 class="col-span-6 sm:col-span-4">
                 <input
-                    id="avatar"
+                    v-if="canUpdateCover"
+                    id="cover"
                     ref="coverInput"
                     type="file"
                     class="hidden"
@@ -84,21 +97,12 @@ const clearCoverFileInput = () => {
                     value="Cover" />
 
                 <div
-                    v-show="! coverPreview"
-                    class="mt-2">
-                    <Image
-                        :src="book.cover"
-                        width="250"
-                        class="rounded-md shadow-sm w-full aspect-cover" />
-                </div>
-
-                <div
                     v-show="coverPreview"
                     class="mt-2">
-                    <span
-                        class="block rounded-full bg-cover bg-center bg-no-repeat size-20"
-                        :style="'background-image: url(\'' + coverPreview + '\');'"
-                    />
+                    <img
+                        :src="coverPreview"
+                        alt="Cover Preview"
+                        class="w-full rounded-md">
                 </div>
 
                 <Button

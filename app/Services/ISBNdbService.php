@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\BookApiServiceInterface;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Uri;
 
 class ISBNdbService implements BookApiServiceInterface
 {
@@ -27,25 +28,21 @@ class ISBNdbService implements BookApiServiceInterface
         $queryParts['pageSize'] = $maxResults;
 
         if ($author) {
-            $queryParts['author'] = $author;
+            $query .= ' '.$author;
+            $queryParts['shouldMatchAll'] = 1;
         }
+
+        $url = Uri::of(self::$baseUrl)
+            ->withPath('books/'.urlencode($query))
+            ->withQuery($queryParts);
 
         $response = Http::withHeaders([
             'Authorization' => config('services.isbndb.key'),
-        ])->get(self::$baseUrl.'/books/'.urlencode($query).'?'.http_build_query($queryParts));
+        ])->get($url);
 
         $items = $response->json('books') ?? [];
 
         return collect($items)
-            ->filter(function ($book) use ($author) {
-                if (! empty($author)) {
-                    $authors = array_map('strtolower', $book['authors']);
-
-                    return in_array(strtolower($author), $authors);
-                }
-
-                return true;
-            })
             ->map(fn ($book) => self::transform($book))
             ->filter()
             ->all();

@@ -82,8 +82,6 @@ const submit = () => {
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Profile settings" />
-
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
                 <HeadingSmall

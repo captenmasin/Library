@@ -55,20 +55,19 @@ defineOptions({
     <div>
         <div class="flex gap-8">
             <div class="flex flex-col gap-4 w-1/5">
-                <UpdateBookCover
-                    v-if="book.in_library"
-                    :book
-                />
-                <Image
-                    v-else
-                    width="250"
-                    class="rounded-md w-full aspect-cover"
-                    :src="book.cover" />
+                <UpdateBookCover :book>
+                    <Image
+                        width="250"
+                        class="rounded-md w-full aspect-cover"
+                        :src="book.cover" />
+                </UpdateBookCover>
 
-                {{ book.authors }}
+                {{ book.authors.map(a => a.name).join(', ') }}
+                <hr>
                 {{ book.title }}
-
+                <hr>
                 {{ statusForm.status }}
+                <hr>
 
                 <Select
                     v-if="book.in_library"
@@ -118,6 +117,9 @@ defineOptions({
                 </Button>
             </div>
             <div class="flex flex-col w-4/5">
+                <h1 class="text-2xl font-bold">
+                    {{ book.title }}
+                </h1>
                 <div
                     class="prose max-w-none font-serif"
                     v-html="book.description" />

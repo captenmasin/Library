@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import 'vue-sonner/style.css'
+import MetaHead from '@/components/MetaHead.vue'
 import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import { toast } from 'vue-sonner'
 import { watch, onUnmounted } from 'vue'
@@ -59,6 +60,7 @@ watch(
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
+        <MetaHead />
         <slot />
         <Toaster class="pointer-events-auto" />
     </AppLayout>

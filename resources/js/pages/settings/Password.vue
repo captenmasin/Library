@@ -52,8 +52,6 @@ const updatePassword = () => {
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
-        <Head title="Password settings" />
-
         <SettingsLayout>
             <div class="space-y-6">
                 <HeadingSmall

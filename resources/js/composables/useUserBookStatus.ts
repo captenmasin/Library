@@ -1,9 +1,9 @@
-import { Book } from '@/types/book'
+import { Book, BookApiResult } from '@/types/book'
 import { router, useForm, usePage } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { useRequest } from '@/composables/useRequest'
-import { computed, onMounted, Ref, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 export function useUserBookStatus () {
     type StatusMap = Record<string, UserBookStatus>
@@ -21,7 +21,7 @@ export function useUserBookStatus () {
         label: value
     }))
 
-    function updateStatus (book: Book, status: string) {
+    function updateStatus (book: Book | BookApiResult, status: string) {
         if (!possibleStatuses.some(s => s.value === status)) {
             throw new Error(`Invalid status: ${status}`)
         }
@@ -50,6 +50,7 @@ export function useUserBookStatus () {
                 form.identifier = book.identifier
                 form.status = status || 'PlanToRead'
                 form.post(useRoute('user.books.store'), {
+                    preserveScroll: true,
                     onSuccess: () => {
                         addedBooks.value[book.identifier] = form.status
                         addingBooks.value = addingBooks.value.filter((id) => id !== identifier)
@@ -67,12 +68,13 @@ export function useUserBookStatus () {
         }
     }
 
-    async function removeBookFromUser (book: Book) {
+    async function removeBookFromUser (book: Book | BookApiResult) {
         useRequest(useRoute('api.books.fetch_or_create', book.identifier), 'GET')
             .then((response) => {
                 const fetchedBook = response.book
                 if (fetchedBook) {
                     router.delete(useRoute('user.books.destroy', fetchedBook), {
+                        preserveScroll: true,
                         onSuccess: () => {
                             delete addedBooks.value[fetchedBook.identifier]
                             delete selectedStatuses.value[fetchedBook.identifier]

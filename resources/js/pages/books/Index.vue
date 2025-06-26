@@ -2,7 +2,7 @@
 import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import BookCard from '@/components/books/BookCard.vue'
-import BookSearch from '@/components/books/BookSearch.vue'
+import BookSearchForm from '@/components/books/BookSearchForm.vue'
 import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
 import { Author } from '@/types/author'
 import type { Book } from '@/types/book'
@@ -10,11 +10,13 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useUrlSearchParams } from '@vueuse/core'
 import { useRoute } from '@/composables/useRoute'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import { computed, type PropType, ref, watch } from 'vue'
-import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import { useUserSettings } from '@/composables/useUserSettings'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
 const props = defineProps({
     books: Object as PropType<Book[]>,
@@ -46,6 +48,7 @@ const page = usePage()
 const view = ref<string>(page.props.auth.user.settings.books.view)
 
 const sortOptions = ref([
+    { label: 'Added', value: 'added' },
     { label: 'Title', value: 'title' },
     { label: 'Rating', value: 'rating' },
     { label: 'Published Date', value: 'published_date' }
@@ -63,11 +66,9 @@ watch([author, publisher, status, sort, order], ([newAuthor, newPublisher, newSt
 
 const { updateSingleSettings } = useUserSettings()
 
-function setView (newView: string) {
-    view.value = newView
-
+watch(view, (newView) => {
     updateSingleSettings('books.view', newView)
-}
+})
 
 function submitForm () {
     currentSearch.value = search.value
@@ -110,11 +111,53 @@ defineOptions({
 </script>
 
 <template>
-    <Head title="Books" />
-
     <div class="container mx-auto">
-        <BookSearch />
-        <BarcodeScanner class="w-48" />
+        <div class="flex items-center gap-2 justify-end hidden">
+            <Dialog>
+                <DialogTrigger as-child>
+                    <Button
+                        class="cursor-pointer"
+                        variant="secondary">
+                        <Icon
+                            name="Plus"
+                            class="w-4" />
+                        Scan barcode
+                    </Button>
+                </DialogTrigger>
+                <DialogContent class="sm:max-w-lg">
+                    <DialogTitle>Add via barcode</DialogTitle>
+                    <BarcodeScanner />
+                    <DialogFooter>
+                        <DialogClose as-child>
+                            <Button type="button">
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+            <Dialog>
+                <DialogTrigger as-child>
+                    <Button>
+                        <Icon
+                            name="Plus"
+                            class="w-4" />
+                        Add Book
+                    </Button>
+                </DialogTrigger>
+                <DialogContent class="sm:max-w-4xl">
+                    <DialogTitle>Add a new book to your library</DialogTitle>
+                    <BookSearchForm />
+                    <DialogFooter>
+                        <DialogClose as-child>
+                            <Button type="button">
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
 
         <div class="flex gap-4">
             <div class="flex w-3/12 flex-col gap-2">
@@ -137,7 +180,9 @@ defineOptions({
                         </div>
                     </form>
                 </div>
-                <div class="w-full">
+                <div
+                    v-if="authors"
+                    class="w-full">
                     <Select v-model="author">
                         <SelectTrigger class="w-full">
                             <SelectValue placeholder="Filter by author" />
@@ -146,15 +191,17 @@ defineOptions({
                             <SelectGroup>
                                 <SelectItem
                                     v-for="singleAuthor in authors"
-                                    :key="singleAuthor.uuid"
-                                    :value="singleAuthor.uuid">
+                                    :key="singleAuthor?.uuid"
+                                    :value="singleAuthor?.uuid">
                                     {{ singleAuthor.name }}
                                 </SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
                 </div>
-                <div class="w-full">
+                <div
+                    v-if="publishers"
+                    class="w-full">
                     <Select v-model="publisher">
                         <SelectTrigger class="w-full">
                             <SelectValue placeholder="Filter by publisher" />
@@ -163,8 +210,8 @@ defineOptions({
                             <SelectGroup>
                                 <SelectItem
                                     v-for="singlePublisher in publishers"
-                                    :key="singlePublisher.uuid"
-                                    :value="singlePublisher.uuid">
+                                    :key="singlePublisher?.uuid"
+                                    :value="singlePublisher?.uuid">
                                     {{ singlePublisher.name }}
                                 </SelectItem>
                             </SelectGroup>
@@ -207,57 +254,80 @@ defineOptions({
             </div>
 
             <div class="flex w-9/12 flex-col">
-                <div class="flex items-center">
+                <div class="flex items-center gap-4">
                     <h2
                         v-if="currentSearch"
-                        class="font-semibold text-2xl mb-4">
+                        class="font-semibold text-2xl">
                         Search results for "{{ currentSearch }}"
                     </h2>
-                    <div class="w-full flex items-center gap-2">
-                        <Select v-model="sort">
-                            <SelectTrigger class="w-full">
-                                <SelectValue placeholder="Sort books" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectItem
-                                        v-for="sortOption in sortOptions"
-                                        :key="sortOption.value"
-                                        :value="sortOption.value">
-                                        {{ sortOption.label }}
-                                    </SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            @click="order = order === 'asc' ? 'desc' : 'asc'">
-                            <Icon :name="order === 'asc' ? 'ArrowUpWideNarrow' : 'ArrowDownWideNarrow'" />
-                        </Button>
-                    </div>
-                    <div>
-                        <Button
-                            :variant="view === 'grid' ? 'default' : 'secondary'"
-                            @click="setView('grid')">
-                            Grid
-                        </Button>
-                        <Button
-                            :variant="view === 'list' ? 'default' : 'secondary'"
-                            @click="setView('list')">
-                            List
-                        </Button>
+                    <h2
+                        v-else
+                        class="font-semibold text-2xl">
+                        All Books ({{ filteredBooks.length }})
+                    </h2>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <div>
+                            <Tabs
+                                v-model="view"
+                                :default-value="view">
+                                <TabsList>
+                                    <TabsTrigger
+                                        class="px-4"
+                                        value="list">
+                                        <Icon
+                                            name="LayoutList"
+                                            class="w-4" />
+                                        List
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        class="px-4"
+                                        value="grid">
+                                        <Icon
+                                            name="LayoutGrid"
+                                            class="w-4" />
+                                        Grid
+                                    </TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                        </div>
+                        <div class="w-48 flex items-center gap-2 justify-end">
+                            <Select v-model="sort">
+                                <SelectTrigger class="w-full">
+                                    <SelectValue placeholder="Sort books" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem
+                                            v-for="sortOption in sortOptions"
+                                            :key="sortOption.value"
+                                            :value="sortOption.value">
+                                            {{ sortOption.label }}
+                                        </SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                class="cursor-pointer bg-white text-secondary-foreground"
+                                size="icon"
+                                @click="order = order === 'asc' ? 'desc' : 'asc'">
+                                <Icon :name="order === 'asc' ? 'ArrowUpWideNarrow' : 'ArrowDownWideNarrow'" />
+                            </Button>
+                        </div>
                     </div>
                 </div>
                 <ul
-                    :class="view === 'list' ? 'flex flex-col gap-y-4' : ''"
-                    class="w-full flex gap-y-4 flex-wrap items-stretch">
+                    :class="view === 'list' ? 'grid-cols-1' : 'grid-cols-2 md:grid-cols-5'"
+                    class="grid gap-4 mt-8">
                     <li
                         v-for="book in filteredBooks"
                         :key="book.identifier"
-                        class="flex w-1/2 px-2 flex-col sm:w-1/2 md:w-1/5">
-                        <BookCard :book="book" />
+                        :class="view === 'list' ? 'flex gap-4' : ''"
+                        class="w-full">
+                        <BookCard
+                            :horizontal="view === 'list'"
+                            :book="book" />
                     </li>
                 </ul>
             </div>

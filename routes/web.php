@@ -22,14 +22,18 @@ Route::get('/', function () {
         : redirect()->route('login');
 });
 
-Route::put('books/{book}/cover', [BookCoverController::class, 'update'])->name('books.cover.update');
+Route::post('books/{book}/cover', [BookCoverController::class, 'update'])->name('books.cover.update');
 Route::delete('books/{book}/cover', [BookCoverController::class, 'destroy'])->name('books.cover.destroy');
 
 Route::prefix('books')->name('books.')->controller(BookController::class)->middleware(['auth'])
     ->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('add', 'create')->name('create');
 
         Route::get('{book}', 'show')->name('show')
+            ->withoutMiddleware(['auth']);
+
+        Route::get('/detail/{identifier}', 'temporary')->name('temporary')
             ->withoutMiddleware(['auth']);
 
         Route::post('{book}/notes', [NoteController::class, 'store'])

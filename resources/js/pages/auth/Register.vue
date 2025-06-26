@@ -28,8 +28,6 @@ const submit = () => {
     <AuthBase
         title="Create an account"
         description="Enter your details below to create your account">
-        <Head title="Register" />
-
         <form
             class="flex flex-col gap-6"
             @submit.prevent="submit">
