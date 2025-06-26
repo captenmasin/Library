@@ -11,6 +11,7 @@ use App\Http\Resources\ReviewResource;
 use App\Models\Book;
 use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class BookController extends Controller
@@ -22,7 +23,8 @@ class BookController extends Controller
     {
         $bookQuery = Auth::user()->books()->with(['authors', 'reviews', 'publisher', 'covers']);
         if ($request->filled('status')) {
-            $bookQuery->wherePivot('status', $request->input('status'));
+            $statuses = Arr::wrap($request->input('status'));
+            $bookQuery->wherePivotIn('status', $statuses);
         }
 
         $books = $bookQuery->get();
@@ -39,9 +41,9 @@ class BookController extends Controller
             });
         }
 
-        $sort = $request->get('sort', 'id');
+        $sort = $request->get('sort', 'added');
         if (! in_array($sort, ['title', 'rating', 'published_date', 'added'])) {
-            $sort = 'id';
+            $sort = 'added';
         }
 
         $direction = $request->get('order', 'desc');
@@ -58,7 +60,7 @@ class BookController extends Controller
             }, SORT_REGULAR, $desc);
         } elseif ($sort === 'published_date') {
             $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
-        } elseif ($sort === 'added' || $sort === 'id') {
+        } elseif ($sort === 'added') {
             $books = $books->sortBy('id', SORT_REGULAR, $desc);
         }
 
@@ -78,6 +80,12 @@ class BookController extends Controller
 
         return Inertia::render('books/Index', [
             'books' => BookResource::collection($books->values()),
+            'selectedStatuses' => $request->get('status', []),
+            'selectedAuthor' => $request->get('author'),
+            'selectedPublisher' => $request->get('publisher'),
+            'selectedSort' => $sort,
+            'selectedOrder' => $request->get('order', 'desc'),
+            'searchQuery' => $request->get('search', ''),
             'authors' => AuthorResource::collection(Auth::user()->books()->with('authors')->get()
                 ->flatMap(fn ($book) => $book->authors)->unique('uuid'))->values(),
             'publishers' => Auth::user()->books()->with('publisher')->get()
