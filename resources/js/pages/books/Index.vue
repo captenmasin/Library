@@ -254,7 +254,7 @@ defineOptions({ layout: AppLayout })
         <!-- Main layout ----------------------------------------------------- -->
         <div class="mt-8 flex gap-4">
             <!-- Sidebar filters -->
-            <aside class="flex w-3/12 flex-col gap-2">
+            <aside class="flex w-64 flex-col gap-2">
                 <!-- Search ---------------------------------------------------- -->
                 <form @submit.prevent="submitForm">
                     <div class="relative flex">
@@ -345,7 +345,7 @@ defineOptions({ layout: AppLayout })
             </aside>
 
             <!-- Books list -------------------------------------------------- -->
-            <section class="flex w-9/12 flex-col">
+            <section class="flex flex-1 flex-col">
                 <ul
                     :class="
                         view === 'list'

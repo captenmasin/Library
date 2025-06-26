@@ -8,7 +8,7 @@ interface Option {
     value: string
 }
 
-defineProps({
+const props = defineProps({
     options: {
         type: Array as () => Option[],
         required: true
@@ -22,35 +22,50 @@ defineProps({
 const proxyStatus = defineModel<string[]>('modelValue')
 
 const idPrefix = useId()
+
+function isChecked (index: number) {
+    if (!props.options[index]) {
+        return false
+    }
+
+    return proxyStatus.value?.includes(props.options[index].value) || false
+}
 </script>
 
 <template>
-    <ul class="flex flex-col gap-2">
+    <ul class="flex flex-col">
         <li
-            v-for="option in options"
-            :key="option.value"
-            class="flex items-center">
-            <Checkbox
-                :id="`${idPrefix}-${option.value}`"
-                :checked="proxyStatus?.includes(option.value)"
-                class="mr-2"
-                @update:checked="checked => {
-                    if (!proxyStatus) return
-
-                    if (checked) {
-                        if (!proxyStatus.includes(option.value)) {
-                            proxyStatus.push(option.value)
-                        }
-                    } else {
-                        const i = proxyStatus.indexOf(option.value)
-                        if (i !== -1) proxyStatus.splice(i, 1)
-                    }
-                }"
-            />
+            v-for="(option, index) in options"
+            :key="option.value">
             <label
-                :for="`${idPrefix}-${option.value}`"
-                class="text-sm">
-                {{ option.label }}
+                :class="[
+                    proxyStatus?.includes(option.value) ? 'bg-primary/10' : '',
+                    isChecked(index - 1) ? 'rounded-t-none' : '',
+                    isChecked(index + 1) ? 'rounded-b-none' : '',
+                    !isChecked(index) ? 'text-secondary-foreground hover:text-gray-900' : 'text-gray-900'
+                ]"
+                class="flex items-center p-2 rounded-md transition-all"
+                :for="`${idPrefix}-${option.value}`">
+                <Checkbox
+                    :id="`${idPrefix}-${option.value}`"
+                    :checked="proxyStatus?.includes(option.value)"
+                    class="mr-2"
+                    @update:checked="checked => {
+                        if (!proxyStatus) return
+
+                        if (checked) {
+                            if (!proxyStatus.includes(option.value)) {
+                                proxyStatus.push(option.value)
+                            }
+                        } else {
+                            const i = proxyStatus.indexOf(option.value)
+                            if (i !== -1) proxyStatus.splice(i, 1)
+                        }
+                    }"
+                />
+                <span class="text-sm">
+                    {{ option.label }}
+                </span>
             </label>
         </li>
     </ul>
