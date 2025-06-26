@@ -4,10 +4,12 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookCoverController;
 use App\Http\Controllers\ImageTransformerController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\UserBookController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -48,6 +50,10 @@ Route::prefix('books')->name('books.')->controller(BookController::class)->middl
     });
 
 Route::name('user.')->middleware(['auth'])->group(function () {
+    Route::prefix('@{user:username}')->group(function () {
+        Route::get('posts', [UserController::class, 'posts'])->name('posts');
+    });
+
     Route::prefix('user/books')->name('books.')->controller(UserBookController::class)->group(function () {
         Route::post('/', 'store')->name('store');
 
@@ -73,6 +79,13 @@ Route::name('user.')->middleware(['auth'])->group(function () {
         })->name('appearance');
     });
 });
+
+Route::prefix('posts')->name('posts.')->controller(PostController::class)->middleware(['auth'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+    });
 
 require __DIR__.'/auth.php';
 require __DIR__.'/testing.php';

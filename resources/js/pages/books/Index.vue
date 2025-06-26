@@ -112,7 +112,69 @@ defineOptions({
 
 <template>
     <div class="container mx-auto">
-        <div class="flex items-center gap-2 justify-end hidden">
+        <div class="flex items-center gap-4">
+            <h2 class="font-bold text-3xl font-serif">
+                <template v-if="currentSearch">
+                    Search results for "{{ currentSearch }}"
+                </template>
+                <template v-else>
+                    All Books ({{ filteredBooks.length }})
+                </template>
+            </h2>
+            <div class="flex items-center gap-2 ml-auto">
+                <div>
+                    <Tabs
+                        v-model="view"
+                        :default-value="view">
+                        <TabsList>
+                            <TabsTrigger
+                                class="px-4"
+                                value="list">
+                                <Icon
+                                    name="LayoutList"
+                                    class="w-4" />
+                                List
+                            </TabsTrigger>
+                            <TabsTrigger
+                                class="px-4"
+                                value="grid">
+                                <Icon
+                                    name="LayoutGrid"
+                                    class="w-4" />
+                                Grid
+                            </TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+                </div>
+                <div class="w-48 flex items-center gap-2 justify-end">
+                    <Select v-model="sort">
+                        <SelectTrigger class="w-full">
+                            <SelectValue placeholder="Sort books" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem
+                                    v-for="sortOption in sortOptions"
+                                    :key="sortOption.value"
+                                    :value="sortOption.value">
+                                    {{ sortOption.label }}
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        class="cursor-pointer bg-white text-secondary-foreground"
+                        size="icon"
+                        @click="order = order === 'asc' ? 'desc' : 'asc'">
+                        <Icon :name="order === 'asc' ? 'ArrowUpWideNarrow' : 'ArrowDownWideNarrow'" />
+                    </Button>
+                </div>
+            </div>
+        </div>
+
+        <div class="hidden items-center gap-2 justify-end">
             <Dialog>
                 <DialogTrigger as-child>
                     <Button
@@ -159,7 +221,7 @@ defineOptions({
             </Dialog>
         </div>
 
-        <div class="flex gap-4">
+        <div class="flex gap-4 mt-8">
             <div class="flex w-3/12 flex-col gap-2">
                 <div class="w-full">
                     <form @submit.prevent="submitForm">
@@ -254,72 +316,9 @@ defineOptions({
             </div>
 
             <div class="flex w-9/12 flex-col">
-                <div class="flex items-center gap-4">
-                    <h2
-                        v-if="currentSearch"
-                        class="font-semibold text-2xl">
-                        Search results for "{{ currentSearch }}"
-                    </h2>
-                    <h2
-                        v-else
-                        class="font-semibold text-2xl">
-                        All Books ({{ filteredBooks.length }})
-                    </h2>
-                    <div class="flex items-center gap-2 ml-auto">
-                        <div>
-                            <Tabs
-                                v-model="view"
-                                :default-value="view">
-                                <TabsList>
-                                    <TabsTrigger
-                                        class="px-4"
-                                        value="list">
-                                        <Icon
-                                            name="LayoutList"
-                                            class="w-4" />
-                                        List
-                                    </TabsTrigger>
-                                    <TabsTrigger
-                                        class="px-4"
-                                        value="grid">
-                                        <Icon
-                                            name="LayoutGrid"
-                                            class="w-4" />
-                                        Grid
-                                    </TabsTrigger>
-                                </TabsList>
-                            </Tabs>
-                        </div>
-                        <div class="w-48 flex items-center gap-2 justify-end">
-                            <Select v-model="sort">
-                                <SelectTrigger class="w-full">
-                                    <SelectValue placeholder="Sort books" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectItem
-                                            v-for="sortOption in sortOptions"
-                                            :key="sortOption.value"
-                                            :value="sortOption.value">
-                                            {{ sortOption.label }}
-                                        </SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                class="cursor-pointer bg-white text-secondary-foreground"
-                                size="icon"
-                                @click="order = order === 'asc' ? 'desc' : 'asc'">
-                                <Icon :name="order === 'asc' ? 'ArrowUpWideNarrow' : 'ArrowDownWideNarrow'" />
-                            </Button>
-                        </div>
-                    </div>
-                </div>
                 <ul
                     :class="view === 'list' ? 'grid-cols-1' : 'grid-cols-2 md:grid-cols-5'"
-                    class="grid gap-4 mt-8">
+                    class="grid gap-4">
                     <li
                         v-for="book in filteredBooks"
                         :key="book.identifier"

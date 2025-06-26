@@ -27,7 +27,6 @@ const { changeColourOpacity } = useColours()
             class="group flex flex-col overflow-hidden rounded-md shadow-sm"
             :style="{
                 backgroundColor: book.colour,
-                viewTransitionName: `book-cover-${book.identifier}`,
             }"
             :class="[
                 useContrast(book.colour, 'text-zinc-900', 'text-white'),

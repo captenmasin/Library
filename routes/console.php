@@ -3,7 +3,9 @@
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Cover;
+use App\Models\Post;
 use App\Models\Publisher;
+use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -14,10 +16,18 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Artisan::command('test', function () {
-    Book::all()->each(function ($book) {
-        $book->slug = \Illuminate\Support\Str::slug($book->title);
-        $book->saveQuietly();
-    });
+    foreach (range(0, 10) as $i) {
+        $addBook = rand(0, 3) === 1;
+        Post::factory()->create([
+            'user_id' => User::first(),
+            'book_id' => $addBook ? Book::query()->inRandomOrder()->first()->id : null,
+        ]);
+    }
+
+    //    Book::all()->each(function ($book) {
+    //        $book->slug = \Illuminate\Support\Str::slug($book->title);
+    //        $book->saveQuietly();
+    //    });
 });
 
 Artisan::command('make:admin', function () {
@@ -26,7 +36,7 @@ Artisan::command('make:admin', function () {
     $email = \Laravel\Prompts\text('Email:');
     $password = \Laravel\Prompts\password('Password:');
 
-    $user = \App\Models\User::create([
+    $user = User::create([
         'name' => $name,
         'username' => $username,
         'email' => $email,
