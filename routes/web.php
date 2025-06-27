@@ -47,6 +47,9 @@ Route::prefix('books')->name('books.')->controller(BookController::class)->middl
         Route::post('{book}/reviews', [ReviewController::class, 'store'])
             ->name('reviews.store');
 
+        Route::post('reviews/{review}', [ReviewController::class, 'destroy'])
+            ->name('reviews.destroy');
+
         Route::patch('{book}', 'update')->name('update');
 
         Route::delete('{book}', 'destroy')->name('destroy');

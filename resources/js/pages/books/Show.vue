@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Link, useForm } from '@inertiajs/vue3'
 import { type PropType, ref, watch } from 'vue'
 import { useRoute } from '@/composables/useRoute'
+import { useMarkdown } from '@/composables/useMarkdown'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -129,14 +130,24 @@ defineOptions({
                     class="prose max-w-none font-serif"
                     v-html="book.description" />
                 <div class="mt-8">
-                    <TagForm :book="book" />
+                    <!--                    <TagForm :book="book" />-->
 
                     <ReviewForm
                         :book="book"
                         :existing-review="book.user_review" />
                 </div>
 
-                {{ reviews }}
+                Reviwssssss:
+                <ul>
+                    <li
+                        v-for="review in reviews"
+                        :key="review.uuid"
+                        class="mt-4">
+                        <div
+                            class="prose"
+                            v-html="useMarkdown(review.content)" />
+                    </li>
+                </ul>
             </div>
             <div class="flex w-1/5 flex-col">
                 <h3 class="text-lg font-semibold">

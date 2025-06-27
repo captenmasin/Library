@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import { Book } from '@/types/book'
 import { Review } from '@/types/review'
-import { computed, PropType } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { computed, PropType, ref } from 'vue'
 import { Button } from '@/components/ui/button'
+import { Link, useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { Textarea } from '@/components/ui/textarea'
 
@@ -16,8 +19,16 @@ const hasExistingReview = computed(() => !!props.existingReview)
 
 const form = useForm({
     rating: props.existingReview?.rating || 0,
+    title: props.existingReview?.title || '',
     content: props.existingReview?.content || ''
 })
+
+function updateRating (rating: number) {
+    form.rating = rating
+    submit()
+}
+
+const displayForm = ref(false)
 
 function submit () {
     form.post(useRoute('books.reviews.store', props.book), {
@@ -27,42 +38,62 @@ function submit () {
 </script>
 
 <template>
-    <form @submit.prevent="submit">
+    <div>
         <div class="mb-4">
             <label class="block mb-1">Rating</label>
-            <div class="flex space-x-1">
+            <div class="flex items-center gap-3 py-2">
+                <div class="flex space-x-1">
+                    <button
+                        v-for="star in 5"
+                        :key="star"
+                        type="button"
+                        :aria-label="`Rate ${star} star`"
+                        @click="updateRating(star)"
+                    >
+                        <span class="cursor-pointer">
+                            <Icon
+                                name="Star"
+                                :class="star <= form.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 hover:text-yellow-400'"
+                                class="size-5 " />
+                        </span>
+                    </button>
+                </div>
                 <button
-                    v-for="star in 5"
-                    :key="star"
-                    type="button"
-                    :aria-label="`Rate ${star} star`"
-                    @click="form.rating = star"
-                >
-                    <span :class="star <= form.rating ? 'text-yellow-400' : 'text-gray-300'">
-                        ★
-                    </span>
+                    :class="form.rating < 1 ? 'opacity-0 pointer-events-none' : ''"
+                    class="text-destructive text-sm cursor-pointer hover:underline"
+                    @click="form.rating = 0; submit()">
+                    Clear
                 </button>
             </div>
         </div>
 
-        <div class="mb-4">
-            <label
-                class="block mb-1"
-                for="content">Review (optional)</label>
-            <Textarea
-                id="content"
-                v-model="form.content"
-                class="w-full border rounded p-2"
-                rows="4"
-                placeholder="Write your thoughts..."
-            />
-        </div>
-
-        <Button
-            type="submit"
-            :disabled="form.processing"
-        >
-            {{ hasExistingReview ? 'Update Review' : 'Submit Review' }}
-        </Button>
-    </form>
+        <form
+            v-if="displayForm"
+            class="mb-4 flex flex-col gap-4"
+            @submit.prevent="submit">
+            <div class="grid gap-2">
+                <Label for="reviewTitle">Title</Label>
+                <Input
+                    id="reviewTitle"
+                    v-model="form.title"
+                />
+            </div>
+            <div class="grid gap-2">
+                <Label for="reviewContent">Content</Label>
+                <Textarea
+                    id="reviewContent"
+                    v-model="form.content"
+                    class="w-full border rounded p-2"
+                    rows="4"
+                    placeholder="Write your thoughts..."
+                />
+            </div>
+            <Button
+                type="submit"
+                :disabled="form.processing"
+            >
+                {{ hasExistingReview ? 'Update Review' : 'Submit Review' }}
+            </Button>
+        </form>
+    </div>
 </template>
