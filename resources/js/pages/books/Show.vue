@@ -78,32 +78,7 @@ defineOptions({
                 </UpdateBookCover>
 
                 <div class="mt-4">
-                    <div class="flex items-center gap-2">
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger as-child>
-                                    <Button
-                                        v-if="book.in_library"
-                                        as-child
-                                        size="icon"
-                                        variant="destructive">
-                                        <Link
-                                            method="delete"
-                                            preserve-scroll
-                                            :on-finish="(visit) => (statusForm.status = null)"
-                                            :href="useRoute('user.books.destroy', props.book)"
-                                        >
-                                            <Icon
-                                                name="trash"
-                                                class="w-4" />
-                                        </Link>
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Remove from library</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
+                    <div class="flex flex-col">
                         <Select v-model="statusForm.status">
                             <SelectTrigger class="w-full">
                                 <SelectValue placeholder="Add to library" />
@@ -119,6 +94,25 @@ defineOptions({
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
+                        <div class="flex justify-end">
+                            <Button
+                                v-if="book.in_library"
+                                as-child
+                                class="text-destructive text-xs flex"
+                                variant="link">
+                                <Link
+                                    method="delete"
+                                    preserve-scroll
+                                    :on-finish="(visit) => (statusForm.status = null)"
+                                    :href="useRoute('user.books.destroy', props.book)"
+                                >
+                                    <Icon
+                                        name="trash"
+                                        class="w-3" />
+                                    Remove
+                                </Link>
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -177,7 +171,7 @@ defineOptions({
                         </li>
                     </ul>
                 </div>
-                <h3 class="font-semibold text-lg mt-4">
+                <h3 class="font-semibold text-lg mt-8">
                     Your notes
                 </h3>
                 <NoteForm

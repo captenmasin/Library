@@ -91,8 +91,9 @@ function openNoteForm () {
             </div>
         </div>
         <div v-if="!book.notes && !displayNoteForm">
-            <div class="relative z-10 flex items-center justify-center py-3">
+            <div class="relative z-10 flex">
                 <Button
+                    variant="link"
                     @click="openNoteForm">
                     <Icon
                         name="Pencil"
