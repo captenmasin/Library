@@ -103,12 +103,12 @@ const reset = () => {
         <div
             v-if="canUpdateCover"
             :key="key"
-            class="absolute top-0 bottom-0 left-0 flex w-full gap-2">
+            :class="coverPreview ? 'opacity-100' : 'opacity-0'"
+            class="absolute transition-all hover:opacity-100 top-0 bottom-0 left-0 flex w-full gap-2">
             <div class="absolute bottom-2 flex w-full items-center gap-2 p-2">
                 <Button
                     v-if="!coverPreview"
-                    variant="ghost"
-                    class="flex-1 cursor-pointer text-xs rounded-full bg-white/75 backdrop-blur-lg"
+                    class="flex-1 cursor-pointer text-xs rounded-full "
                     @click="clickCoverInput"
                 >
                     <Icon
@@ -182,6 +182,7 @@ const reset = () => {
                 </div>
 
                 <div
+                    v-if="canUpdateCover && form.errors.cover"
                     class="mt-2"
                     v-html="form.errors.cover" />
             </div>

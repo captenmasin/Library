@@ -19,11 +19,14 @@ class BookResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'description_clean' => strip_tags($this->description),
+            'published_date' => $this->published_date,
             'categories' => $this->whenLoaded('categories', fn () => $this->categories->pluck('name')->toArray()),
+            'page_count' => $this->page_count,
 
             'has_custom_cover' => $user ? $this->hasCustomCover($user) : false,
             'cover' => $this->whenLoaded('covers', fn () => $this->getCover($user)),
             'authors' => $this->whenLoaded('authors', fn () => $this->getAuthors()),
+            'publisher' => $this->whenLoaded('publisher', fn () => $this->getPublisher()),
             'notes' => $this->whenLoaded('notes', fn () => $this->getNote($user)),
             'user_review' => $this->whenLoaded('reviews', fn () => $this->getUserReview($user)),
 
@@ -44,6 +47,11 @@ class BookResource extends JsonResource
     protected function getAuthors(): AnonymousResourceCollection
     {
         return AuthorResource::collection($this->authors);
+    }
+
+    protected function getPublisher(): PublisherResource
+    {
+        return new PublisherResource($this->publisher);
     }
 
     protected function getCover(?User $user = null): ?string

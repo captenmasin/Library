@@ -1,6 +1,7 @@
 import { Author } from '@/types/author'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { Review } from '@/types/review'
+import { Publisher } from '@/types/publisher'
 
 export type Book = {
     path: string,
@@ -12,14 +13,17 @@ export type Book = {
     cover: string,
     description: string,
     description_clean: string,
-    authors: Author[],
+    authors?: Author[],
+    publisher?: Publisher,
     user_status: UserBookStatus,
     user_review: Review,
+    page_count: number,
     user_tags: string[],
     colour?: string,
     imported?: boolean,
     in_library: boolean,
     has_custom_cover?: boolean,
+    published_date: string,
 }
 
 export type BookApiResult = {
