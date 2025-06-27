@@ -39,17 +39,19 @@ function isChecked (index: number) {
             :key="option.value">
             <label
                 :class="[
-                    proxyStatus?.includes(option.value) ? 'bg-primary/10' : '',
+                    proxyStatus?.includes(option.value) ? 'bg-accent' : '',
                     isChecked(index - 1) ? 'rounded-t-none' : '',
                     isChecked(index + 1) ? 'rounded-b-none' : '',
                     !isChecked(index) ? 'text-secondary-foreground hover:text-gray-900' : 'text-gray-900'
                 ]"
-                class="flex items-center p-2 rounded-md transition-all"
+                class="flex w-full justify-between items-center p-2 rounded-md transition-all cursor-pointer"
                 :for="`${idPrefix}-${option.value}`">
+                <span class="text-sm">
+                    {{ option.label }}
+                </span>
                 <Checkbox
                     :id="`${idPrefix}-${option.value}`"
                     :checked="proxyStatus?.includes(option.value)"
-                    class="mr-2"
                     @update:checked="checked => {
                         if (!proxyStatus) return
 
@@ -63,9 +65,6 @@ function isChecked (index: number) {
                         }
                     }"
                 />
-                <span class="text-sm">
-                    {{ option.label }}
-                </span>
             </label>
         </li>
     </ul>

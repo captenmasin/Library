@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Books\FetchOrCreateBook;
+use App\Enums\UserBookStatus;
 use App\Http\Requests\Books\StoreBookRequest;
 use App\Http\Requests\Books\UpdateBookRequest;
 use App\Http\Resources\AuthorResource;
@@ -79,7 +80,9 @@ class BookController extends Controller
         }
 
         return Inertia::render('books/Index', [
+            //            'books' => Inertia::defer(fn () => BookResource::collection($books->values())),
             'books' => BookResource::collection($books->values()),
+            //            'selectedStatuses' => $request->get('status',  UserBookStatus::names()),
             'selectedStatuses' => $request->get('status', []),
             'selectedAuthor' => $request->get('author'),
             'selectedPublisher' => $request->get('publisher'),

@@ -22,6 +22,8 @@ class BookCoverController extends Controller
 
             $newCover->addMedia($request->file('cover'))->toMediaCollection('image');
         }
+
+        return redirect()->back()->with('success', __('Book cover updated successfully.'));
     }
 
     public function destroy(Request $request, Book $book)

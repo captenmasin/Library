@@ -322,12 +322,14 @@ defineOptions({ layout: AppLayout })
                 </Select>
 
                 <!-- Status filter -------------------------------------------- -->
-                <Label>
-                    Status
-                </Label>
-                <CheckboxList
-                    v-model="status"
-                    :options="possibleStatuses" />
+                <div class="mt-4">
+                    <p class="mb-2 font-serif">
+                        Filter by status
+                    </p>
+                    <CheckboxList
+                        v-model="status"
+                        :options="possibleStatuses" />
+                </div>
 
                 <!-- Reset button -------------------------------------------- -->
                 <Button
