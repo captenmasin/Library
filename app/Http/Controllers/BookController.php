@@ -133,7 +133,9 @@ class BookController extends Controller
         return Inertia::render('books/Show', [
             'book' => new BookResource($book),
             'averageRating' => round($book->reviews->avg('rating'), 1),
-            'reviews' => Inertia::defer(fn () => ReviewResource::collection($book->reviews)),
+            'reviews' => Inertia::defer(fn () => ReviewResource::collection(
+                $book->reviews()->where('user_id', '!=', Auth::id())->get()
+            )),
         ])->withMeta([
             'title' => $book->title,
         ]);

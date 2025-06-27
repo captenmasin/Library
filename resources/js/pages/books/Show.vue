@@ -127,7 +127,7 @@ defineOptions({
                     By {{ book.authors.map((a) => a.name).join(', ') }}
                 </p>
                 <div
-                    class="prose max-w-none font-serif"
+                    class="prose max-w-none mt-4 font-serif"
                     v-html="book.description" />
                 <div class="mt-8">
                     <!--                    <TagForm :book="book" />-->
@@ -136,18 +136,20 @@ defineOptions({
                         :book="book"
                         :existing-review="book.user_review" />
                 </div>
-
-                Reviwssssss:
-                <ul>
-                    <li
-                        v-for="review in reviews"
-                        :key="review.uuid"
-                        class="mt-4">
-                        <div
-                            class="prose"
-                            v-html="useMarkdown(review.content)" />
-                    </li>
-                </ul>
+                <hr class="mt-12">
+                <div class="mt-12">
+                    Reviwssssss:
+                    <ul>
+                        <li
+                            v-for="review in reviews"
+                            :key="review.uuid"
+                            class="mt-4">
+                            <div
+                                class="prose"
+                                v-html="useMarkdown(review.content)" />
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="flex w-1/5 flex-col">
                 <h3 class="text-lg font-semibold">
