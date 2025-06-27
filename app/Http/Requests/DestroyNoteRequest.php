@@ -2,17 +2,17 @@
 
 namespace App\Http\Requests;
 
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class StoreNoteRequest extends FormRequest
+class DestroyNoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return Auth::check() && $this->note->user()->is(Auth::user());
     }
 
     /**
@@ -23,7 +23,7 @@ class StoreNoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => ['required', 'string', 'max:2000'],
+            //
         ];
     }
 }

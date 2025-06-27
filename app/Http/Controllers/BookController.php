@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Books\FetchOrCreateBook;
+use App\Actions\Books\ImportBookFromData;
 use App\Enums\UserBookStatus;
 use App\Http\Requests\Books\StoreBookRequest;
 use App\Http\Requests\Books\UpdateBookRequest;
@@ -127,7 +128,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book->load(['authors', 'reviews', 'notes', 'covers', 'publisher']);
+        $book->load(['authors', 'reviews', 'notes', 'covers', 'publisher', 'categories']);
 
         return Inertia::render('books/Show', [
             'book' => new BookResource($book),
@@ -143,6 +144,8 @@ class BookController extends Controller
         if (Book::where('identifier', $identifier)->exists()) {
             return redirect()->route('books.show', Book::where('identifier', $identifier)->first());
         }
+
+        ImportBookFromData::dispatch($identifier);
 
         return Inertia::render('books/Importing', [
             'identifier' => $identifier,

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DestroyNoteRequest;
 use App\Http\Requests\StoreNoteRequest;
 use App\Models\Book;
 use App\Models\Note;
-use Illuminate\Http\Request;
 
 class NoteController extends Controller
 {
@@ -22,5 +22,12 @@ class NoteController extends Controller
         );
 
         return back()->with('success', 'Note added.');
+    }
+
+    public function destroy(DestroyNoteRequest $request, Note $note)
+    {
+        $note->delete();
+
+        return back()->with('success', 'Note deleted.');
     }
 }

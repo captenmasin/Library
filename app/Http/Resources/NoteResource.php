@@ -15,7 +15,9 @@ class NoteResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'content' => $this->content,
+            'content_html' => nl2br($this->content),
         ];
     }
 }

@@ -41,6 +41,9 @@ Route::prefix('books')->name('books.')->controller(BookController::class)->middl
         Route::post('{book}/notes', [NoteController::class, 'store'])
             ->name('notes.store');
 
+        Route::delete('notes/{note}', [NoteController::class, 'destroy'])
+            ->name('notes.destroy');
+
         Route::post('{book}/reviews', [ReviewController::class, 'store'])
             ->name('reviews.store');
 

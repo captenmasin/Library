@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import Image from '@/components/Image.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import TagForm from '@/components/books/TagForm.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
+import PlaceholderPattern from '@/components/PlaceholderPattern.vue'
 import { Review } from '@/types/review'
 import type { Book } from '@/types/book'
 import { Button } from '@/components/ui/button'
+import { Link, useForm } from '@inertiajs/vue3'
+import { type PropType, ref, watch } from 'vue'
 import { useRoute } from '@/composables/useRoute'
-import { Link, router, useForm } from '@inertiajs/vue3'
-import { UserBookStatus } from '@/enums/UserBookStatus'
-import { onMounted, type PropType, ref, watch } from 'vue'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const props = defineProps({
@@ -29,11 +31,17 @@ const statusForm = useForm({
     status: props.book.user_status
 })
 
+const displayNoteForm = ref(false)
+
 watch(
     () => statusForm.status,
     (newStatus, oldStatus) => {
         if (newStatus && newStatus !== oldStatus) {
-            updateStatus(props.book, newStatus)
+            if (props.book?.in_library) {
+                updateStatus(props.book, newStatus)
+            } else {
+                addBookToUser(props.book.identifier, newStatus)
+            }
         }
     }
 )
@@ -61,74 +69,42 @@ defineOptions({
 <template>
     <div>
         <div class="flex gap-8">
-            <div class="flex flex-col w-1/5">
+            <div class="flex w-1/5 flex-col">
                 <UpdateBookCover :book>
                     <Image
                         width="250"
-                        class="rounded-md w-full aspect-cover"
+                        class="aspect-cover w-full rounded-md"
                         :src="book.cover" />
                 </UpdateBookCover>
 
-                <h2 class="font-serif text-3xl mt-2 font-semibold">
-                    {{ book.title }}
-                </h2>
-                <p
-                    v-if="book.authors"
-                    class="text-sm text-muted-foreground mt-1">
-                    By {{ book.authors.map(a => a.name).join(', ') }}
-                </p>
                 <div class="mt-4">
-                    <dl>
-                        <div
-                            v-for="item in data"
-                            :key="item.title"
-                            class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                            <dt class="text-sm/6 font-medium">
-                                {{ item.title }}
-                            </dt>
-                            <dd class="text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
-                                {{ item.value }}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-
-                <div class="mt-2 w-full flex flex-col">
-                    <Select
-                        v-if="book.in_library"
-                        v-model="statusForm.status">
-                        <SelectTrigger class="w-full">
-                            <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectItem
-                                    v-for="status in possibleStatuses"
-                                    :key="status.value"
-                                    :value="status.value">
-                                    {{ status.label }}
-                                </SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-
-                    <Button
-                        v-if="book.in_library"
-                        as-child
-                        variant="destructive">
-                        <Link
-                            method="delete"
-                            preserve-scroll
-                            :on-finish="visit => statusForm.status = null"
-                            :href="useRoute('user.books.destroy', props.book)">
-                            Remove from library
-                        </Link>
-                    </Button>
-
-                    <div v-else>
-                        <Select
-                            v-model="statusForm.status"
-                            @update:model-value="value => addBookToUser(book, value as UserBookStatus)">
+                    <div class="flex items-center gap-2">
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger as-child>
+                                    <Button
+                                        v-if="book.in_library"
+                                        as-child
+                                        size="icon"
+                                        variant="destructive">
+                                        <Link
+                                            method="delete"
+                                            preserve-scroll
+                                            :on-finish="(visit) => (statusForm.status = null)"
+                                            :href="useRoute('user.books.destroy', props.book)"
+                                        >
+                                            <Icon
+                                                name="trash"
+                                                class="w-4" />
+                                        </Link>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Remove from library</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        <Select v-model="statusForm.status">
                             <SelectTrigger class="w-full">
                                 <SelectValue placeholder="Add to library" />
                             </SelectTrigger>
@@ -146,22 +122,67 @@ defineOptions({
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col w-4/5">
+            <div class="flex w-3/5 flex-col">
+                <h2 class="mt-2 font-serif text-3xl font-semibold">
+                    {{ book.title }}
+                </h2>
+                <p
+                    v-if="book.authors"
+                    class="mt-1 text-sm text-muted-foreground">
+                    By {{ book.authors.map((a) => a.name).join(', ') }}
+                </p>
                 <div
                     class="prose max-w-none font-serif"
                     v-html="book.description" />
-                <hr>
+                <div class="mt-8">
+                    <TagForm :book="book" />
+
+                    <ReviewForm
+                        :book="book"
+                        :existing-review="book.user_review" />
+                </div>
+
+                {{ reviews }}
+            </div>
+            <div class="flex w-1/5 flex-col">
+                <h3 class="text-lg font-semibold">
+                    Details
+                </h3>
+                <dl>
+                    <div
+                        v-for="item in data"
+                        :key="item.title"
+                        class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <dt class="text-sm/6 font-medium">
+                            {{ item.title }}
+                        </dt>
+                        <dd class="text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
+                            {{ item.value }}
+                        </dd>
+                    </div>
+                </dl>
+                <div
+                    v-if="book.categories"
+                    class="mt-1">
+                    <p class="text-sm/6 font-medium">
+                        Categories
+                    </p>
+                    <ul class="space-y-1 space-x-1">
+                        <li
+                            v-for="category in book.categories"
+                            :key="category"
+                            class="inline-block rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+                        >
+                            {{ category }}
+                        </li>
+                    </ul>
+                </div>
+                <h3 class="font-semibold text-lg mt-4">
+                    Your notes
+                </h3>
                 <NoteForm
                     v-if="book.in_library"
                     :book="book" />
-
-                <TagForm :book="book" />
-
-                <ReviewForm
-                    :book="book"
-                    :existing-review="book.user_review " />
-
-                {{ reviews }}
             </div>
         </div>
     </div>

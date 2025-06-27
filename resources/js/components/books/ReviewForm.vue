@@ -3,6 +3,7 @@ import { Book } from '@/types/book'
 import { Review } from '@/types/review'
 import { computed, PropType } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { Textarea } from '@/components/ui/textarea'
 
@@ -57,12 +58,11 @@ function submit () {
             />
         </div>
 
-        <button
+        <Button
             type="submit"
-            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
             :disabled="form.processing"
         >
             {{ hasExistingReview ? 'Update Review' : 'Submit Review' }}
-        </button>
+        </Button>
     </form>
 </template>

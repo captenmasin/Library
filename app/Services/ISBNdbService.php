@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\BookApiServiceInterface;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Uri;
 
 class ISBNdbService implements BookApiServiceInterface
@@ -79,6 +80,11 @@ class ISBNdbService implements BookApiServiceInterface
             return null;
         }
 
+        $subjects = $book['subjects'] ?? [];
+        $subjects = collect($subjects)->map(function ($subject) {
+            return trim(Str::before($subject, '--'));
+        })->filter()->unique()->values()->all();
+
         return [
             'codes' => [
                 ['type' => 'ISBN_13', 'identifier' => $book['isbn13'] ?? null],
@@ -87,7 +93,7 @@ class ISBNdbService implements BookApiServiceInterface
             'identifier' => $book['isbn13'] ?? $book['isbn'] ?? null,
             'title' => $book['title'] ?? null,
             'pageCount' => $book['pages'] ?? null,
-            'categories' => $book['subjects'] ?? null,
+            'categories' => $subjects ?? null,
             'publisher' => $book['publisher'] ?? null,
             'description' => $book['overview'] ?? $book['synopsis'] ?? null,
             'authors' => $book['authors'] ?? null,
