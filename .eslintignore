@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+coverage
+public
+.github
+resources/js/ziggy.js
+resources/js/routes.js

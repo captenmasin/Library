@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Method } from '@inertiajs/core';
-import { Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3'
+import { Method } from '@inertiajs/core'
 
 interface Props {
     href: string;
@@ -9,7 +9,7 @@ interface Props {
     as?: string;
 }
 
-defineProps<Props>();
+defineProps<Props>()
 </script>
 
 <template>
