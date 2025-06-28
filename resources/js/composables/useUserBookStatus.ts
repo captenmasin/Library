@@ -69,24 +69,33 @@ export function useUserBookStatus () {
     }
 
     async function removeBookFromUser (book: Book | BookApiResult) {
-        useRequest(useRoute('api.books.fetch_or_create', book.identifier), 'GET')
-            .then((response) => {
-                const fetchedBook = response.book
-                if (fetchedBook) {
-                    router.delete(useRoute('library.destroy', fetchedBook), {
-                        preserveScroll: true,
-                        onSuccess: () => {
-                            delete addedBooks.value[fetchedBook.identifier]
-                            delete selectedStatuses.value[fetchedBook.identifier]
-                        }
-                    })
-                } else {
-                    console.error('Fetched book data is missing:', response)
-                }
-            })
-            .catch((error) => {
-                console.error('Error fetching book by identifier:', error)
-            })
+        router.delete(useRoute('library.destroy', book.identifier), {
+            preserveScroll: true,
+            onSuccess: () => {
+                delete addedBooks.value[book.identifier]
+                delete selectedStatuses.value[book.identifier]
+            }
+        })
+
+        // useRequest(useRoute('api.books.fetch_or_create', book.identifier), 'GET')
+        //     .then((response) => {
+        //         const fetchedBook = response.book
+        //
+        //         if (fetchedBook) {
+        //             router.delete(useRoute('library.destroy', fetchedBook), {
+        //                 preserveScroll: true,
+        //                 onSuccess: () => {
+        //                     delete addedBooks.value[fetchedBook.identifier]
+        //                     delete selectedStatuses.value[fetchedBook.identifier]
+        //                 }
+        //             })
+        //         } else {
+        //             console.error('Fetched book data is missing:', response)
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.error('Error fetching book by identifier:', error)
+        //     })
     }
 
     onMounted(() => {
