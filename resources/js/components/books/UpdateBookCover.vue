@@ -37,7 +37,7 @@ const updateBookInformation = () => {
         form.cover = coverInput.value.files[0]
     }
 
-    form.post(useRoute('books.cover.update', { book: props.book }), {
+    form.post(useRoute('cover.update', { book: props.book }), {
         errorBag: 'updateBookInformation',
         preserveScroll: true,
         onSuccess: () => {
@@ -69,7 +69,7 @@ const updateCoverPreview = () => {
 }
 
 const deleteCover = () => {
-    router.delete(useRoute('books.cover.destroy', { book: props.book }), {
+    router.delete(useRoute('cover.destroy', { book: props.book }), {
         preserveScroll: true,
         onSuccess: () => {
             coverPreview.value = null

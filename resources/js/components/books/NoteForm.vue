@@ -25,7 +25,7 @@ const noteForm = useForm({
 const displayNoteForm = ref(false)
 
 const submit = () => {
-    noteForm.post(useRoute('books.notes.store', props.book), {
+    noteForm.post(useRoute('notes.store', props.book), {
         preserveScroll: true,
         onSuccess: () => {
             displayNoteForm.value = false
@@ -52,7 +52,7 @@ function openNoteForm () {
                         <TooltipTrigger as-child>
                             <Link
                                 :href="
-                                    useRoute('books.notes.destroy', {
+                                    useRoute('notes.destroy', {
                                         note: book.notes,
                                     })
                                 "

@@ -39,12 +39,12 @@ const activeItemStyles = computed(
 const mainNavItems: NavItem[] = [
     {
         title: 'Books',
-        href: useRoute('books.index'),
+        href: useRoute('library.index'),
         icon: LayoutGrid
     },
     {
         title: 'Add book',
-        href: useRoute('books.create'),
+        href: useRoute('library.search'),
         icon: Plus
     }
 ]
@@ -114,7 +114,7 @@ const rightNavItems: NavItem[] = []
                 </div>
 
                 <Link
-                    :href="useRoute('books.index')"
+                    :href="useRoute('library.index')"
                     class="flex items-center gap-x-2">
                     <AppLogo />
                 </Link>

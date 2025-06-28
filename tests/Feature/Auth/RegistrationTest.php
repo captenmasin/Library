@@ -19,7 +19,7 @@ test('new users can register', function () {
 
     $this->assertAuthenticated();
 
-    $response->assertRedirect(route('books.index', absolute: false));
+    $response->assertRedirect(route('library.index', absolute: false));
 
     $this->followRedirects($response)->assertInertia(fn (AssertableInertia $page) => $page
         ->component('books/Index')

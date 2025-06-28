@@ -65,15 +65,18 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     }
 
     public array $defaultSettings = [
-        'books' => [
+        'library' => [
             'view' => 'grid',
         ],
     ];
 
-    public array $settingsRules = [
-        'books' => 'array',
-        'books.view' => ['string', 'in:grid,list'],
-    ];
+    public function getSettingsRules(): array
+    {
+        return [
+            'library' => 'array',
+            'library.view' => ['string', 'in:grid,list,shelf'],
+        ];
+    }
 
     public function getBookIdentifiers(): array
     {

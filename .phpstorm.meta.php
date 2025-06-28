@@ -3392,9 +3392,9 @@ namespace PHPSTORM_META {
         'horizon.jobs-batches.retry', 'horizon.pending-jobs.index', 'horizon.completed-jobs.index', 'horizon.silenced-jobs.index', 'horizon.failed-jobs.index',
         'horizon.failed-jobs.show', 'horizon.retry-jobs.show', 'horizon.jobs.show', 'horizon.index', 'sanctum.csrf-cookie',
         'livewire.update', 'livewire.upload-file', 'livewire.preview-file',
-        'api.books.search', 'api.books.test', 'api.books.fetch_by_identifier', 'api.books.fetch_or_create', 'api.user.settings.update', 'image.transform', 'books.cover.update', 'books.cover.destroy',
-        'books.index', 'books.show', 'books.notes.store', 'books.reviews.store', 'books.update',
-        'books.destroy', 'user.books.store', 'user.books.update_status', 'user.books.update_tags', 'user.books.destroy', 'settings.profile.edit', 'settings.profile.update', 'settings.profile.destroy', 'settings.password.edit',
+        'api.books.search', 'api.books.test', 'api.books.fetch_by_identifier', 'api.books.fetch_or_create', 'api.user.settings.update', 'image.transform', 'cover.update', 'cover.destroy',
+        'library.index', 'books.show', 'notes.store', 'reviews.store', 'books.update',
+        'books.destroy', 'library.store', 'library.update_status', 'library.update_tags', 'library.destroy', 'settings.profile.edit', 'settings.profile.update', 'settings.profile.destroy', 'settings.password.edit',
         'settings.password.update', 'settings.appearance', 'register', 'login', 'password.request', 'password.email', 'password.reset', 'password.store',
         'verification.notice', 'verification.verify', 'verification.send', 'password.confirm',
         'logout', 'storage.local', );

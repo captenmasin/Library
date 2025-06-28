@@ -30,7 +30,7 @@ export function useUserBookStatus () {
             status
         })
 
-        statusForm.patch(useRoute('user.books.update_status', book), {
+        statusForm.patch(useRoute('library.update_status', book), {
             preserveScroll: true
         })
     }
@@ -49,7 +49,7 @@ export function useUserBookStatus () {
                 const book = response.book
                 form.identifier = book.identifier
                 form.status = status || 'PlanToRead'
-                form.post(useRoute('user.books.store'), {
+                form.post(useRoute('library.store'), {
                     preserveScroll: true,
                     onSuccess: () => {
                         addedBooks.value[book.identifier] = form.status
@@ -73,7 +73,7 @@ export function useUserBookStatus () {
             .then((response) => {
                 const fetchedBook = response.book
                 if (fetchedBook) {
-                    router.delete(useRoute('user.books.destroy', fetchedBook), {
+                    router.delete(useRoute('library.destroy', fetchedBook), {
                         preserveScroll: true,
                         onSuccess: () => {
                             delete addedBooks.value[fetchedBook.identifier]

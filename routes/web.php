@@ -13,54 +13,44 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('image-transform/{options}/{path}', ImageTransformerController::class)
-    ->where('options', '([a-zA-Z]+=-?[a-zA-Z0-9]+,?)+')
-    ->where('path', '.*\..*')
-    ->name('image.transform');
-
 Route::get('/', function () {
     return auth()->check()
-        ? redirect()->route('books.index')
+        ? redirect()->route('library.index')
         : redirect()->route('login');
 });
 
-Route::post('books/{book}/cover', [BookCoverController::class, 'update'])->name('books.cover.update');
-Route::delete('books/{book}/cover', [BookCoverController::class, 'destroy'])->name('books.cover.destroy');
-
-Route::prefix('books')->name('books.')->controller(BookController::class)->middleware(['auth'])
+Route::prefix('books')->name('books.')
+    ->controller(BookController::class)
+    ->middleware(['auth'])
     ->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('add', 'create')->name('create');
-
-        Route::get('{book}', 'show')->name('show')
-            ->withoutMiddleware(['auth']);
-
-        Route::get('/detail/{identifier}', 'temporary')->name('temporary')
-            ->withoutMiddleware(['auth']);
-
-        Route::post('{book}/notes', [NoteController::class, 'store'])
-            ->name('notes.store');
-
-        Route::delete('notes/{note}', [NoteController::class, 'destroy'])
-            ->name('notes.destroy');
-
-        Route::post('{book}/reviews', [ReviewController::class, 'store'])
-            ->name('reviews.store');
-
-        Route::post('reviews/{review}', [ReviewController::class, 'destroy'])
-            ->name('reviews.destroy');
+        Route::get('{book}', 'show')->name('show')->withoutMiddleware(['auth']);
+        Route::get('/detail/{identifier}', 'preview')->name('preview')->withoutMiddleware(['auth']);
 
         Route::patch('{book}', 'update')->name('update');
 
         Route::delete('{book}', 'destroy')->name('destroy');
     });
 
-Route::name('user.')->middleware(['auth'])->group(function () {
-    Route::prefix('@{user:username}')->group(function () {
-        Route::get('posts', [UserController::class, 'posts'])->name('posts');
+Route::prefix('{book}')
+    ->middleware('auth')
+    ->group(function () {
+        Route::post('notes', [NoteController::class, 'store'])->name('notes.store');
+        Route::delete('notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
+
+        Route::post('reviews', [ReviewController::class, 'store'])->name('reviews.store');
+        Route::delete('reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+        Route::post('cover', [BookCoverController::class, 'update'])->name('cover.update');
+        Route::delete('cover', [BookCoverController::class, 'destroy'])->name('cover.destroy');
     });
 
-    Route::prefix('user/books')->name('books.')->controller(UserBookController::class)->group(function () {
+Route::prefix('library')->name('library.')
+    ->controller(UserBookController::class)
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('search', 'search')->name('search');
+
         Route::post('/', 'store')->name('store');
 
         Route::patch('{book:identifier}/status', 'updateStatus')->name('update_status');
@@ -70,14 +60,20 @@ Route::name('user.')->middleware(['auth'])->group(function () {
         Route::delete('{book:identifier}', 'destroy')->name('destroy');
     });
 
+Route::name('user.')->middleware(['auth'])->group(function () {
+    Route::prefix('@{user:username}')->group(function () {
+        Route::get('posts', [UserController::class, 'posts'])->name('posts');
+    });
+
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::get('danger', [ProfileController::class, 'danger'])->name('profile.danger');
+        Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
+
         Route::post('profile', [ProfileController::class, 'update'])->name('profile.update');
 
-        Route::get('danger', [ProfileController::class, 'danger'])->name('profile.danger');
         Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-        Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
         Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
         Route::get('appearance', function () {
@@ -92,6 +88,11 @@ Route::prefix('posts')->name('posts.')->controller(PostController::class)->middl
         Route::get('create', 'create')->name('create');
         Route::post('/', 'store')->name('store');
     });
+
+Route::get('image-transform/{options}/{path}', ImageTransformerController::class)
+    ->where('options', '([a-zA-Z]+=-?[a-zA-Z0-9]+,?)+')
+    ->where('path', '.*\..*')
+    ->name('image.transform');
 
 require __DIR__.'/auth.php';
 require __DIR__.'/testing.php';

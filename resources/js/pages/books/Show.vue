@@ -105,7 +105,7 @@ defineOptions({
                                     method="delete"
                                     preserve-scroll
                                     :on-finish="(visit) => (statusForm.status = null)"
-                                    :href="useRoute('user.books.destroy', props.book)"
+                                    :href="useRoute('library.destroy', props.book)"
                                 >
                                     <Icon
                                         name="trash"

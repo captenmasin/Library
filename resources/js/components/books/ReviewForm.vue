@@ -33,7 +33,7 @@ function updateRating (rating: number) {
 const displayForm = ref(false)
 
 function submit () {
-    form.post(useRoute('books.reviews.store', props.book), {
+    form.post(useRoute('reviews.store', props.book), {
         preserveScroll: true
     })
 }
@@ -138,7 +138,7 @@ function submit () {
                             <TooltipTrigger as-child>
                                 <!--                                <Link-->
                                 <!--                                    :href="-->
-                                <!--                                        useRoute('books.notes.destroy', {-->
+                                <!--                                        useRoute('notes.destroy', {-->
                                 <!--                                            note: book.notes,-->
                                 <!--                                        })-->
                                 <!--                                    "-->

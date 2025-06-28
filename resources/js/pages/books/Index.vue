@@ -3,6 +3,7 @@ import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import CheckboxList from '@/components/CheckboxList.vue'
+import ShelfView from '@/components/books/ShelfView.vue'
 import BookSearchForm from '@/components/books/BookSearchForm.vue'
 import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
 import type { Book } from '@/types/book'
@@ -64,7 +65,7 @@ const order = ref<'asc' | 'desc'>(props.selectedOrder as 'asc' | 'desc')
 
 /** View preferences ----------------------------------------------------- */
 const page = usePage()
-const view = ref<string>(page.props.auth.user.settings?.books.view ?? 'list')
+const view = ref<string>(page.props.auth.user.settings?.library.view ?? 'list')
 const { updateSingleSettings } = useUserSettings()
 
 /** Options -------------------------------------------------------------- */
@@ -93,7 +94,7 @@ watch(
     { deep: true }
 )
 
-watch(view, newView => updateSingleSettings('books.view', newView))
+watch(view, newView => updateSingleSettings('library.view', newView))
 
 /* --------------------------------------------------------------------------
  * Computed
@@ -117,7 +118,7 @@ function submitForm () {
     currentSearch.value = search.value
 
     router.get(
-        useRoute('books.index'),
+        useRoute('library.index'),
         {
             search: search.value,
             author: author.value,
@@ -166,6 +167,13 @@ defineOptions({ layout: AppLayout })
                             <Icon
                                 name="LayoutGrid"
                                 class="w-4" /> Grid
+                        </TabsTrigger>
+                        <TabsTrigger
+                            class="px-4"
+                            value="shelf">
+                            <Icon
+                                name="LayoutGrid"
+                                class="w-4" /> Shelf
                         </TabsTrigger>
                     </TabsList>
                 </Tabs>
@@ -252,7 +260,7 @@ defineOptions({ layout: AppLayout })
         </div>
 
         <!-- Main layout ----------------------------------------------------- -->
-        <div class="mt-8 flex gap-4">
+        <div class="mt-8 flex items-start gap-4">
             <!-- Sidebar filters -->
             <aside class="flex w-64 flex-col gap-2">
                 <!-- Search ---------------------------------------------------- -->
@@ -339,7 +347,7 @@ defineOptions({ layout: AppLayout })
                     variant="secondary"
                 >
                     <Link
-                        :href="useRoute('books.index')"
+                        :href="useRoute('library.index')"
                         preserve-scroll>
                         Reset
                     </Link>
@@ -348,7 +356,13 @@ defineOptions({ layout: AppLayout })
 
             <!-- Books list -------------------------------------------------- -->
             <section class="flex flex-1 flex-col">
+                <ShelfView
+                    v-if="view === 'shelf'"
+                    :books="filteredBooks"
+                />
+
                 <ul
+                    v-else
                     :class="
                         view === 'list'
                             ? 'grid-cols-1'

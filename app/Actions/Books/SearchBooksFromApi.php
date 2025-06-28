@@ -35,7 +35,7 @@ class SearchBooksFromApi
                     $book['link'] = route('books.show', $existing);
                 } else {
                     $book['imported'] = false;
-                    $book['link'] = route('books.temporary', ['identifier' => $book['identifier']]);
+                    $book['link'] = route('books.preview', ['identifier' => $book['identifier']]);
                 }
 
                 return $book;
