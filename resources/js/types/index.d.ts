@@ -1,10 +1,11 @@
 import type { LucideIcon } from 'lucide-vue-next'
 import type { Config } from 'ziggy-js'
 import { User } from '@/types/user'
+import { UserBookStatus } from '@/enums/UserBookStatus'
 
 export interface Auth {
     user: User;
-    user_books: string[]
+    user_books: Record<string, UserBookStatus | string>
 }
 
 export interface BreadcrumbItem {

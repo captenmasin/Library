@@ -73,7 +73,8 @@ const sortOptions = [
     { label: 'Added', value: 'added' },
     { label: 'Title', value: 'title' },
     { label: 'Rating', value: 'rating' },
-    { label: 'Published Date', value: 'published_date' }
+    { label: 'Published Date', value: 'published_date' },
+    { label: 'Colour', value: 'colour' }
 ] as const
 
 /* --------------------------------------------------------------------------

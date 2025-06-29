@@ -52,3 +52,30 @@ if (! function_exists('hexToRgb')) {
         return "$r, $g, $b";
     }
 }
+
+if (! function_exists('rgbToHue')) {
+    function rgbToHue($r, $g, $b)
+    {
+        $r /= 255;
+        $g /= 255;
+        $b /= 255;
+
+        $max = max($r, $g, $b);
+        $min = min($r, $g, $b);
+        $delta = $max - $min;
+
+        if ($delta == 0) {
+            return 0;
+        }
+
+        if ($max == $r) {
+            $hue = 60 * fmod((($g - $b) / $delta), 6);
+        } elseif ($max == $g) {
+            $hue = 60 * ((($b - $r) / $delta) + 2);
+        } else {
+            $hue = 60 * ((($r - $g) / $delta) + 4);
+        }
+
+        return ($hue < 0) ? $hue + 360 : $hue;
+    }
+}

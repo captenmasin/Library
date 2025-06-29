@@ -9,7 +9,7 @@ export function useUserBookStatus () {
     type StatusMap = Record<string, UserBookStatus>
 
     const page = usePage()
-    const addedBooks = ref({ ...page.props.auth.user_books })
+    const addedBooks = ref<Record<string, UserBookStatus | string>>({ ...page.props.auth.user_books })
     const selectedStatuses = ref<StatusMap>({})
     const addingBooks = ref<string[]>([])
     const addedBookIdentifiers = computed(() =>

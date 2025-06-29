@@ -39,7 +39,7 @@ class UserBookController extends Controller
         }
 
         $sort = $request->get('sort', 'added');
-        if (! in_array($sort, ['title', 'rating', 'published_date', 'added'])) {
+        if (! in_array($sort, ['title', 'rating', 'published_date', 'added', 'colour'])) {
             $sort = 'added';
         }
 
@@ -59,7 +59,25 @@ class UserBookController extends Controller
             $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
         } elseif ($sort === 'added') {
             $books = $books->sortBy('id', SORT_REGULAR, $desc);
+        } elseif ($sort === 'colour') {
+            $books = $books->sortBy(function ($book) {
+                $hex = ltrim($book->settings()->get('colour', '#000000'), '#');
+
+                if (strlen($hex) !== 6) {
+                    return 0; // fallback if invalid hex
+                }
+
+                [$r, $g, $b] = [
+                    hexdec(substr($hex, 0, 2)),
+                    hexdec(substr($hex, 2, 2)),
+                    hexdec(substr($hex, 4, 2)),
+                ];
+
+                return rgbToHue($r, $g, $b);
+            }, SORT_NUMERIC, $desc);
         }
+
+        //        dd($books);
 
         if ($request->filled('author')) {
             $authorUuid = $request->get('author');

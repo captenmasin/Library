@@ -30,10 +30,8 @@ function getHeight (index: number): number {
 }
 
 function isTilted (index: number): boolean {
-    // Tilt randomly based on index
     const seed = index + 1
     const rand = seededRandom(seed)
-    // if the index - 1 is tilted, then the next one is not tilted
     if (index > 0 && isTilted(index - 1)) {
         return false
     }
@@ -75,7 +73,7 @@ function isTilted (index: number): boolean {
                             :height="90"
                             class="w-full h-full object-cover opacity-65" />
                     </div>
-                    <div class="pl-2.5 line-clamp-1 pr-1 rotate-[0.25turn] font-semibold translate-x-[calc(var(--spacing)*(var(--book-width)))] items-center flex w-[calc(var(--spacing)*(var(--book-height)))] h-[calc(var(--spacing)*(var(--book-width)))] z-10 absolute left-0 origin-top-left">
+                    <div class="pl-2.5 line-clamp-1 pr-1.5 rotate-[0.25turn] font-semibold translate-x-[calc(var(--spacing)*(var(--book-width)))] items-center flex w-[calc(var(--spacing)*(var(--book-height)))] h-[calc(var(--spacing)*(var(--book-width)))] z-10 absolute left-0 origin-top-left">
                         <h3 class="line-clamp-1 w-full font-serif  overflow-hidden text-ellipsis text-xs">
                             {{ book.title }}
                         </h3>
