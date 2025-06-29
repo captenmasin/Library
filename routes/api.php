@@ -4,6 +4,7 @@ use App\Actions\Books\FetchOrCreateBook;
 use App\Actions\Books\GetBookByBarcode;
 use App\Actions\Books\ImportBookFromData;
 use App\Actions\Books\SearchBooksFromApi;
+use App\Actions\Users\UpdateSingleUserSetting;
 use App\Actions\Users\UpdateUserSettings;
 use App\Contracts\BookApiServiceInterface;
 use Illuminate\Http\Request;
@@ -39,7 +40,8 @@ Route::name('api.')->group(function () {
 
     Route::prefix('user')->name('user.')->group(function () {
         Route::prefix('settings')->name('settings.')->group(function () {
-            Route::patch('/', UpdateUserSettings::class)->name('update');
+            Route::patch('single', UpdateSingleUserSetting::class)->name('single.update');
+            Route::patch('multiple', UpdateUserSettings::class)->name('multiple.update');
         });
     });
 });

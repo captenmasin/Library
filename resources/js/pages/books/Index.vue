@@ -4,12 +4,10 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import CheckboxList from '@/components/CheckboxList.vue'
 import ShelfView from '@/components/books/ShelfView.vue'
-import BookSearchForm from '@/components/books/BookSearchForm.vue'
 import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
 import type { Book } from '@/types/book'
 import type { Author } from '@/types/author'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useUrlSearchParams } from '@vueuse/core'
 import { useRoute } from '@/composables/useRoute'
@@ -66,7 +64,7 @@ const order = ref<'asc' | 'desc'>(props.selectedOrder as 'asc' | 'desc')
 /** View preferences ----------------------------------------------------- */
 const page = usePage()
 const view = ref<string>(page.props.auth.user.settings?.library.view ?? 'list')
-const { updateSingleSettings } = useUserSettings()
+const { updateSingleSetting } = useUserSettings()
 
 /** Options -------------------------------------------------------------- */
 const sortOptions = [
@@ -95,7 +93,7 @@ watch(
     { deep: true }
 )
 
-watch(view, newView => updateSingleSettings('library.view', newView))
+watch(view, newView => updateSingleSetting('library.view', newView))
 
 /* --------------------------------------------------------------------------
  * Computed
@@ -209,55 +207,6 @@ defineOptions({ layout: AppLayout })
                     </Button>
                 </div>
             </div>
-        </div>
-
-        <!-- Add / Scan dialogs (hidden on list page for now) --------------- -->
-        <div class="hidden items-center justify-end gap-2">
-            <!-- Scan barcode -->
-            <Dialog>
-                <DialogTrigger as-child>
-                    <Button
-                        class="cursor-pointer"
-                        variant="secondary">
-                        <Icon
-                            name="Plus"
-                            class="w-4" /> Scan barcode
-                    </Button>
-                </DialogTrigger>
-                <DialogContent class="sm:max-w-lg">
-                    <DialogTitle>Add via barcode</DialogTitle>
-                    <BarcodeScanner />
-                    <DialogFooter>
-                        <DialogClose as-child>
-                            <Button type="button">
-                                Close
-                            </Button>
-                        </DialogClose>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-
-            <!-- Add book -->
-            <Dialog>
-                <DialogTrigger as-child>
-                    <Button>
-                        <Icon
-                            name="Plus"
-                            class="w-4" /> Add Book
-                    </Button>
-                </DialogTrigger>
-                <DialogContent class="sm:max-w-4xl">
-                    <DialogTitle>Add a new book to your library</DialogTitle>
-                    <BookSearchForm />
-                    <DialogFooter>
-                        <DialogClose as-child>
-                            <Button type="button">
-                                Close
-                            </Button>
-                        </DialogClose>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </div>
 
         <!-- Main layout ----------------------------------------------------- -->

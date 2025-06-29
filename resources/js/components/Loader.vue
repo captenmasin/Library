@@ -316,5 +316,6 @@ const filterStyles = computed(() => {
 <template>
     <img
         :src="LoadingGif"
-        :style="color ? `filter: ${filterStyles}` : null">
+        :style="color ? `filter: ${filterStyles}` : null"
+        alt="Loading animation">
 </template>

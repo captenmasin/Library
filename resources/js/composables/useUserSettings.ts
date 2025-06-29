@@ -6,22 +6,27 @@ import { ref } from 'vue'
 export function useUserSettings () {
     const props = usePage().props
 
-    function updateSingleSettings (settingName: string, value: any) {
-        useRequest(useRoute('api.user.settings.update'), 'PATCH', {
+    function updateSingleSetting (settingName: string, value: any) {
+        return useRequest(useRoute('api.user.settings.single.update'), 'PATCH', {
             setting: settingName,
             value
-        }).then(r => {
-            // All cool
         })
     }
 
-    function getSingleSetting (settingName: string) {
-        const settings = ref(props.auth.user.settings || {})
-        return settingName.split('.').reduce((obj, part) => obj?.[part], settings.value)
+    function updateMultipleSettings (settings: Record<string, any>) {
+        return useRequest(useRoute('api.user.settings.multiple.update'), 'PATCH', {
+            settings
+        })
+    }
+
+    function getSingleSetting (settingName: string): any {
+        const settings = props.auth.user.settings || {}
+        return settingName.split('.').reduce((obj, part) => obj?.[part], settings)
     }
 
     return {
-        updateSingleSettings,
-        getSingleSetting
+        updateSingleSetting,
+        getSingleSetting,
+        updateMultipleSettings
     }
 }

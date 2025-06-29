@@ -7,7 +7,6 @@ use App\Models\Book;
 use Cache;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SearchBooksFromApi
@@ -16,19 +15,30 @@ class SearchBooksFromApi
 
     public function __construct(protected BookApiServiceInterface $booksApi) {}
 
-    public function handle(?string $query = null, ?string $author = null, bool $cache = true): Collection
+    public function handle(
+        ?string $query = null,
+        ?string $author = null,
+        int $maxResults = 30,
+        $page = 1,
+        bool $cache = true): array
     {
         $cacheKey = 'books:search:'.md5(strtolower(trim($query)).'__'.strtolower(trim($author)));
         $cacheTTL = $cache ? now()->addDay() : null;
 
-        return Cache::remember($cacheKey, $cacheTTL, function () use ($query, $author) {
-            $results = collect($this->booksApi::search(
-                $query, $author
-            ));
+        return Cache::remember($cacheKey, $cacheTTL, function () use ($query, $author, $maxResults, $page) {
+            $results = $this->booksApi::search(
+                query: $query,
+                author: $author,
+                maxResults: $maxResults,
+                page: $page
+            );
 
-            $existingBooks = Book::whereIn('identifier', $results->pluck('identifier'))->get()->keyBy('identifier');
+            $total = $results['total'] ?? 0;
+            $books = collect($results['items'] ?? []);
 
-            $results = $results->map(function ($book) use ($existingBooks) {
+            $existingBooks = Book::whereIn('identifier', $books->pluck('identifier'))->get()->keyBy('identifier');
+
+            $results = $books->map(function ($book) use ($existingBooks) {
                 if ($existingBooks->has($book['identifier'])) {
                     $existing = $existingBooks->get($book['identifier']);
                     $book['imported'] = true;
@@ -41,9 +51,12 @@ class SearchBooksFromApi
                 return $book;
             });
 
-            ImportBooksFromArray::dispatch($results);
+            ImportBooksFromArray::dispatch($books);
 
-            return $results;
+            return [
+                'total' => $total,
+                'books' => $results,
+            ];
         });
 
     }

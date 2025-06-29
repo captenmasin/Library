@@ -13,6 +13,7 @@ class GoogleBooksService implements BookApiServiceInterface
     protected static string $baseUrl = 'https://www.googleapis.com/books/v1';
 
     protected const FIELDS = [
+        'totalItems',
         'items' => [
             'id',
             'volumeInfo' => [
@@ -36,14 +37,16 @@ class GoogleBooksService implements BookApiServiceInterface
         ?string $query = null,
         ?string $author = null,
         int $maxResults = 30,
-        $pageIndex = 0): array
+        $page = 1): array
     {
         $query = $query.($author ? (' inauthor:"'.$author.'"') : '');
         $query = trim($query);
 
+        $page = max(0, $page - 1);
+
         $response = Http::get(self::$baseUrl.'/volumes', [
             'q' => $query,
-            'startIndex' => $pageIndex * $maxResults,
+            'startIndex' => $page * $maxResults,
             'fields' => self::buildFieldsString(),
             'langRestrict' => 'en',
             'printType' => 'books',
@@ -52,10 +55,13 @@ class GoogleBooksService implements BookApiServiceInterface
 
         $items = $response->json('items') ?? [];
 
-        return collect($items)
-            ->map(fn ($item) => self::transform($item))
-            ->filter()
-            ->all();
+        return [
+            'total' => $response->json('totalItems', 0),
+            'items' => collect($items)
+                ->map(fn ($item) => self::transform($item))
+                ->filter()
+                ->all(),
+        ];
     }
 
     public static function get(string $id): ?array

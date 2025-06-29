@@ -9,8 +9,8 @@ import { Link, usePage } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { getInitials } from '@/composables/useInitials'
-import { LayoutGrid, Menu, Plus } from 'lucide-vue-next'
 import { useImageTransform } from '@/composables/useImageTransform'
+import { LayoutGrid, Menu, Plus, SearchIcon } from 'lucide-vue-next'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -43,9 +43,9 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid
     },
     {
-        title: 'Add book',
+        title: 'Find Books',
         href: useRoute('library.search'),
-        icon: Plus
+        icon: SearchIcon
     }
 ]
 

@@ -16,6 +16,10 @@ const sidebarNavItems: NavItem[] = [
         href: useRoute('user.settings.password.edit')
     },
     {
+        title: 'Library',
+        href: useRoute('user.settings.library.edit')
+    },
+    {
         title: 'Appearance',
         href: useRoute('user.settings.appearance')
     },

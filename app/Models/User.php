@@ -67,6 +67,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
     public array $defaultSettings = [
         'library' => [
             'view' => 'grid',
+            'tilt_books' => true,
         ],
     ];
 
@@ -75,6 +76,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return [
             'library' => 'array',
             'library.view' => ['string', 'in:grid,list,shelf'],
+            'library.tilt_books' => ['boolean'],
         ];
     }
 

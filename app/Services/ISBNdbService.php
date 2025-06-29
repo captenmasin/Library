@@ -10,7 +10,7 @@ use Uri;
 
 class ISBNdbService implements BookApiServiceInterface
 {
-    public const string ServiceName = 'ISBNdb';
+    public const ServiceName = 'ISBNdb';
 
     protected static string $baseUrl = 'https://api2.isbndb.com';
 
@@ -18,35 +18,51 @@ class ISBNdbService implements BookApiServiceInterface
         ?string $query = null,
         ?string $author = null,
         int $maxResults = 30,
-        $pageIndex = 0
+        $page = 1
     ): array {
         if (! $query) {
             return [];
         }
 
-        $queryParts = [];
-        $queryParts['page'] = $pageIndex + 1; // API uses 1-based indexing
-        $queryParts['pageSize'] = $maxResults;
+        $sanitizedQuery = Str::slug($query);
+        $sanitizedAuthor = Str::slug($author);
+        $cacheKey = "books:search:query:$sanitizedQuery:author:$sanitizedAuthor:maxResults:$maxResults:page:$page";
 
-        if ($author) {
-            $query .= ' '.$author;
-            $queryParts['shouldMatchAll'] = 1;
-        }
+        return Cache::remember($cacheKey, now()->addHour(), function () use ($query, $author, $maxResults, $page, $cacheKey) {
+            $queryParts = [];
+            $queryParts['page'] = $page; // API uses 1-based indexing
+            $queryParts['pageSize'] = $maxResults;
+            $queryParts['shouldMatchAll'] = 0;
 
-        $url = Uri::of(self::$baseUrl)
-            ->withPath('books/'.urlencode($query))
-            ->withQuery($queryParts);
+            if ($author) {
+                $query .= ' '.$author;
+                $queryParts['shouldMatchAll'] = 1;
+            }
 
-        $response = Http::withHeaders([
-            'Authorization' => config('services.isbndb.key'),
-        ])->get($url);
+            $url = Uri::of(self::$baseUrl)
+                ->withPath('books/'.urlencode($query))
+                ->withQuery($queryParts);
 
-        $items = $response->json('books') ?? [];
+            $response = Http::withHeaders([
+                'Authorization' => config('services.isbndb.key'),
+            ])->get($url);
 
-        return collect($items)
-            ->map(fn ($book) => self::transform($book))
-            ->filter()
-            ->all();
+            if (! $response->ok()) {
+                Cache::forget($cacheKey);
+
+                return [];
+            }
+
+            $items = $response->json('books') ?? [];
+
+            return [
+                'total' => $response->json('total'),
+                'items' => collect($items)
+                    ->map(fn ($book) => self::transform($book))
+                    ->filter()
+                    ->all(),
+            ];
+        });
     }
 
     public static function get(string $id): ?array

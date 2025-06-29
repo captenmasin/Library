@@ -2,9 +2,10 @@
 import Image from '@/components/Image.vue'
 import { PropType } from 'vue'
 import { Book } from '@/types/book'
-import { Link } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
 import { useColours } from '@/composables/useColours'
 import { useContrast } from '@/composables/useContrast'
+import { useUserSettings } from '@/composables/useUserSettings'
 
 const props = defineProps({
     books: {
@@ -14,29 +15,62 @@ const props = defineProps({
 })
 
 const { changeColourOpacity } = useColours()
+const { getSingleSetting } = useUserSettings()
 
 const maxHeight = 36
 const minHeight = 28
 
-function seededRandom (seed: number): number {
-    const x = Math.sin(seed) * 10000
+function stringToSeed (str: string): number {
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    return hash
+}
+
+const tiltedCache: Record<string, boolean> = {}
+
+function seededRandom (seed: number | string): number {
+    if (typeof seed === 'number') {
+        seed = seed.toString()
+    }
+
+    const numericSeed = stringToSeed(seed)
+    const x = Math.sin(numericSeed) * 10000
     return x - Math.floor(x)
 }
 
-function getHeight (index: number): number {
-    const seed = index + 1
-    const rand = seededRandom(seed)
+function getHeight (identifier: string): number {
+    const rand = seededRandom(identifier)
     return Math.floor(rand * (maxHeight - minHeight + 1)) + minHeight
 }
 
-function isTilted (index: number): boolean {
-    const seed = index + 1
-    const rand = seededRandom(seed)
-    if (index > 0 && isTilted(index - 1)) {
+function isTilted (identifier: string, index: number): boolean {
+    if (getSingleSetting('library.tilt_books') === false) {
         return false
     }
 
-    return rand < 0.4 // 20% chance to tilt
+    if (index === 0) {
+        tiltedCache[identifier] = false
+        return false
+    }
+
+    if (tiltedCache[identifier] !== undefined) {
+        return tiltedCache[identifier]
+    }
+
+    const rand = seededRandom(identifier)
+
+    if (
+        (index > 0 && isTilted(identifier, index - 1)) ||
+        (index > 1 && isTilted(identifier, index - 2))
+    ) {
+        tiltedCache[identifier] = false
+        return false
+    }
+
+    tiltedCache[identifier] = rand < 0.35
+    return tiltedCache[identifier]
 }
 </script>
 <template>
@@ -48,18 +82,17 @@ function isTilted (index: number): boolean {
             <Link
                 :href="book.links.show"
                 prefetch
-                :data-tilted="isTilted(index)"
+                :data-tilted="isTilted(book.identifier, index)"
                 :style="{
                     backgroundColor: book.colour,
-                    '--book-height': getHeight(index),
+                    '--book-height': getHeight(book.identifier),
                     '--book-width': 7
                 }"
                 :class="{
-                    'ml-[calc(var(--spacing)*(var(--book-width))/2)] mr-4 -translate-y-[3px] -rotate-14 group-hover:rotate-0 group-hover:translate-y-[2px]': isTilted(index)
+                    'ml-[calc(var(--spacing)*(var(--book-width))/2)] mr-4 -translate-y-[3px] -rotate-14 group-hover:rotate-0 group-hover:translate-y-[2px]': isTilted(book.identifier, index)
                 }"
                 class="w-[calc(var(--spacing)*(var(--book-width)))] rounded-t-xs border border-background overflow-hidden group-hover:scale-125 group-hover:z-20 transition-all relative origin-center h-[calc(var(--spacing)*(var(--book-height)))] flex p-2">
                 <div
-                    :class="useContrast(book.colour, 'text-zinc-900/100', 'text-white/100')"
                     class="absolute px-4 top-0 z-2 left-0 h-full w-full">
                     <div class="absolute bottom-0 left-0 w-[calc(var(--spacing)*(var(--book-width)))] h-20 z-2 overflow-hidden">
                         <div
@@ -73,8 +106,10 @@ function isTilted (index: number): boolean {
                             :height="90"
                             class="w-full h-full object-cover opacity-65" />
                     </div>
-                    <div class="pl-2.5 line-clamp-1 pr-1.5 rotate-[0.25turn] font-semibold translate-x-[calc(var(--spacing)*(var(--book-width)))] items-center flex w-[calc(var(--spacing)*(var(--book-height)))] h-[calc(var(--spacing)*(var(--book-width)))] z-10 absolute left-0 origin-top-left">
-                        <h3 class="line-clamp-1 w-full font-serif  overflow-hidden text-ellipsis text-xs">
+                    <div class="pl-2.5 pr-1.5 rotate-[0.25turn] translate-x-[calc(var(--spacing)*(var(--book-width)))] items-center flex w-[calc(var(--spacing)*(var(--book-height)))] h-[calc(var(--spacing)*(var(--book-width)))] z-10 absolute left-0 origin-top-left">
+                        <h3
+                            :class="useContrast(book.colour, 'text-zinc-900/100', 'text-white/100')"
+                            class="line-clamp-1 w-full font-serif font-semibold text-[0.6rem]">
                             {{ book.title }}
                         </h3>
                     </div>

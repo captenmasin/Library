@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Books\SearchBooksFromApi;
 use App\Enums\UserBookStatus;
 use App\Http\Requests\Books\DestroyBookUserRequest;
 use App\Http\Requests\Books\StoreBookUserRequest;
@@ -116,8 +117,22 @@ class UserBookController extends Controller
 
     public function search(Request $request)
     {
+        $page = (int) $request->get('page', 1);
+        $perPage = 10;
+
         return Inertia::render('books/Search', [
             'query' => $request->get('q'),
+            'author' => $request->get('author'),
+            'page' => $page,
+            'perPage' => $perPage,
+            'results' => Inertia::defer(
+                fn () => SearchBooksFromApi::run(
+                    query: $request->get('q'),
+                    author: $request->get('author'),
+                    maxResults: $perPage,
+                    page: $page,
+                )
+            )->deepMerge()->matchOn(''),
         ])->withMeta([
             'title' => 'Add Book',
             'description' => 'Add a new book to your collection by providing its identifier (ISBN, Open Library ID, etc.).',
@@ -165,6 +180,16 @@ class UserBookController extends Controller
 
         return redirect()->back()
             ->with('success', 'Tags updated successfully');
+    }
+
+    public function edit(Request $request)
+    {
+        return Inertia::render('settings/Library', [
+
+        ])->withMeta([
+            'title' => 'Library Settings',
+            'description' => 'Manage your book collection and settings.',
+        ]);
     }
 
     public function destroy(DestroyBookUserRequest $request, Book $book)

@@ -1,5 +1,6 @@
 <?php
 
+use App\Contracts\BookApiServiceInterface;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookCoverController;
 use App\Http\Controllers\ImageTransformerController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\UserBookController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Benchmark;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,6 +20,15 @@ Route::get('/', function () {
         ? redirect()->route('library.index')
         : redirect()->route('login');
 });
+
+Route::get('test', function () {
+    $booksApi = app(BookApiServiceInterface::class);
+    Benchmark::dd([
+        '1' => fn () => $booksApi->search(query: 'minecraft', maxResults: 1),
+        '10' => fn () => $booksApi->search(query: 'minecraft', maxResults: 10),
+        '50' => fn () => $booksApi->search(query: 'minecraft', maxResults: 50),
+    ]);
+})->name('test');
 
 Route::prefix('books')->name('books.')
     ->controller(BookController::class)
@@ -67,6 +78,7 @@ Route::name('user.')->middleware(['auth'])->group(function () {
 
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::get('library', [UserBookController::class, 'edit'])->name('library.edit');
         Route::get('danger', [ProfileController::class, 'danger'])->name('profile.danger');
         Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
 
