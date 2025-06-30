@@ -13,6 +13,6 @@ defineProps({
     <div
         v-bind="$attrs"
         :style="white ? '--color-primary: #fff; --color-secondary: #fff;' : ''"
-        class="flex items-center justify-center rounded-md"
+        class="flex items-center justify-center"
         v-html="Logo" />
 </template>

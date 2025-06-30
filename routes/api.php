@@ -1,9 +1,12 @@
 <?php
 
+use App\Actions\Books\AddBookToUser;
 use App\Actions\Books\FetchOrCreateBook;
 use App\Actions\Books\GetBookByBarcode;
 use App\Actions\Books\ImportBookFromData;
+use App\Actions\Books\RemoveBookFromUser;
 use App\Actions\Books\SearchBooksFromApi;
+use App\Actions\Books\UpdateUserBookStatus;
 use App\Actions\Users\UpdateSingleUserSetting;
 use App\Actions\Users\UpdateUserSettings;
 use App\Contracts\BookApiServiceInterface;
@@ -39,6 +42,11 @@ Route::name('api.')->group(function () {
     });
 
     Route::prefix('user')->name('user.')->group(function () {
+        Route::patch('{book:identifier}/status', UpdateUserBookStatus::class)->name('books.update_status');
+
+        Route::post('books', AddBookToUser::class)->name('books.store');
+        Route::delete('{book:identifier}', RemoveBookFromUser::class)->name('books.destroy');
+
         Route::prefix('settings')->name('settings.')->group(function () {
             Route::patch('single', UpdateSingleUserSetting::class)->name('single.update');
             Route::patch('multiple', UpdateUserSettings::class)->name('multiple.update');

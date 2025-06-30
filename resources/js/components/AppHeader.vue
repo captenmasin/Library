@@ -44,7 +44,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Find Books',
-        href: useRoute('library.search'),
+        href: useRoute('books.search'),
         icon: SearchIcon
     }
 ]

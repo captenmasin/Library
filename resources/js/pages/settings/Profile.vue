@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import AppLayout from '@/layouts/AppLayout.vue'
 import useEmitter from '@/composables/useEmitter'
 import InputError from '@/components/InputError.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
-import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'

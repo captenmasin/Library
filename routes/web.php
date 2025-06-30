@@ -32,8 +32,10 @@ Route::prefix('books')->name('books.')
     ->controller(BookController::class)
     ->middleware(['auth'])
     ->group(function () {
+        Route::get('search', 'index')->name('search');
+
         Route::get('{book}', 'show')->name('show')->withoutMiddleware(['auth']);
-        Route::get('/detail/{identifier}', 'preview')->name('preview')->withoutMiddleware(['auth']);
+        Route::get('/preview/{identifier}', 'preview')->name('preview')->withoutMiddleware(['auth']);
 
         Route::patch('{book}', 'update')->name('update');
 
@@ -58,11 +60,8 @@ Route::prefix('library')->name('library.')
     ->middleware('auth')
     ->group(function () {
         Route::get('/', 'index')->name('index');
-        Route::get('search', 'search')->name('search');
 
         Route::post('/', 'store')->name('store');
-
-        Route::patch('{book:identifier}/status', 'updateStatus')->name('update_status');
 
         Route::put('{book:identifier}/tags', 'updateTags')->name('update_tags');
 

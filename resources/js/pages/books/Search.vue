@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import Loader from '@/components/Loader.vue'
+import AppLayout from '@/layouts/AppLayout.vue'
 import DefaultCover from '~/images/default-cover.svg'
-import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
 import { BookApiResult } from '@/types/book'
 import { watchDebounced } from '@vueuse/core'
-import { computed, PropType, ref } from 'vue'
 import { useRoute } from '@/composables/useRoute'
-import { Deferred, router } from '@inertiajs/vue3'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Input } from '@/components/ui/input/index.js'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { Button } from '@/components/ui/button/index.js'
+import { computed, onMounted, PropType, ref } from 'vue'
+import { Deferred, Link, router } from '@inertiajs/vue3'
 import { useUserBookStatus } from '@/composables/useUserBookStatus.js'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select/index.js'
@@ -30,26 +30,26 @@ const props = defineProps({
         type: Number,
         default: 1
     },
-    query: {
+    initialQuery: {
         type: String,
         default: ''
     },
-    author: {
+    initialAuthor: {
         type: String,
         default: ''
     }
 })
 
-const keyword = ref(props.query)
-const author = ref(props.author)
+const query = ref(props.initialQuery)
+const author = ref(props.initialAuthor)
 const recent = ref([])
 const loading = ref(false)
 
 const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, addingBooks, addBookToUser, removeBookFromUser } = useUserBookStatus()
 
 function searchBooks () {
-    router.get(useRoute('library.search'), {
-        q: keyword.value,
+    router.get(useRoute('books.search'), {
+        q: query.value,
         author: author.value
     }, {
         preserveState: true,
@@ -78,8 +78,6 @@ function loadMore () {
     })
 }
 
-watchDebounced([keyword, author], searchBooks, { debounce: 500 })
-
 const displayPage = computed(() => {
     return props.page
 })
@@ -89,15 +87,17 @@ const maxPage = computed(() => {
 })
 
 const hasSearch = computed(() => {
-    return keyword.value !== '' || author.value !== ''
+    return (props.initialQuery !== '' && props.initialQuery !== null) ||
+        (props.initialAuthor !== '' && props.initialAuthor !== null)
 })
 
 function select (book: BookApiResult, status: UserBookStatus) {
     if (book?.identifier) {
         if (addedBookIdentifiers.value.has(book.identifier)) {
             updateStatus(book, status)
+        } else {
+            addBookToUser(book.identifier, status)
         }
-        addBookToUser(book.identifier, status)
     }
 }
 
@@ -119,7 +119,7 @@ defineOptions({
                         class="cursor-pointer"
                         variant="secondary">
                         <Icon
-                            name="Plus"
+                            name="ScanBarcode"
                             class="w-4" /> Scan barcode
                     </Button>
                 </DialogTrigger>
@@ -138,29 +138,42 @@ defineOptions({
         </div>
 
         <div class="mt-8 flex items-start gap-4">
-            <aside class="flex flex-col gap-2 w-64">
-                <Input
-                    id="keyword-search"
-                    v-model="keyword"
-                    class="w-full"
-                    name="keywords"
-                    placeholder="Search..." />
-                <Input
-                    id="author-search"
-                    v-model="author"
-                    class="w-full"
-                    name="author"
-                    placeholder="Author..." />
+            <aside class="w-64">
+                <form
+                    class="flex flex-col gap-2"
+                    @submit.prevent="searchBooks">
+                    <Input
+                        v-model="query"
+                        name="query"
+                        placeholder="Keywords or title..." />
+                    <Input
+                        id="author-search"
+                        v-model="author"
+                        class="w-full"
+                        name="author"
+                        placeholder="Author..." />
+                    <Button>
+                        Search
+                    </Button>
+                </form>
             </aside>
             <section class="flex flex-1 flex-col">
-                <Loader
-                    class="w-12 mx-auto" />
-
                 {{ results.total }} results found
                 <hr>
                 {{ displayPage }} of {{ maxPage }}
+                <hr>
 
-                <Deferred data="results">
+                <div
+                    v-if="!hasSearch"
+                    class="text-gray-500">
+                    <p>
+                        Search for books by title or author, or scan a book's barcode to add it to your library.
+                    </p>
+                </div>
+
+                <Deferred
+                    v-else
+                    :data="['results']">
                     <template #fallback>
                         <Loader
                             class="w-12 mx-auto" />
@@ -180,19 +193,16 @@ defineOptions({
                                         class="size-full bg-gray-200 object-cover">
                                 </div>
                                 <div class="flex flex-col gap-1">
-                                    <h3 class="font-serif">
-                                        {{ book.title }}
-                                    </h3>
-                                    <!--                                    <Link-->
-                                    <!--                                        :href="book.link"-->
-                                    <!--                                        class="text-sm text-gray-500">-->
-                                    <!--                                        {{ book.link }}-->
-                                    <!--                                    </Link>-->
+                                    <Link :href="book.link">
+                                        <h3 class="font-serif">
+                                            {{ book.title }}
+                                        </h3>
+                                    </Link>
                                     <p class="text-sm text-gray-500">
                                         By {{ book.authors ? book.authors.join(', ') : 'Unknown Author' }}
                                     </p>
                                 </div>
-                                <div class="ml-auto flex items-center gap-2 px-2">
+                                <div class="ml-auto flex w-78 shrink-0 justify-end items-center gap-2">
                                     <div
                                         v-if="addingBooks.includes(book.identifier)"
                                         class="rounded-full border p-1 animate-spin border-gray-200 bg-gray-100 text-gray-600"
@@ -209,27 +219,34 @@ defineOptions({
                                         Remove
                                     </Button>
 
-                                    <Select
-                                        v-model="selectedStatuses[book.identifier]"
-                                        @update:model-value="value => select(book, value as UserBookStatus)">
-                                        <SelectTrigger class="w-full">
-                                            <SelectValue placeholder="Add to library" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem
-                                                    v-for="status in possibleStatuses"
-                                                    :key="status.value"
-                                                    :value="status.value">
-                                                    {{ status.label }}
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
+                                    <div class="w-44">
+                                        <Select
+                                            v-model="selectedStatuses[book.identifier]"
+                                            @update:model-value="value => select(book, value as UserBookStatus)">
+                                            <SelectTrigger class="w-full">
+                                                <SelectValue placeholder="Add to library" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem
+                                                        v-for="status in possibleStatuses"
+                                                        :key="status.value"
+                                                        :value="status.value">
+                                                        {{ status.label }}
+                                                    </SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
                             </div>
                         </li>
                     </ul>
+                    <div v-else>
+                        <p class="text-center text-gray-500">
+                            No results found.
+                        </p>
+                    </div>
                     <div v-if="loading">
                         <Skeleton class="w-[100px] h-5 rounded-full" />
                     </div>

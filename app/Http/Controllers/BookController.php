@@ -4,16 +4,42 @@ namespace App\Http\Controllers;
 
 use App\Actions\Books\FetchOrCreateBook;
 use App\Actions\Books\ImportBookFromData;
+use App\Actions\Books\SearchBooksFromApi;
 use App\Http\Requests\Books\StoreBookRequest;
 use App\Http\Requests\Books\UpdateBookRequest;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\ReviewResource;
 use App\Models\Book;
 use Auth;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class BookController extends Controller
 {
+    public function index(Request $request)
+    {
+        $page = (int) $request->get('page', 1);
+        $perPage = 10;
+
+        return Inertia::render('books/Search', [
+            'initialQuery' => $request->get('q'),
+            'initialAuthor' => $request->get('author'),
+            'page' => $page,
+            'perPage' => $perPage,
+            'results' => Inertia::defer(
+                fn () => SearchBooksFromApi::run(
+                    query: $request->get('q'),
+                    author: $request->get('author'),
+                    maxResults: $perPage,
+                    page: $page,
+                )
+            )->deepMerge()->matchOn(''),
+        ])->withMeta([
+            'title' => 'Add Book',
+            'description' => 'Add a new book to your collection by providing its identifier (ISBN, Open Library ID, etc.).',
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

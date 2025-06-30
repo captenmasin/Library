@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import Image from '@/components/Image.vue'
+import AppLayout from '@/layouts/AppLayout.vue'
 import TagForm from '@/components/books/TagForm.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
-import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue'
 import { Review } from '@/types/review'
 import type { Book } from '@/types/book'
 import { Button } from '@/components/ui/button'
-import { Link, useForm } from '@inertiajs/vue3'
 import { type PropType, ref, watch } from 'vue'
 import { useRoute } from '@/composables/useRoute'
 import { useMarkdown } from '@/composables/useMarkdown'
+import { Link, router, useForm } from '@inertiajs/vue3'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -26,22 +26,25 @@ const props = defineProps({
     }
 })
 
-const { possibleStatuses, updateStatus, addBookToUser } = useUserBookStatus()
+const { possibleStatuses, updateStatus, addBookToUser, removeBookFromUser } = useUserBookStatus()
 
 const statusForm = useForm({
     status: props.book.user_status
 })
 
-const displayNoteForm = ref(false)
+function reset () {
+    statusForm.status = null
+    router.reload()
+}
 
 watch(
     () => statusForm.status,
     (newStatus, oldStatus) => {
         if (newStatus && newStatus !== oldStatus) {
             if (props.book?.in_library) {
-                updateStatus(props.book, newStatus)
+                updateStatus(props.book, newStatus, () => router.reload())
             } else {
-                addBookToUser(props.book.identifier, newStatus)
+                addBookToUser(props.book.identifier, newStatus, () => router.reload())
             }
         }
     }
@@ -98,20 +101,13 @@ defineOptions({
                         <div class="flex justify-end">
                             <Button
                                 v-if="book.in_library"
-                                as-child
                                 class="text-destructive text-xs flex"
-                                variant="link">
-                                <Link
-                                    method="delete"
-                                    preserve-scroll
-                                    :on-finish="(visit) => (statusForm.status = null)"
-                                    :href="useRoute('library.destroy', props.book)"
-                                >
-                                    <Icon
-                                        name="trash"
-                                        class="w-3" />
-                                    Remove
-                                </Link>
+                                variant="link"
+                                @click="removeBookFromUser(book, reset)">
+                                <Icon
+                                    name="trash"
+                                    class="w-3" />
+                                Remove
                             </Button>
                         </div>
                     </div>

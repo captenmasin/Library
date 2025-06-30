@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import AppLayout from '@/layouts/AppLayout.vue'
 import InputError from '@/components/InputError.vue'
-import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { ref, watch } from 'vue'
 import { usePage } from '@inertiajs/vue3'
