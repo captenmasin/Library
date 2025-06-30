@@ -1,20 +1,14 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue'
-import useEmitter from '@/composables/useEmitter'
-import DeleteUser from '@/components/DeleteUser.vue'
 import InputError from '@/components/InputError.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { ref } from 'vue'
-import { toast } from 'vue-sonner'
+import { useForm } from '@inertiajs/vue3'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
-import { getInitials } from '@/composables/useInitials'
-import { type BreadcrumbItem, type User } from '@/types'
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
 interface Props {

@@ -42,6 +42,7 @@ export type BookApiResult = {
     categories?: string[]
     publisher?: string
     description?: string
+    description_clean?: string
     authors?: string[]
     publishedDate?: string
     cover?: string

@@ -1,21 +1,19 @@
-import { Book, BookApiResult } from '@/types/book'
-import { router, useForm, usePage } from '@inertiajs/vue3'
+import { useRequest } from '@/composables/useRequest'
 import { useRoute } from '@/composables/useRoute'
 import { UserBookStatus } from '@/enums/UserBookStatus'
-import { useRequest } from '@/composables/useRequest'
+import { Book, BookApiResult } from '@/types/book'
+import { usePage } from '@inertiajs/vue3'
 import { computed, onMounted, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
 export function useUserBookStatus () {
-    type StatusMap = Record<string, UserBookStatus>
+    type StatusMap = Record<string, UserBookStatus>;
 
     const page = usePage()
     const addedBooks = ref<Record<string, UserBookStatus | string>>({ ...page.props.auth.user_books })
     const selectedStatuses = ref<StatusMap>({})
     const addingBooks = ref<string[]>([])
-    const addedBookIdentifiers = computed(() =>
-        new Set(Object.keys(addedBooks.value))
-    )
+    const addedBookIdentifiers = computed(() => new Set(Object.keys(addedBooks.value)))
 
     const possibleStatuses = Object.entries(UserBookStatus).map(([key, value]) => ({
         value: key,
@@ -23,22 +21,26 @@ export function useUserBookStatus () {
     }))
 
     function updateStatus (book: Book | BookApiResult, status: string, successCallback?: () => void) {
-        if (!possibleStatuses.some(s => s.value === status)) {
+        if (!possibleStatuses.some((s) => s.value === status)) {
             throw new Error(`Invalid status: ${status}`)
         }
 
         useRequest(useRoute('api.user.books.update_status', book.identifier), 'PATCH', {
             status
-        }).then((response) => {
-            if (response.message) {
-                toast.success(response.message)
-                if (successCallback) {
-                    successCallback()
-                }
-            } else {
-                toast.error(response.message || 'Failed to update book status')
-            }
         })
+            .then((response) => {
+                if (response.message) {
+                    toast.success(response.message)
+                    if (successCallback) {
+                        successCallback()
+                    }
+                } else {
+                    toast.error(response.message || 'Failed to update book status')
+                }
+            })
+            .catch((error) => {
+                toast.error(error.message)
+            })
     }
 
     async function addBookToUser (identifier: string, status: UserBookStatus, successCallback?: () => void) {
@@ -51,19 +53,25 @@ export function useUserBookStatus () {
                 useRequest(useRoute('api.user.books.store'), 'POST', {
                     identifier: book.identifier,
                     status: status || 'PlanToRead'
-                }).then((response) => {
-                    if (response.message) {
-                        toast.success(response.message)
-                        addedBooks.value[book.identifier] = status
-                        addingBooks.value = addingBooks.value.filter((id) => id !== identifier)
-
-                        if (successCallback) {
-                            successCallback()
-                        }
-                    } else {
-                        toast.error(response.message || 'Failed to add book')
-                    }
                 })
+                    .then((response) => {
+                        if (response.success) {
+                            toast.success(response.message)
+                            addedBooks.value[book.identifier] = status
+                            addingBooks.value = addingBooks.value.filter((id) => id !== identifier)
+
+                            if (successCallback) {
+                                successCallback()
+                            }
+                        } else {
+                            toast.error(response.message || 'Failed to add book')
+                            addingBooks.value = addingBooks.value.filter((id) => id !== identifier)
+                        }
+                    })
+                    .catch((error) => {
+                        toast.error(error.message)
+                        addingBooks.value = addingBooks.value.filter((id) => id !== identifier)
+                    })
             } else {
                 addingBooks.value = addingBooks.value.filter((id) => id !== identifier)
                 toast.error('Failed to create or fetch book')
@@ -89,6 +97,8 @@ export function useUserBookStatus () {
             } else {
                 toast.error(response.message || 'Failed to remove book')
             }
+        }).catch(error => {
+            toast.error(error.message)
         })
     }
 

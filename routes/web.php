@@ -64,8 +64,6 @@ Route::prefix('library')->name('library.')
         Route::post('/', 'store')->name('store');
 
         Route::put('{book:identifier}/tags', 'updateTags')->name('update_tags');
-
-        Route::delete('{book:identifier}', 'destroy')->name('destroy');
     });
 
 Route::name('user.')->middleware(['auth'])->group(function () {

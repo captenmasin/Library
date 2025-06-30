@@ -101,6 +101,8 @@ class ISBNdbService implements BookApiServiceInterface
             return trim(Str::before($subject, '--'));
         })->filter()->unique()->values()->all();
 
+        $description = $book['overview'] ?? $book['synopsis'] ?? null;
+
         return [
             'codes' => [
                 ['type' => 'ISBN_13', 'identifier' => $book['isbn13'] ?? null],
@@ -111,7 +113,8 @@ class ISBNdbService implements BookApiServiceInterface
             'pageCount' => $book['pages'] ?? null,
             'categories' => $subjects ?? null,
             'publisher' => $book['publisher'] ?? null,
-            'description' => $book['overview'] ?? $book['synopsis'] ?? null,
+            'description' => $description,
+            'description_clean' => strip_tags($description ?? ''),
             'authors' => $book['authors'] ?? null,
             'publishedDate' => $book['date_published'] ?? null,
             'cover' => $book['image_original'] ?? $book['image'] ?? null,

@@ -123,6 +123,7 @@ class GoogleBooksService implements BookApiServiceInterface
             'categories' => $book['categories'] ?? null,
             'publisher' => $book['publisher'] ?? null,
             'description' => $book['description'] ?? null,
+            'description_clean' => $book['description'] ? strip_tags($book['description']) : null,
             'authors' => $book['authors'] ?? null,
             'publishedDate' => $book['publishedDate'] ?? null,
             'cover' => $book['imageLinks']['extraLarge'] ??
