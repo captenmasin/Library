@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'
 import InputError from '@/components/InputError.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { ref } from 'vue'
 import { Input } from '@/components/ui/input'
@@ -10,13 +10,6 @@ import { type BreadcrumbItem } from '@/types'
 import { Head, useForm } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
-
-const breadcrumbItems: BreadcrumbItem[] = [
-    {
-        title: 'Password settings',
-        href: '/settings/password'
-    }
-]
 
 const passwordInput = ref<HTMLInputElement | null>(null)
 const currentPasswordInput = ref<HTMLInputElement | null>(null)
@@ -28,7 +21,7 @@ const form = useForm({
 })
 
 const updatePassword = () => {
-    form.put(useRoute('settings.password.update'), {
+    form.put(useRoute('user.settings.password.update'), {
         preserveScroll: true,
         onSuccess: () => form.reset(),
         onError: (errors: any) => {
@@ -48,10 +41,14 @@ const updatePassword = () => {
         }
     })
 }
+
+defineOptions({
+    layout: AppLayout
+})
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbItems">
+    <div>
         <SettingsLayout>
             <div class="space-y-6">
                 <HeadingSmall
@@ -123,5 +120,5 @@ const updatePassword = () => {
                 </form>
             </div>
         </SettingsLayout>
-    </AppLayout>
+    </div>
 </template>

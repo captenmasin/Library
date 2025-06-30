@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'
 import useEmitter from '@/composables/useEmitter'
 import InputError from '@/components/InputError.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
@@ -78,10 +78,14 @@ const submit = () => {
         }
     })
 }
+
+defineOptions({
+    layout: AppLayout
+})
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs">
+    <div>
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
                 <HeadingSmall
@@ -231,5 +235,5 @@ const submit = () => {
                 </form>
             </div>
         </SettingsLayout>
-    </AppLayout>
+    </div>
 </template>

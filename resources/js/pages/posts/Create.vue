@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Image from '@/components/Image.vue'
-import AppLayout from '@/layouts/AppLayout.vue'
+import App from '@inertiajs/vue3/types/app'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import { PropType } from 'vue'
 import { Book } from '@/types/book'
 import { useForm } from '@inertiajs/vue3'
@@ -30,10 +31,14 @@ function submit () {
         }
     })
 }
+
+defineOptions({
+    layout: AppLayout
+})
 </script>
 
 <template>
-    <AppLayout>
+    <div>
         <h1>Create Post</h1>
         <form @submit.prevent="submit">
             <div>
@@ -94,5 +99,5 @@ function submit () {
                 </li>
             </ul>
         </div>
-    </AppLayout>
+    </div>
 </template>

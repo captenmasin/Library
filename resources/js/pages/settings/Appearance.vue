@@ -1,21 +1,16 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import AppearanceTabs from '@/components/AppearanceTabs.vue'
-import { Head } from '@inertiajs/vue3'
-import { type BreadcrumbItem } from '@/types'
 
-const breadcrumbItems: BreadcrumbItem[] = [
-    {
-        title: 'Appearance settings',
-        href: '/settings/appearance'
-    }
-]
+defineOptions({
+    layout: AppLayout
+})
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbItems">
+    <div>
         <SettingsLayout>
             <div class="space-y-6">
                 <HeadingSmall
@@ -24,5 +19,5 @@ const breadcrumbItems: BreadcrumbItem[] = [
                 <AppearanceTabs />
             </div>
         </SettingsLayout>
-    </AppLayout>
+    </div>
 </template>

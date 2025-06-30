@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
-import AppLayout from '@/layouts/AppLayout.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import CheckboxList from '@/components/CheckboxList.vue'
 import ShelfView from '@/components/books/ShelfView.vue'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
 import type { Book } from '@/types/book'
 import type { Author } from '@/types/author'

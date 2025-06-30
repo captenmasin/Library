@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'
 import InputError from '@/components/InputError.vue'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { ref, watch } from 'vue'
 import { usePage } from '@inertiajs/vue3'
@@ -31,10 +31,14 @@ watch(
     },
     { deep: true }
 )
+
+defineOptions({
+    layout: AppLayout
+})
 </script>
 
 <template>
-    <AppLayout>
+    <div>
         <SettingsLayout>
             <div class="flex flex-col gap-4">
                 <label
@@ -61,5 +65,5 @@ watch(
                     class="mt-2" />
             </div>
         </SettingsLayout>
-    </AppLayout>
+    </div>
 </template>

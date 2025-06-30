@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import Loader from '@/components/Loader.vue'
-import AppLayout from '@/layouts/AppLayout.vue'
 import DefaultCover from '~/images/default-cover.svg'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
 import { BookApiResult } from '@/types/book'
 import { watchDebounced } from '@vueuse/core'

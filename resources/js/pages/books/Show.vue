@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import Image from '@/components/Image.vue'
-import AppLayout from '@/layouts/AppLayout.vue'
 import TagForm from '@/components/books/TagForm.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue'

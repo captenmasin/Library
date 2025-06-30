@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'
 import useEmitter from '@/composables/useEmitter'
 import DeleteUser from '@/components/DeleteUser.vue'
 import InputError from '@/components/InputError.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
+import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
@@ -45,10 +45,14 @@ const closeModal = () => {
     form.clearErrors()
     form.reset()
 }
+
+defineOptions({
+    layout: AppLayout
+})
 </script>
 
 <template>
-    <AppLayout>
+    <div>
         <SettingsLayout>
             <div class="space-y-6">
                 <HeadingSmall
@@ -117,5 +121,5 @@ const closeModal = () => {
                 </div>
             </div>
         </SettingsLayout>
-    </AppLayout>
+    </div>
 </template>

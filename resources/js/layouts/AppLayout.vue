@@ -36,12 +36,16 @@ watch(
     },
     { immediate: true }
 )
+
+defineOptions({
+    layout: AppLayout
+})
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs">
+    <div>
         <MetaHead />
         <slot />
         <Toaster class="pointer-events-auto" />
-    </AppLayout>
+    </div>
 </template>
