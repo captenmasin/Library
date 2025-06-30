@@ -108,46 +108,50 @@ defineOptions({
 
 <template>
     <div>
-        <h2 class="font-serif text-3xl font-bold">
-            Search Books
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-serif text-3xl font-bold">
+                Search Books
+            </h2>
 
-        <Dialog>
-            <DialogTrigger as-child>
-                <Button
-                    class="cursor-pointer"
-                    variant="secondary">
-                    <Icon
-                        name="Plus"
-                        class="w-4" /> Scan barcode
-                </Button>
-            </DialogTrigger>
-            <DialogContent class="sm:max-w-lg">
-                <DialogTitle>Add via barcode</DialogTitle>
-                <BarcodeScanner />
-                <DialogFooter>
-                    <DialogClose as-child>
-                        <Button type="button">
-                            Close
-                        </Button>
-                    </DialogClose>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+            <Dialog>
+                <DialogTrigger as-child>
+                    <Button
+                        class="cursor-pointer"
+                        variant="secondary">
+                        <Icon
+                            name="Plus"
+                            class="w-4" /> Scan barcode
+                    </Button>
+                </DialogTrigger>
+                <DialogContent class="sm:max-w-lg">
+                    <DialogTitle>Add via barcode</DialogTitle>
+                    <BarcodeScanner />
+                    <DialogFooter>
+                        <DialogClose as-child>
+                            <Button type="button">
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
 
         <div class="mt-8 flex items-start gap-4">
-            <div class="flex flex-col w-64">
+            <aside class="flex flex-col gap-2 w-64">
                 <Input
                     id="keyword-search"
                     v-model="keyword"
                     class="w-full"
-                    placeholder="Search for books by title, author, or publisher" />
+                    name="keywords"
+                    placeholder="Search..." />
                 <Input
                     id="author-search"
                     v-model="author"
                     class="w-full"
+                    name="author"
                     placeholder="Author..." />
-            </div>
+            </aside>
             <section class="flex flex-1 flex-col">
                 <Loader
                     class="w-12 mx-auto" />

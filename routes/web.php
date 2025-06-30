@@ -5,12 +5,10 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookCoverController;
 use App\Http\Controllers\ImageTransformerController;
 use App\Http\Controllers\NoteController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\UserBookController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Benchmark;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -72,10 +70,6 @@ Route::prefix('library')->name('library.')
     });
 
 Route::name('user.')->middleware(['auth'])->group(function () {
-    Route::prefix('@{user:username}')->group(function () {
-        Route::get('posts', [UserController::class, 'posts'])->name('posts');
-    });
-
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::get('library', [UserBookController::class, 'edit'])->name('library.edit');
@@ -93,13 +87,6 @@ Route::name('user.')->middleware(['auth'])->group(function () {
         })->name('appearance');
     });
 });
-
-Route::prefix('posts')->name('posts.')->controller(PostController::class)->middleware(['auth'])
-    ->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-    });
 
 Route::get('image-transform/{options}/{path}', ImageTransformerController::class)
     ->where('options', '([a-zA-Z]+=-?[a-zA-Z0-9]+,?)+')

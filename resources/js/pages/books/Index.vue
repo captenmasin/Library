@@ -40,11 +40,9 @@ const props = defineProps({
     books: Array as PropType<Book[]>,
     selectedStatuses: { type: Array as PropType<string[]>, default: () => [] },
     selectedAuthor: { type: String as PropType<string | null>, default: null },
-    selectedPublisher: { type: String as PropType<string | null>, default: null },
     selectedSort: { type: String, default: 'added' },
     selectedOrder: { type: String, default: 'desc' },
-    authors: { type: Array as PropType<Author[]>, default: () => [] },
-    publishers: { type: Array as PropType<Author[]>, default: () => [] }
+    authors: { type: Array as PropType<Author[]>, default: () => [] }
 })
 
 const params = useUrlSearchParams<'history'>('history')
@@ -57,7 +55,6 @@ const currentSearch = ref((params.search as string) || '')
 /** Filters -------------------------------------------------------------- */
 const status = ref<string[]>(props.selectedStatuses)
 const author = ref<string | null>(props.selectedAuthor)
-const publisher = ref<string | null>(props.selectedPublisher)
 const sort = ref(props.selectedSort)
 const order = ref<'asc' | 'desc'>(props.selectedOrder as 'asc' | 'desc')
 
@@ -79,11 +76,10 @@ const sortOptions = [
  * Watchers
  * -------------------------------------------------------------------------- */
 watch(
-    [author, publisher, status, sort, order],
+    [author, status, sort, order],
     () => {
         Object.assign(params, {
             author: author.value,
-            publisher: publisher.value,
             status: status.value,
             sort: sort.value,
             order: order.value
@@ -104,7 +100,6 @@ const hasFiltered = computed(
     () =>
         !!currentSearch.value ||
         !!author.value ||
-        !!publisher.value ||
         sort.value !== 'added' ||
         status.value.length > 0 ||
         order.value !== 'desc'
@@ -121,7 +116,6 @@ function submitForm () {
         {
             search: search.value,
             author: author.value,
-            publisher: publisher.value,
             status: status.value,
             sort: sort.value,
             order: order.value
@@ -251,29 +245,6 @@ defineOptions({ layout: AppLayout })
                                 :value="a.uuid"
                             >
                                 {{ a.name }}
-                            </SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-
-                <!-- Publisher filter ----------------------------------------- -->
-                <Select
-                    v-if="publishers.length"
-                    v-model="publisher">
-                    <SelectTrigger class="w-full">
-                        <SelectValue placeholder="Filter by publisher" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectItem :value="null">
-                                All Publishers
-                            </SelectItem>
-                            <SelectItem
-                                v-for="p in publishers"
-                                :key="p.uuid"
-                                :value="p.uuid"
-                            >
-                                {{ p.name }}
                             </SelectItem>
                         </SelectGroup>
                     </SelectContent>

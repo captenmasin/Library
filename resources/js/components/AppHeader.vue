@@ -10,10 +10,10 @@ import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { getInitials } from '@/composables/useInitials'
 import { useImageTransform } from '@/composables/useImageTransform'
-import { LayoutGrid, Menu, Plus, SearchIcon } from 'lucide-vue-next'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { LayoutGrid, LibraryBig, Menu, NotebookTabsIcon, Plus, SearchIcon } from 'lucide-vue-next'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu'
 
@@ -38,9 +38,9 @@ const activeItemStyles = computed(
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Books',
+        title: 'Library',
         href: useRoute('library.index'),
-        icon: LayoutGrid
+        icon: LibraryBig
     },
     {
         title: 'Find Books',
@@ -116,7 +116,9 @@ const rightNavItems: NavItem[] = []
                 <Link
                     :href="useRoute('library.index')"
                     class="flex items-center gap-x-2">
-                    <AppLogo />
+                    <div class="flex aspect-square size-8 items-center justify-center">
+                        <AppLogoIcon class="size-full fill-current text-white dark:text-black" />
+                    </div>
                 </Link>
 
                 <!-- Desktop Menu -->

@@ -19,7 +19,7 @@ class UserBookController extends Controller
 {
     public function index(Request $request)
     {
-        $bookQuery = Auth::user()->books()->with(['authors', 'reviews', 'publisher', 'covers']);
+        $bookQuery = Auth::user()->books()->with(['authors', 'reviews', 'covers']);
         if ($request->filled('status')) {
             $statuses = Arr::wrap($request->input('status'));
             $bookQuery->wherePivotIn('status', $statuses);
@@ -78,8 +78,6 @@ class UserBookController extends Controller
             }, SORT_NUMERIC, $desc);
         }
 
-        //        dd($books);
-
         if ($request->filled('author')) {
             $authorUuid = $request->get('author');
             $books = $books->filter(function ($book) use ($authorUuid) {
@@ -87,29 +85,17 @@ class UserBookController extends Controller
             });
         }
 
-        if ($request->filled('publisher')) {
-            $publisherUuid = $request->get('publisher');
-            $books = $books->filter(function ($book) use ($publisherUuid) {
-                return $book->publisher->uuid === $publisherUuid;
-            });
-        }
-
         $selectedStatuses = $request->get('status', []);
 
         return Inertia::render('books/Index', [
-            //            'books' => Inertia::defer(fn () => BookResource::collection($books->values())),
             'books' => BookResource::collection($books->values()),
-            //            'selectedStatuses' => $request->get('status',  UserBookStatus::names()),
             'selectedStatuses' => $selectedStatuses,
             'selectedAuthor' => $request->get('author'),
-            'selectedPublisher' => $request->get('publisher'),
             'selectedSort' => $sort,
             'selectedOrder' => $request->get('order', 'desc'),
             'searchQuery' => $request->get('search', ''),
             'authors' => AuthorResource::collection(Auth::user()->books()->with('authors')->get()
                 ->flatMap(fn ($book) => $book->authors)->unique('uuid'))->values(),
-            'publishers' => Auth::user()->books()->with('publisher')->get()
-                ->map(fn ($book) => $book->publisher)->unique('uuid')->values(),
         ])->withMeta([
             'title' => 'Books',
         ]);
