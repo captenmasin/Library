@@ -52,6 +52,7 @@ async function startScan () {
                 // we have a barcode!
                 const identifier = output.getText()
                 result.value = identifier
+                stopScan()
 
                 // hit your API
                 loading.value = true
@@ -137,14 +138,14 @@ onMounted(() => {
                 <Icon
                     name="ScanBarcode"
                     class="w-4" />
-                Start Scanning
+                {{ result ? 'Scan again' : 'Start scanning' }}
             </Button>
         </div>
 
         <div
             v-if="result"
             class="mt-2 text-sm bg-muted border-primary/10 text-primary rounded p-2 border-2 font-mono">
-            Scanned code: <strong>{{ result }}</strong>
+            Barcode scanned: <strong>{{ result }}</strong>
         </div>
 
         <HorizontalSkeleton
