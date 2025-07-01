@@ -46,7 +46,7 @@ function openNoteForm () {
                 class="text-sm"
                 v-html="book.notes.content_html" />
 
-            <div class="flex items-center gap-4 mt-4">
+            <div class="mt-4 flex items-center gap-4">
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger as-child>
@@ -61,7 +61,7 @@ function openNoteForm () {
                                         noteForm.content = '';
                                     }
                                 "
-                                class="text-destructive/75 cursor-pointer hover:text-destructive"
+                                class="cursor-pointer text-destructive/75 hover:text-destructive"
                                 preserve-scroll
                                 method="delete"
                             >
@@ -78,7 +78,7 @@ function openNoteForm () {
                     <Tooltip>
                         <TooltipTrigger as-child>
                             <button
-                                class="text-gray-600 hover:text-gray-900 cursor-pointer"
+                                class="cursor-pointer text-gray-600 hover:text-gray-900"
                                 @click="displayNoteForm = true">
                                 <Icon
                                     name="Pencil"

@@ -59,7 +59,7 @@ const submit = () => {
                 </div>
             </form>
 
-            <div class="space-x-1 text-center text-sm text-muted-foreground">
+            <div class="text-center text-sm space-x-1 text-muted-foreground">
                 <span>Or, return to</span>
                 <TextLink :href="useRoute('login')">
                     log in

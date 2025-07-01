@@ -74,11 +74,11 @@ function isTilted (identifier: string, index: number): boolean {
 }
 </script>
 <template>
-    <ul class="flex items-end flex-wrap">
+    <ul class="flex flex-wrap items-end">
         <li
             v-for="(book, index) in books"
             :key="book.identifier"
-            class="mb-8 border-b-2 group border-amber-900 pb-[2px]">
+            class="mb-8 border-b-2 border-amber-900 group pb-[2px]">
             <Link
                 :href="book.links.show"
                 prefetch
@@ -93,7 +93,7 @@ function isTilted (identifier: string, index: number): boolean {
                 }"
                 class="w-[calc(var(--spacing)*(var(--book-width)))] rounded-t-xs border border-background overflow-hidden group-hover:scale-125 group-hover:z-20 transition-all relative origin-center h-[calc(var(--spacing)*(var(--book-height)))] flex p-2">
                 <div
-                    class="absolute px-4 top-0 z-2 left-0 h-full w-full">
+                    class="absolute top-0 left-0 h-full w-full px-4 z-2">
                     <div class="absolute bottom-0 left-0 w-[calc(var(--spacing)*(var(--book-width)))] h-20 z-2 overflow-hidden">
                         <div
                             class="absolute top-0 left-0 w-[calc(var(--spacing)*(var(--book-width)))] h-full z-2 overflow-hidden"
@@ -104,12 +104,12 @@ function isTilted (identifier: string, index: number): boolean {
                             :alt="book.title"
                             :width="45"
                             :height="90"
-                            class="w-full h-full object-cover opacity-65" />
+                            class="h-full w-full object-cover opacity-65" />
                     </div>
                     <div class="pl-2.5 pr-1.5 rotate-[0.25turn] translate-x-[calc(var(--spacing)*(var(--book-width)))] items-center flex w-[calc(var(--spacing)*(var(--book-height)))] h-[calc(var(--spacing)*(var(--book-width)))] z-10 absolute left-0 origin-top-left">
                         <h3
                             :class="useContrast(book.colour, 'text-zinc-900/100', 'text-white/100')"
-                            class="line-clamp-1 w-full font-serif font-semibold text-[0.6rem]">
+                            class="w-full font-serif font-semibold line-clamp-1 text-[0.6rem]">
                             {{ book.title }}
                         </h3>
                     </div>

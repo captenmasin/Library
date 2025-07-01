@@ -21,7 +21,7 @@ const width = computed(() => {
     >
         <Skeleton
             v-if="showIcon"
-            class="size-4 rounded-md"
+            class="rounded-md size-4"
             data-sidebar="menu-skeleton-icon"
         />
 

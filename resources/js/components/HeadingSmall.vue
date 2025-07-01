@@ -9,7 +9,7 @@ defineProps<Props>()
 
 <template>
     <header>
-        <h3 class="mb-0.5 text-base font-medium">
+        <h3 class="text-base font-medium mb-0.5">
             {{ title }}
         </h3>
         <p

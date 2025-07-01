@@ -42,7 +42,7 @@ function submit () {
 <template>
     <div>
         <div class="mb-4">
-            <label class="block mb-1">Rating</label>
+            <label class="mb-1 block">Rating</label>
             <div class="flex items-center gap-3 py-2">
                 <div class="flex space-x-1">
                     <button
@@ -56,13 +56,13 @@ function submit () {
                             <Icon
                                 name="Star"
                                 :class="star <= form.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 hover:text-yellow-400'"
-                                class="size-5 " />
+                                class="size-5" />
                         </span>
                     </button>
                 </div>
                 <button
                     :class="form.rating < 1 ? 'opacity-0 pointer-events-none' : ''"
-                    class="text-destructive text-sm cursor-pointer hover:underline"
+                    class="cursor-pointer text-sm text-destructive hover:underline"
                     @click="form.rating = 0; submit()">
                     Clear
                 </button>
@@ -85,7 +85,7 @@ function submit () {
                 <Textarea
                     id="reviewContent"
                     v-model="form.content"
-                    class="w-full border rounded p-2"
+                    class="w-full rounded border p-2"
                     rows="4"
                     placeholder="Write your thoughts..."
                 />
@@ -113,7 +113,7 @@ function submit () {
                 Your Review
             </h3>
             <div>
-                <p class="font-semibold text-lg font-serif">
+                <p class="font-serif text-lg font-semibold">
                     {{ existingReview.title }}
                 </p>
                 <ul
@@ -129,10 +129,10 @@ function submit () {
                     </li>
                 </ul>
                 <div
-                    class="prose mt-1"
+                    class="mt-1 prose"
                     v-html="useMarkdown(existingReview.content)" />
 
-                <div class="flex items-center gap-4 mt-4">
+                <div class="mt-4 flex items-center gap-4">
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger as-child>
@@ -147,7 +147,7 @@ function submit () {
                                 <!--                                            noteForm.content = '';-->
                                 <!--                                        }-->
                                 <!--                                    "-->
-                                <!--                                    class="text-destructive/75 cursor-pointer hover:text-destructive"-->
+                                <!--                                    class="cursor-pointer text-destructive/75 hover:text-destructive"-->
                                 <!--                                    preserve-scroll-->
                                 <!--                                    method="delete"-->
                                 <!--                                >-->
@@ -165,7 +165,7 @@ function submit () {
                         <Tooltip>
                             <TooltipTrigger as-child>
                                 <button
-                                    class="text-gray-600 hover:text-gray-900 cursor-pointer"
+                                    class="cursor-pointer text-gray-600 hover:text-gray-900"
                                     @click="displayForm = true">
                                     <Icon
                                         name="Pencil"

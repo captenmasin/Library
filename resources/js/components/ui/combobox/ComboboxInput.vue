@@ -25,7 +25,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
         data-slot="command-input-wrapper"
         class="flex h-9 items-center gap-2 border-b px-3"
     >
-        <SearchIcon class="size-4 shrink-0 opacity-50" />
+        <SearchIcon class="shrink-0 opacity-50 size-4" />
         <ComboboxInput
             data-slot="command-input"
             :class="cn(

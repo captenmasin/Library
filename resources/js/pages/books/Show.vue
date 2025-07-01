@@ -77,7 +77,7 @@ defineOptions({
                 <UpdateBookCover :book>
                     <Image
                         width="250"
-                        class="aspect-cover w-full rounded-md"
+                        class="w-full rounded-md aspect-cover"
                         :src="book.cover" />
                 </UpdateBookCover>
 
@@ -101,7 +101,7 @@ defineOptions({
                         <div class="flex justify-end">
                             <Button
                                 v-if="book.in_library"
-                                class="text-destructive text-xs flex"
+                                class="flex text-xs text-destructive"
                                 variant="link"
                                 @click="removeBookFromUser(book, reset)">
                                 <Icon
@@ -123,7 +123,7 @@ defineOptions({
                     By {{ book.authors.map((a) => a.name).join(', ') }}
                 </p>
                 <div
-                    class="prose max-w-none mt-4 font-serif"
+                    class="mt-4 max-w-none font-serif prose"
                     v-html="book.description" />
                 <div class="mt-8">
                     <!--                    <TagForm :book="book" />-->
@@ -156,7 +156,7 @@ defineOptions({
                         v-for="item in data"
                         :key="item.title"
                         class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt class="text-sm/6 font-medium">
+                        <dt class="font-medium text-sm/6">
                             {{ item.title }}
                         </dt>
                         <dd class="text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
@@ -167,25 +167,26 @@ defineOptions({
                 <div
                     v-if="book.categories"
                     class="mt-1">
-                    <p class="text-sm/6 font-medium">
+                    <p class="font-medium text-sm/6">
                         Categories
                     </p>
                     <ul class="space-y-1 space-x-1">
                         <li
                             v-for="category in book.categories"
                             :key="category"
-                            class="inline-block rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
+                            class="inline-block rounded-full px-2 text-xs bg-muted py-0.5 text-muted-foreground"
                         >
                             {{ category }}
                         </li>
                     </ul>
                 </div>
-                <h3 class="font-semibold text-lg mt-8">
-                    Your notes
-                </h3>
-                <NoteForm
-                    v-if="book.in_library"
-                    :book="book" />
+                <div v-if="book.in_library">
+                    <h3 class="mt-8 text-lg font-semibold">
+                        Your notes
+                    </h3>
+                    <NoteForm
+                        :book="book" />
+                </div>
             </div>
         </div>
     </div>

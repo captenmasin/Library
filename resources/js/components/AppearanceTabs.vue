@@ -12,7 +12,7 @@ const tabs = [
 </script>
 
 <template>
-    <div class="inline-flex gap-1 rounded-lg bg-muted p-1 dark:bg-neutral-800">
+    <div class="inline-flex gap-1 rounded-lg p-1 bg-muted dark:bg-neutral-800">
         <button
             v-for="{ value, Icon, label } in tabs"
             :key="value"
@@ -27,7 +27,7 @@ const tabs = [
             <component
                 :is="Icon"
                 class="-ml-1 h-4 w-4" />
-            <span class="ml-1.5 text-sm">{{ label }}</span>
+            <span class="text-sm ml-1.5">{{ label }}</span>
         </button>
     </div>
 </template>

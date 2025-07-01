@@ -13,7 +13,7 @@ import { computed, nextTick, PropType, ref } from 'vue'
 import { Button } from '@/components/ui/button/index.js'
 import { Deferred, Link, router } from '@inertiajs/vue3'
 import { useUserBookStatus } from '@/composables/useUserBookStatus.js'
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select/index.js'
 
 const props = defineProps({
@@ -85,14 +85,6 @@ function loadMore () {
     })
 }
 
-const displayPage = computed(() => {
-    return props.page
-})
-
-const maxPage = computed(() => {
-    return Math.ceil(props.results.total / props.perPage)
-})
-
 const hasSearch = computed(() => {
     return (props.initialQuery !== '' && props.initialQuery !== null) ||
         (props.initialAuthor !== '' && props.initialAuthor !== null)
@@ -124,7 +116,7 @@ defineOptions({
                 Search Books
             </h2>
 
-            <Dialog>
+            <Dialog :default-open="true">
                 <DialogTrigger as-child>
                     <Button
                         class="cursor-pointer"
@@ -136,20 +128,15 @@ defineOptions({
                 </DialogTrigger>
                 <DialogContent class="sm:max-w-lg">
                     <DialogTitle>Add via barcode</DialogTitle>
-                    <BarcodeScanner />
-                    <DialogFooter>
-                        <DialogClose as-child>
-                            <Button type="button">
-                                Close
-                            </Button>
-                        </DialogClose>
-                    </DialogFooter>
+                    <div class="max-h-[80dvh] overflow-auto">
+                        <BarcodeScanner />
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>
 
         <div class="mt-8 flex items-start gap-4">
-            <aside class="w-64 sticky left-0 top-4">
+            <aside class="sticky top-4 left-0 w-64">
                 <form
                     class="flex flex-col gap-2"
                     @submit.prevent="searchBooks">
@@ -169,14 +156,17 @@ defineOptions({
                 </form>
                 <p
                     v-if="results && results.total > 0"
-                    class="text-sm text-muted-foreground mt-2">
+                    class="mt-2 text-sm text-muted-foreground">
                     {{ formatNumber(results.total) }} results found
                 </p>
             </aside>
             <section class="flex flex-1 flex-col">
                 <div
                     v-if="!hasSearch"
-                    class="text-gray-500">
+                    class="mb-4 flex items-center justify-center rounded-lg border-2 border-dashed py-12 px-4 gap-2 flex-col text-sm text-center text-muted-foreground border-primary/10">
+                    <Icon
+                        name="Search"
+                        class="size-8" />
                     <p>
                         Search for books by title or author, or scan a book's barcode to add it to your library.
                     </p>
@@ -192,10 +182,10 @@ defineOptions({
                                 :key="n">
                                 <HorizontalSkeleton />
                             </li>
-                            <li class="absolute flex items-center flex-col gap-2 top-1/2 left-1/2 -translate-1/2">
+                            <li class="absolute top-1/2 left-1/2 flex flex-col items-center gap-2 -translate-1/2">
                                 <Loader
                                     color="#913608"
-                                    class="w-18 mx-auto" />
+                                    class="mx-auto w-18" />
                                 <p>
                                     Searching&hellip;
                                 </p>
@@ -213,21 +203,21 @@ defineOptions({
                                 :key="book.identifier">
                                 <div class="flex items-center gap-4 py-2">
                                     <component
-                                        :is="book.link ? Link : 'span'"
-                                        :href="book.link ? book.link : null"
+                                        :is="book.links.show ? Link : 'span'"
+                                        :href="book.links.show ? book.links.show : null"
                                         prefetch>
-                                        <div class="aspect-book w-22 shrink-0 shadow-sm rounded-sm overflow-hidden">
+                                        <div class="shrink-0 overflow-hidden rounded-sm shadow-sm aspect-book w-22">
                                             <img
                                                 :src="book.cover ?? DefaultCover"
                                                 :alt="`Book cover image for ${book.title}`"
-                                                class="size-full bg-gray-200 object-cover">
+                                                class="bg-gray-200 object-cover size-full">
                                         </div>
                                     </component>
                                     <div class="flex flex-col">
                                         <div class="flex">
                                             <component
-                                                :is="book.link ? Link : 'span'"
-                                                :href="book.link ? book.link : null"
+                                                :is="book.links.show ? Link : 'span'"
+                                                :href="book.links.show ? book.links.show : null"
                                                 prefetch>
                                                 <h3 class="font-serif text-lg/6">
                                                     {{ book.title }}
@@ -235,18 +225,18 @@ defineOptions({
                                             </component>
                                         </div>
                                         <p class="text-sm mt-0.5 text-muted-foreground">
-                                            By {{ book.authors ? book.authors.join(', ') : 'Unknown Author' }}
+                                            By {{ book.authors?.map((a) => a.name).join(', ') }}
                                         </p>
                                         <p
                                             v-if="book.description"
-                                            class="text-xs mt-1 text-muted-foreground line-clamp-2">
+                                            class="mt-1 text-xs text-muted-foreground line-clamp-2">
                                             {{ book.description_clean }}
                                         </p>
                                     </div>
-                                    <div class="ml-auto flex w-78 shrink-0 justify-end items-center gap-2">
+                                    <div class="ml-auto flex shrink-0 items-center justify-end gap-2 w-78">
                                         <div
                                             v-if="addingBooks.includes(book.identifier)"
-                                            class="rounded-full border p-1 animate-spin border-gray-200 bg-gray-100 text-gray-600">
+                                            class="animate-spin rounded-full border border-gray-200 bg-gray-100 p-1 text-gray-600">
                                             <Icon
                                                 name="LoaderCircle"
                                                 class="w-4"
@@ -289,7 +279,7 @@ defineOptions({
 
                         <div
                             v-if="results.books.length < results.total"
-                            class="flex items-center mt-4 justify-center">
+                            class="mt-4 flex items-center justify-center">
                             <Button
                                 variant="secondary"
                                 :disabled="loading"
@@ -305,7 +295,7 @@ defineOptions({
                                 Load {{ perPage }} more
                             </Button>
                         </div>
-                        <p class="text-sm text-gray-500 text-center my-4">
+                        <p class="my-4 text-center text-sm text-gray-500">
                             Showing {{ formatNumber(results.books.length) }} of {{ formatNumber(results.total) }} results.
                         </p>
                     </div>

@@ -196,7 +196,7 @@ defineOptions({
 
                     <div class="flex items-center gap-4">
                         <div
-                            class="flex items-center justify-end mt-8 gap-4">
+                            class="mt-8 flex items-center justify-end gap-4">
                             <Button
                                 type="button"
                                 variant="ghost"

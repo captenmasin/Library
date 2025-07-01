@@ -6,7 +6,7 @@ const patternId = computed(() => `pattern-${Math.random().toString(36).substring
 
 <template>
     <svg
-        class="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20"
+        class="absolute inset-0 stroke-neutral-900/20 size-full dark:stroke-neutral-100/20"
         fill="none">
         <defs>
             <pattern

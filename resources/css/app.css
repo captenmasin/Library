@@ -84,6 +84,16 @@
         0px 1px 1px rgb(var(--shadow-color-rgb) / 0.1), 0px 1px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 2px 4px rgb(var(--shadow-color-rgb) / 0.1);
     --text-shadow-lg:
         0px 1px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 3px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 4px 8px rgb(var(--shadow-color-rgb) / 0.1);
+
+    --animate-scan: scan 3s linear infinite;
+    @keyframes scan {
+        0%, 100%{
+            top: 0;
+        }
+        50%{
+            top: 100%;
+        }
+    }
 }
 
 /*

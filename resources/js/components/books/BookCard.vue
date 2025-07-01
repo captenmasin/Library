@@ -24,7 +24,7 @@ const { changeColourOpacity } = useColours()
 <template>
     <article class="flex gap-4">
         <div
-            class="group flex flex-col overflow-hidden rounded-md shadow-sm"
+            class="flex flex-col overflow-hidden rounded-md shadow-sm group"
             :style="{
                 backgroundColor: book.colour,
             }"
@@ -36,7 +36,7 @@ const { changeColourOpacity } = useColours()
             <Link
                 :href="book.links.show"
                 prefetch>
-                <div class="relative aspect-book w-full overflow-hidden group">
+                <div class="relative w-full overflow-hidden aspect-book group">
                     <Image
                         v-if="book.cover"
                         :src="book.cover"
@@ -45,10 +45,10 @@ const { changeColourOpacity } = useColours()
                         class="h-full w-full object-cover" />
                     <div
                         v-if="!horizontal"
-                        class="absolute bottom-0 h-11/12 opacity-0 duration-300 transition-all group-hover:opacity-100 flex items-end left-0 w-full p-4"
+                        class="absolute bottom-0 left-0 flex w-full items-end p-4 opacity-0 transition-all duration-300 h-11/12 group-hover:opacity-100"
                         :style="{backgroundImage: `linear-gradient(to top, ${changeColourOpacity(book.colour, 1)}, rgba(0, 0, 0, 0))`}">
-                        <div class="flex flex-col w-full translate-y-4 opacity-0 duration-300 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
-                            <h2 class="font-serif text-lg/6 font-semibold line-clamp-5">
+                        <div class="flex w-full translate-y-4 flex-col opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                            <h2 class="font-serif font-semibold text-lg/6 line-clamp-5">
                                 {{ book.title }}
                             </h2>
                         </div>
@@ -58,19 +58,19 @@ const { changeColourOpacity } = useColours()
         </div>
         <div
             v-if="horizontal"
-            class="flex flex-col flex-1">
+            class="flex flex-1 flex-col">
             <Link
                 :href="book.links.show"
                 prefetch
-                class="hover:text-primary transition-colors">
-                <h2 class="font-bold font-serif text-2xl">
+                class="transition-colors hover:text-primary">
+                <h2 class="font-serif text-2xl font-bold">
                     {{ book.title }}
                 </h2>
             </Link>
-            <p class="line-clamp-3 text-xs text-gray-900/50">
+            <p class="text-xs text-gray-900/50 line-clamp-3">
                 {{ book.authors.map(a => a.name).join(', ') }}
             </p>
-            <p class="line-clamp-3 text-sm mt-1">
+            <p class="mt-1 text-sm line-clamp-3">
                 {{ book.description_clean }}
             </p>
         </div>

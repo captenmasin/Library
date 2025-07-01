@@ -104,11 +104,11 @@ const reset = () => {
             v-if="canUpdateCover"
             :key="key"
             :class="coverPreview ? 'opacity-100' : 'opacity-0'"
-            class="absolute transition-all hover:opacity-100 top-0 bottom-0 left-0 flex w-full gap-2">
+            class="absolute top-0 bottom-0 left-0 flex w-full gap-2 transition-all hover:opacity-100">
             <div class="absolute bottom-2 flex w-full items-center gap-2 p-2">
                 <Button
                     v-if="!coverPreview"
-                    class="flex-1 cursor-pointer text-xs rounded-full "
+                    class="flex-1 cursor-pointer rounded-full text-xs"
                     @click="clickCoverInput"
                 >
                     <Icon
@@ -120,7 +120,7 @@ const reset = () => {
                 <Button
                     v-if="coverPreview"
                     variant="ghost"
-                    class="flex-1 cursor-pointer text-xs rounded-full bg-green-200 text-green-700 backdrop-blur-lg"
+                    class="flex-1 cursor-pointer rounded-full bg-green-200 text-xs text-green-700 backdrop-blur-lg"
                     @click="updateBookInformation"
                 >
                     <Icon
@@ -132,7 +132,7 @@ const reset = () => {
                 <Button
                     v-if="coverPreview && displayUndo"
                     variant="ghost"
-                    class="flex-1 cursor-pointer text-xs rounded-full bg-white/75 backdrop-blur-lg"
+                    class="flex-1 cursor-pointer rounded-full bg-white/75 text-xs backdrop-blur-lg"
                     @click="reset"
                 >
                     <Icon
@@ -146,7 +146,7 @@ const reset = () => {
                     type="button"
                     size="icon"
                     variant="ghost"
-                    class="cursor-pointer text-xs rounded-full bg-destructive/75 text-destructive-foreground backdrop-blur-lg"
+                    class="cursor-pointer rounded-full text-xs backdrop-blur-lg bg-destructive/75 text-destructive-foreground"
                     @click.prevent="deleteCover"
                 >
                     <Icon

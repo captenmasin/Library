@@ -44,7 +44,7 @@ function isChecked (index: number) {
                     isChecked(index + 1) ? 'rounded-b-none' : '',
                     !isChecked(index) ? 'text-secondary-foreground hover:text-gray-900' : 'text-gray-900'
                 ]"
-                class="flex w-full justify-between items-center p-2 rounded-md transition-all cursor-pointer"
+                class="flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all"
                 :for="`${idPrefix}-${option.value}`">
                 <span class="text-sm">
                     {{ option.label }}

@@ -69,14 +69,14 @@ const rightNavItems: NavItem[] = []
                         </SheetTrigger>
                         <SheetContent
                             side="left"
-                            class="w-[300px] p-6">
+                            class="p-6 w-[300px]">
                             <SheetTitle class="sr-only">
                                 Navigation Menu
                             </SheetTitle>
                             <SheetHeader class="flex justify-start text-left">
-                                <AppLogoIcon class="size-6 fill-current text-black dark:text-white" />
+                                <AppLogoIcon class="fill-current text-black size-6 dark:text-white" />
                             </SheetHeader>
-                            <div class="flex h-full flex-1 flex-col justify-between space-y-4 py-6">
+                            <div class="flex h-full flex-1 flex-col justify-between py-6 space-y-4">
                                 <nav class="-mx-3 space-y-1">
                                     <Link
                                         v-for="item in mainNavItems"
@@ -99,7 +99,7 @@ const rightNavItems: NavItem[] = []
                                         :href="item.href"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        class="flex items-center space-x-2 text-sm font-medium"
+                                        class="flex items-center text-sm font-medium space-x-2"
                                     >
                                         <component
                                             :is="item.icon"
@@ -116,8 +116,8 @@ const rightNavItems: NavItem[] = []
                 <Link
                     :href="useRoute('library.index')"
                     class="flex items-center gap-x-2">
-                    <div class="flex aspect-square size-8 items-center justify-center">
-                        <AppLogoIcon class="size-full fill-current text-white dark:text-black" />
+                    <div class="flex aspect-square items-center justify-center size-8">
+                        <AppLogoIcon class="fill-current text-white size-full dark:text-black" />
                     </div>
                 </Link>
 
@@ -141,7 +141,7 @@ const rightNavItems: NavItem[] = []
                                 </Link>
                                 <div
                                     v-if="isCurrentRoute(item.href)"
-                                    class="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"
+                                    class="absolute bottom-0 left-0 w-full translate-y-px bg-black h-0.5 dark:bg-white"
                                 />
                             </NavigationMenuItem>
                         </NavigationMenuList>
@@ -161,7 +161,7 @@ const rightNavItems: NavItem[] = []
                                                 variant="ghost"
                                                 size="icon"
                                                 as-child
-                                                class="group h-9 w-9 cursor-pointer">
+                                                class="h-9 w-9 cursor-pointer group">
                                                 <a
                                                     :href="item.href"
                                                     target="_blank"
@@ -169,7 +169,7 @@ const rightNavItems: NavItem[] = []
                                                     <span class="sr-only">{{ item.title }}</span>
                                                     <component
                                                         :is="item.icon"
-                                                        class="size-5 opacity-80 group-hover:opacity-100" />
+                                                        class="opacity-80 size-5 group-hover:opacity-100" />
                                                 </a>
                                             </Button>
                                         </TooltipTrigger>
@@ -187,9 +187,9 @@ const rightNavItems: NavItem[] = []
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                class="relative size-10 w-auto rounded-full p-1 focus-within:ring-2 focus-within:ring-primary"
+                                class="relative w-auto rounded-full p-1 size-10 focus-within:ring-primary focus-within:ring-2"
                             >
-                                <Avatar class="size-8 overflow-hidden rounded-full">
+                                <Avatar class="overflow-hidden rounded-full size-8">
                                     <AvatarImage
                                         v-if="auth.user.avatar"
                                         :src="getImageUrl(auth.user.avatar, { width: 32, height: 32, crop: 'center' })"

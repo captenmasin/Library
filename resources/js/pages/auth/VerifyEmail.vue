@@ -28,7 +28,7 @@ const submit = () => {
         </div>
 
         <form
-            class="space-y-6 text-center"
+            class="text-center space-y-6"
             @submit.prevent="submit">
             <Button
                 :disabled="form.processing"

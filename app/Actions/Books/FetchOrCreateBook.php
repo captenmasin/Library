@@ -17,7 +17,9 @@ class FetchOrCreateBook
 
     public function handle(string $identifier)
     {
-        $book = Book::where('identifier', $identifier)->firstOr(fn () => null);
+        $book = Book::where('identifier', $identifier)
+            ->with(['covers', 'authors', 'publisher', 'categories'])
+            ->firstOr(fn () => null);
 
         return $book ?: ImportBookFromData::run($identifier);
     }
