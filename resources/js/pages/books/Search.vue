@@ -163,10 +163,13 @@ defineOptions({
             <section class="flex flex-1 flex-col">
                 <div
                     v-if="!hasSearch"
-                    class="mb-4 flex items-center justify-center rounded-lg border-2 border-dashed py-12 px-4 gap-2 flex-col text-sm text-center text-muted-foreground border-primary/10">
+                    class="mb-4 flex items-center justify-center rounded-lg border-2 border-dashed py-16 px-4 gap-2 flex-col text-sm text-center text-muted-foreground border-primary/10">
                     <Icon
                         name="Search"
                         class="size-8" />
+                    <h3 class="font-semibold text-2xl font-serif">
+                        Start searching
+                    </h3>
                     <p>
                         Search for books by title or author, or scan a book's barcode to add it to your library.
                     </p>

@@ -18,7 +18,6 @@ class BookController extends Controller
 {
     public function index(Request $request)
     {
-        $sleep = $request->get('sleep', 0);
         $page = (int) $request->get('page', 1);
         $perPage = 10;
 

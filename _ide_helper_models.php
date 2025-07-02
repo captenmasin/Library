@@ -46,6 +46,7 @@ namespace App\Models{
      * @property string|null $path
      * @property int|null $page_count
      * @property int|null $publisher_id
+     * @property string|null $service
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Author> $authors
      * @property-read int|null $authors_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
@@ -77,6 +78,7 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book wherePath($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book wherePublishedDate($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book wherePublisherId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereService($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereSettings($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereTitle($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Book whereUpdatedAt($value)
@@ -212,6 +214,8 @@ namespace App\Models{
      * @property string|null $content
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property string $uuid
+     * @property string|null $title
      * @property-read \App\Models\Book $book
      * @property-read \App\Models\User $user
      *
@@ -223,8 +227,10 @@ namespace App\Models{
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereCreatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereRating($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereTitle($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereUpdatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereUserId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereUuid($value)
      */
     class Review extends \Eloquent {}
 }
