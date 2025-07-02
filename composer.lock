@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dcd5cd15756c79b82dc27530eb78c1b5",
+    "content-hash": "e4d096cfd58f7b83a8b4f2f77f2c95e9",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -10096,6 +10096,78 @@
             "time": "2025-03-05T08:29:11+00:00"
         },
         {
+            "name": "captenmasin/laravel-dumper",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/captenmasin/laravel-dumper.git",
+                "reference": "3efa6f3478d5e7e53097a44e064431094e508d26"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/captenmasin/laravel-dumper/zipball/3efa6f3478d5e7e53097a44e064431094e508d26",
+                "reference": "3efa6f3478d5e7e53097a44e064431094e508d26",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/support": "^9|^10|^11|^12|12.x-dev|dev-master",
+                "jdorn/sql-formatter": "^1.2",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "mockery/mockery": "^1.3.2",
+                "orchestra/testbench": "^7.10|^8|9.x-dev|10.x-dev|dev-master",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Captenmasin\\LaravelDumper\\LaravelDumperServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Captenmasin\\LaravelDumper\\": "src/"
+                },
+                "files": [
+                    "src/autoload.php"
+                ]
+            },
+            "autoload-dev": {
+                "classmap": [
+                    "tests/TestCase.php"
+                ],
+                "psr-4": {
+                    "Captenmasin\\LaravelDumper\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "write-diffs": [
+                    "WRITE_DIFFS=1 vendor/bin/phpunit"
+                ],
+                "fix-style": [
+                    "vendor/bin/php-cs-fixer fix"
+                ],
+                "check-style": [
+                    "vendor/bin/php-cs-fixer fix --diff --dry-run"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "keywords": [
+                "laravel"
+            ],
+            "support": {
+                "source": "https://github.com/captenmasin/laravel-dumper/tree/v1.0.0"
+            },
+            "time": "2025-02-26T13:02:24+00:00"
+        },
+        {
             "name": "composer/class-map-generator",
             "version": "1.6.1",
             "source": {
@@ -10587,6 +10659,60 @@
                 "source": "https://github.com/hamcrest/hamcrest-php/tree/v2.1.1"
             },
             "time": "2025-04-30T06:54:44+00:00"
+        },
+        {
+            "name": "jdorn/sql-formatter",
+            "version": "v1.2.17",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jdorn/sql-formatter.git",
+                "reference": "64990d96e0959dff8e059dfcdc1af130728d92bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jdorn/sql-formatter/zipball/64990d96e0959dff8e059dfcdc1af130728d92bc",
+                "reference": "64990d96e0959dff8e059dfcdc1af130728d92bc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "lib"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Dorn",
+                    "email": "jeremy@jeremydorn.com",
+                    "homepage": "http://jeremydorn.com/"
+                }
+            ],
+            "description": "a PHP SQL highlighting library",
+            "homepage": "https://github.com/jdorn/sql-formatter/",
+            "keywords": [
+                "highlight",
+                "sql"
+            ],
+            "support": {
+                "issues": "https://github.com/jdorn/sql-formatter/issues",
+                "source": "https://github.com/jdorn/sql-formatter/tree/v1.2.17"
+            },
+            "time": "2014-01-12T16:20:24+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
