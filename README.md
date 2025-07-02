@@ -95,6 +95,34 @@ npm install && npm run dev
 php artisan db:seed
 ```
 
+## 🐳 Docker
+
+This application can be run using Docker and Docker Compose.
+
+### Prerequisites
+
+- Docker installed on your machine
+
+### Build & Run
+
+```bash
+docker compose up -d --build
+```
+
+The application will be available at http://localhost
+
+To run database migrations and seeders:
+
+```bash
+docker compose exec app php artisan migrate --seed
+```
+
+To stop and remove containers:
+
+```bash
+docker compose down
+```
+
 ---
 
 ### 📈 Roadmap / Wishlist
