@@ -24,6 +24,7 @@ class ImportBookFromData
         if (empty($data)) {
             $data = $this->booksApi->get($identifier);
             if (empty($data)) {
+                //                abort(404, "No data found for identifier: $identifier");
                 throw new \Exception("No data found for identifier: $identifier");
             }
         }

@@ -116,7 +116,7 @@ defineOptions({
                 Search Books
             </h2>
 
-            <Dialog :default-open="true">
+            <Dialog>
                 <DialogTrigger as-child>
                     <Button
                         class="cursor-pointer"

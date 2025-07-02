@@ -18,7 +18,7 @@ defineProps<{
 const form = useForm({
     email: '',
     password: '',
-    remember: false
+    remember: true
 })
 
 const submit = async () => {
@@ -90,7 +90,7 @@ const submit = async () => {
                         class="flex items-center space-x-3">
                         <Checkbox
                             id="remember"
-                            v-model="form.remember"
+                            v-model:checked="form.remember"
                             :tabindex="3" />
                         <span>Remember me</span>
                     </Label>
