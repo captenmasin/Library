@@ -178,7 +178,7 @@ const reset = () => {
                     <img
                         :src="coverPreview"
                         alt="Cover Preview"
-                        class="w-full rounded-md">
+                        class="w-full rounded-md aspect-cover">
                 </div>
 
                 <div

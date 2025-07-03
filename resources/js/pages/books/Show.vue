@@ -77,7 +77,7 @@ defineOptions({
                 <UpdateBookCover :book>
                     <Image
                         width="250"
-                        class="w-full rounded-md aspect-cover"
+                        class="w-full rounded-md aspect-book"
                         :src="book.cover" />
                 </UpdateBookCover>
 

@@ -3,6 +3,7 @@ import Icon from '@/components/Icon.vue'
 import DefaultCover from '~/images/default-cover.svg'
 import BarcodeScanned from '~/audio/barcode-scanned.mp3'
 import HorizontalSkeleton from '@/components/books/HorizontalSkeleton.vue'
+import SingleSearchResult from '@/components/books/SingleSearchResult.vue'
 import { toast } from 'vue-sonner'
 import { useSound } from '@vueuse/sound'
 import { useVibrate } from '@vueuse/core'
@@ -156,76 +157,11 @@ onMounted(() => {
 
         <div
             v-if="book && !loading"
-            class="mt-4">
-            <div class="flex items-center gap-4 py-2">
-                <component
-                    :is="book.links.show ? 'a' : 'span'"
-                    target="_blank"
-                    :href="book.links.show ? book.links.show : null">
-                    <div class="shrink-0 overflow-hidden rounded-sm shadow-sm aspect-book w-22">
-                        <img
-                            :src="book.cover ?? DefaultCover"
-                            :alt="`Book cover image for ${book.title}`"
-                            class="bg-gray-200 object-cover size-full">
-                    </div>
-                </component>
-                <div class="flex flex-col">
-                    <div class="flex">
-                        <component
-                            :is="book.links.show ? 'a' : 'span'"
-                            target="_blank"
-                            :href="book.links.show ? book.links.show : null">
-                            <h3 class="font-serif text-lg/6">
-                                {{ book.title }}
-                            </h3>
-                        </component>
-                    </div>
-                    <p class="text-sm mt-0.5 text-muted-foreground">
-                        By {{ book.authors?.map((a) => a.name).join(', ') }}
-                    </p>
-                    <p
-                        v-if="book.description"
-                        class="mt-1 text-xs text-muted-foreground line-clamp-2">
-                        {{ book.description_clean }}
-                    </p>
-                </div>
-            </div>
-            <div class="ml-auto flex shrink-0 items-center justify-end gap-2 w-78">
-                <div
-                    v-if="addingBooks.includes(book.identifier)"
-                    class="animate-spin rounded-full border border-gray-200 bg-gray-100 p-1 text-gray-600">
-                    <Icon
-                        name="LoaderCircle"
-                        class="w-4"
-                    />
-                </div>
-
-                <Button
-                    v-if="addedBookIdentifiers.has(book.identifier)"
-                    @click="removeBookFromUser(book)">
-                    Remove
-                </Button>
-
-                <div class="w-44">
-                    <Select
-                        v-model="selectedStatuses[book.identifier]"
-                        @update:model-value="value => select(book, value)">
-                        <SelectTrigger class="w-full">
-                            <SelectValue placeholder="Add to library" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectItem
-                                    v-for="status in possibleStatuses"
-                                    :key="status.value"
-                                    :value="status.value">
-                                    {{ status.label }}
-                                </SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                </div>
-            </div>
+            class="mt-4 p-1">
+            <SingleSearchResult
+                target="_blank"
+                :book="book"
+                :narrow="true" />
         </div>
     </div>
 </template>

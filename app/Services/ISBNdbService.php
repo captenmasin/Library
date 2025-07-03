@@ -20,7 +20,7 @@ class ISBNdbService implements BookApiServiceInterface
         int $maxResults = 30,
         $page = 1
     ): array {
-        if (! $query) {
+        if (! $query && ! $author) {
             return [];
         }
 

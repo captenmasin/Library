@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
+import PageTitle from '@/components/PageTitle.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import CheckboxList from '@/components/CheckboxList.vue'
 import ShelfView from '@/components/books/ShelfView.vue'
@@ -131,14 +132,14 @@ defineOptions({ layout: AppLayout })
     <div class="container mx-auto">
         <!-- Header --------------------------------------------------------- -->
         <div class="flex items-center gap-4">
-            <h2 class="font-serif text-3xl font-bold">
+            <PageTitle>
                 <template v-if="currentSearch">
                     Search results for "{{ currentSearch }}"
                 </template>
                 <template v-else>
                     All Books ({{ filteredBooks.length }})
                 </template>
-            </h2>
+            </PageTitle>
 
             <!-- View & Sort Controls ---------------------------------------- -->
             <div class="ml-auto flex items-center gap-2">
