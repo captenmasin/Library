@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import 'vue-sonner/style.css'
 import MetaHead from '@/components/MetaHead.vue'
-import AppHeader from '@/components/AppHeader.vue'
-import AppLayout from '@/layouts/app/AppHeaderLayout.vue'
 import AppHeaderLayout from '@/layouts/app/AppHeaderLayout.vue'
 import { watch } from 'vue'
 import { toast } from 'vue-sonner'

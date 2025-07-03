@@ -24,9 +24,8 @@ onMounted(() => applyMeta())
 </script>
 
 <template>
-    <div :key="key">
-        <Head
-            :description="meta?.description"
-            :title="meta?.title" />
-    </div>
+    <Head
+        :key="key"
+        :description="meta?.description"
+        :title="meta?.title" />
 </template>

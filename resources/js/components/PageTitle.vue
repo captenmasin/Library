@@ -16,7 +16,7 @@ const attrs = useAttrs()
     <component
         :is="tag"
         v-bind="attrs"
-        :class="cn('font-serif text-3xl font-bold', attrs.class ?? '')">
+        :class="cn('font-serif text-2xl md:text-3xl font-bold', attrs.class ?? '')">
         <slot />
     </component>
 </template>

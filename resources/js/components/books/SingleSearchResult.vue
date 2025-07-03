@@ -7,6 +7,7 @@ import { BookApiResult } from '@/types/book'
 import { Button } from '@/components/ui/button'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const props = defineProps({
@@ -24,7 +25,8 @@ const props = defineProps({
     }
 })
 
-const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, addingBooks, addBookToUser, removeBookFromUser } = useUserBookStatus()
+const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, addingBooks, addBookToUser, removeBookFromUser } =
+    useUserBookStatus()
 
 function select (book: BookApiResult, status: UserBookStatus) {
     if (book?.identifier) {
@@ -51,19 +53,19 @@ const linkTag = computed(() => {
 
 <template>
     <div
-        class="flex items-center"
-        :class="narrow ? 'flex-col gap-1' : 'gap-4'">
+        class="flex flex-col items-center gap-2"
+        :class="narrow ? '' : 'md:flex-row md:gap-4'">
         <div class="flex items-center gap-4">
             <component
                 :is="linkTag"
                 :href="book.links?.show ?? null"
                 :target="target"
                 prefetch>
-                <div class="shrink-0 overflow-hidden rounded-sm shadow-sm aspect-book w-22">
+                <div class="aspect-book w-18 shrink-0 overflow-hidden rounded-sm shadow-sm md:w-22">
                     <img
                         :src="book.cover ?? DefaultCover"
                         :alt="`Book cover image for ${book.title}`"
-                        class="bg-gray-200 object-cover size-full">
+                        class="size-full bg-gray-200 object-cover">
                 </div>
             </component>
             <div class="flex flex-col">
@@ -73,41 +75,51 @@ const linkTag = computed(() => {
                         :href="book.links?.show ?? null"
                         :target="target"
                         prefetch>
-                        <h3 class="font-serif text-lg/6">
+                        <h3 class="line-clamp-2 font-serif text-base/5 md:line-clamp-4 md:text-lg/6">
                             {{ book.title }}
                         </h3>
                     </component>
                 </div>
-                <p class="text-sm mt-0.5 text-muted-foreground">
+                <p class="mt-0.5 text-xs text-muted-foreground md:text-sm">
                     By {{ book.authors?.map((a) => a.name).join(', ') }}
                 </p>
                 <p
                     v-if="book.description"
-                    class="mt-1 text-xs text-muted-foreground line-clamp-2">
+                    class="mt-1 line-clamp-2 text-xs text-muted-foreground">
                     {{ book.description_clean }}
                 </p>
             </div>
         </div>
-        <div class="ml-auto flex shrink-0 items-center justify-end gap-2 w-78">
+        <div class="ml-auto flex w-full shrink-0 items-center justify-end gap-2 md:w-78">
             <div
                 v-if="addingBooks.includes(book.identifier)"
                 class="animate-spin rounded-full border border-gray-200 bg-gray-100 p-1 text-gray-600">
                 <Icon
                     name="LoaderCircle"
-                    class="w-4"
-                />
+                    class="w-4" />
             </div>
 
-            <Button
-                v-if="addedBookIdentifiers.has(book.identifier)"
-                @click="removeBookFromUser(book)">
-                Remove
-            </Button>
+            <TooltipProvider v-if="addedBookIdentifiers.has(book.identifier)">
+                <Tooltip>
+                    <TooltipTrigger>
+                        <Button
+                            variant="destructive-ghost"
+                            size="icon"
+                            @click="removeBookFromUser(book)"
+                        >
+                            <Icon
+                                name="Trash"
+                                class="w-4" />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent> Remove from library </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
 
-            <div class="w-44">
+            <div class="w-full md:w-44">
                 <Select
                     v-model="selectedStatuses[book.identifier]"
-                    @update:model-value="value => select(book, value as UserBookStatus)">
+                    @update:model-value="(value) => select(book, value as UserBookStatus)">
                     <SelectTrigger class="w-full">
                         <SelectValue placeholder="Add to library" />
                     </SelectTrigger>

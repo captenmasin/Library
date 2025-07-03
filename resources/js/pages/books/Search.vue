@@ -69,16 +69,12 @@ function loadMore () {
         onBefore: () => {
             loadingMore.value = true
         },
-        onStart: () => {
-            nextTick(() => {
-                window.scrollTo({
-                    top: document.documentElement.scrollHeight - 100,
-                    behavior: 'smooth'
-                })
-            })
-        },
         onFinish: () => {
             loadingMore.value = false
+            // window.scrollTo({
+            //     top: document.documentElement.scrollHeight - 100,
+            //     behavior: 'smooth'
+            // })
         }
     })
 }
@@ -105,7 +101,7 @@ defineOptions({
             </PageTitle>
         </div>
 
-        <div class="mt-8 flex flex-col md:flex-row items-start gap-4">
+        <div class="mt-4 md:mt-8 flex flex-col md:flex-row items-start gap-4">
             <aside class="md:sticky top-4 left-0 w-full md:w-64">
                 <form
                     class="flex flex-col gap-2"
@@ -149,7 +145,7 @@ defineOptions({
                 </form>
 
                 <div>
-                    <div class="flex items-center my-6">
+                    <div class="flex items-center my-3 md:my-6">
                         <Separator class="flex flex-1" />
                         <span class="flex px-4 text-sm text-muted-foreground">or</span>
                         <Separator class="flex flex-1" />
@@ -177,11 +173,14 @@ defineOptions({
                 <div
                     v-if="hasSearch && results && results.total > 0"
                     class="flex justify-between mb-4 text-sm text-muted-foreground">
-                    <p>
+                    <p class="hidden md:flex">
                         Found {{ formatNumber(results.total) }} books
                     </p>
-                    <p>
+                    <p class="hidden md:flex">
                         Showing {{ formatNumber(results.books.length) }} results
+                    </p>
+                    <p class="md:hidden">
+                        Showing {{ formatNumber(results.books.length) }} of {{ formatNumber(results.total) }} results
                     </p>
                 </div>
 
@@ -246,7 +245,7 @@ defineOptions({
 
                         <div
                             v-if="results.books.length < results.total"
-                            class="mt-4 flex items-center justify-center">
+                            class="mt-4 mb-36 flex items-center justify-center">
                             <Button
                                 variant="secondary"
                                 :disabled="loadingMore"
