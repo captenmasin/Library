@@ -11,7 +11,7 @@ defineProps({
 
 <template>
     <div class="flex flex-col md:flex-row w-full md:items-center gap-2 md:gap-4 py-2">
-        <div class="flex items-center gap-4">
+        <div class="flex gap-4">
             <Skeleton class="shrink-0 overflow-hidden rounded-sm aspect-book w-18 md:w-22" />
             <div class="flex flex-col gap-1">
                 <Skeleton class="h-5 w-48 rounded" />

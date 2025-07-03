@@ -22,6 +22,7 @@
         "laravel/sanctum": "^4.1",
         "laravel/tinker": "^2.10.1",
         "lorisleiva/laravel-actions": "^2.9",
+        "spatie/laravel-data": "^4.17",
         "spatie/laravel-medialibrary": "^11.13",
         "spatie/laravel-permission": "^6.20",
         "spatie/robots-txt": "^2.5",

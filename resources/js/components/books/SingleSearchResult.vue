@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import DefaultCover from '~/images/default-cover.svg'
+import HorizontalSkeleton from '@/components/books/HorizontalSkeleton.vue'
 import { Link } from '@inertiajs/vue3'
 import { computed, PropType } from 'vue'
 import { BookApiResult } from '@/types/book'
@@ -55,7 +56,7 @@ const linkTag = computed(() => {
     <div
         class="flex flex-col items-center gap-2"
         :class="narrow ? '' : 'md:flex-row md:gap-4'">
-        <div class="flex items-center gap-4">
+        <div class="flex gap-4">
             <component
                 :is="linkTag"
                 :href="book.links?.show ?? null"
