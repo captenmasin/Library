@@ -64,13 +64,15 @@ class UserBookController extends Controller
         } elseif ($sort === 'published_date') {
             $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
         } elseif ($sort === 'added') {
-            $books = $books->sortBy('id', SORT_REGULAR, $desc);
+            $books = $books->sortBy(function ($book) {
+                return $book->pivot->created_at;
+            }, SORT_REGULAR, $desc);
         } elseif ($sort === 'colour') {
             $books = $books->sortBy(function ($book) {
                 $hex = ltrim($book->settings()->get('colour', '#000000'), '#');
 
                 if (strlen($hex) !== 6) {
-                    return 0; // fallback if invalid hex
+                    return 0;
                 }
 
                 [$r, $g, $b] = [

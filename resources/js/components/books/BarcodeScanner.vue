@@ -3,7 +3,7 @@ import Icon from '@/components/Icon.vue'
 import DefaultCover from '~/images/default-cover.svg'
 import BarcodeScanned from '~/audio/barcode-scanned.mp3'
 import HorizontalSkeleton from '@/components/books/HorizontalSkeleton.vue'
-import SingleSearchResult from '@/components/books/SingleSearchResult.vue'
+import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import { toast } from 'vue-sonner'
 import { useSound } from '@vueuse/sound'
 import { useVibrate } from '@vueuse/core'
@@ -163,7 +163,7 @@ onMounted(() => {
         <div
             v-if="book && !loading"
             class="mt-4 p-1">
-            <SingleSearchResult
+            <BookCardHorizontal
                 target="_blank"
                 :book="book"
                 :narrow="true" />

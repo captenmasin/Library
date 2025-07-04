@@ -5,7 +5,7 @@ import PageTitle from '@/components/PageTitle.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import CheckboxList from '@/components/CheckboxList.vue'
 import ShelfView from '@/components/books/ShelfView.vue'
-import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
+import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import type { Book } from '@/types/book'
 import type { Author } from '@/types/author'
 import { Input } from '@/components/ui/input'
@@ -131,7 +131,7 @@ defineOptions({ layout: AppLayout })
 <template>
     <div class="container mx-auto">
         <!-- Header --------------------------------------------------------- -->
-        <div class="flex items-center gap-4">
+        <div class="flex flex-col md:flex-row items-center gap-4">
             <PageTitle>
                 <template v-if="currentSearch">
                     Search results for "{{ currentSearch }}"
@@ -142,7 +142,7 @@ defineOptions({ layout: AppLayout })
             </PageTitle>
 
             <!-- View & Sort Controls ---------------------------------------- -->
-            <div class="ml-auto flex items-center gap-2">
+            <div class="md:ml-auto flex-col w-full md:w-auto md:flex-row flex items-center gap-2">
                 <!-- View toggle -->
                 <Tabs
                     v-model="view"
@@ -173,7 +173,7 @@ defineOptions({ layout: AppLayout })
                 </Tabs>
 
                 <!-- Sort dropdown & order -->
-                <div class="flex w-48 items-center justify-end gap-2">
+                <div class="flex w-full md:w-48 items-center justify-end gap-2">
                     <Select v-model="sort">
                         <SelectTrigger class="w-full">
                             <SelectValue placeholder="Sort books" />
@@ -205,51 +205,55 @@ defineOptions({ layout: AppLayout })
         </div>
 
         <!-- Main layout ----------------------------------------------------- -->
-        <div class="mt-8 flex items-start gap-4">
+        <div class="mt-8 flex-col md:flex-row flex items-start gap-4">
             <!-- Sidebar filters -->
-            <aside class="flex w-64 flex-col gap-2">
+            <aside class="flex w-full md:w-64 flex-col gap-2">
                 <!-- Search ---------------------------------------------------- -->
-                <form @submit.prevent="submitForm">
-                    <div class="relative flex">
-                        <Input
-                            v-model="search"
-                            class="pr-10"
-                            placeholder="Search" />
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-1">
-                            <Button
-                                type="submit"
-                                variant="link"
-                                class="cursor-pointer"
-                                size="icon"
-                            >
-                                <Icon name="Search" />
-                            </Button>
+                <div class="flex gap-2 md:flex-col">
+                    <form
+                        class="w-full flex"
+                        @submit.prevent="submitForm">
+                        <div class="relative flex w-full">
+                            <Input
+                                v-model="search"
+                                class="pr-10"
+                                placeholder="Search" />
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-1">
+                                <Button
+                                    type="submit"
+                                    variant="link"
+                                    class="cursor-pointer"
+                                    size="icon"
+                                >
+                                    <Icon name="Search" />
+                                </Button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
 
-                <!-- Author filter -------------------------------------------- -->
-                <Select
-                    v-if="authors.length"
-                    v-model="author">
-                    <SelectTrigger class="w-full">
-                        <SelectValue placeholder="Filter by author" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectItem :value="null">
-                                All Authors
-                            </SelectItem>
-                            <SelectItem
-                                v-for="a in authors"
-                                :key="a.uuid"
-                                :value="a.uuid"
-                            >
-                                {{ a.name }}
-                            </SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
+                    <!-- Author filter -------------------------------------------- -->
+                    <Select
+                        v-if="authors.length"
+                        v-model="author">
+                        <SelectTrigger class="w-full">
+                            <SelectValue placeholder="Filter by author" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem :value="null">
+                                    All Authors
+                                </SelectItem>
+                                <SelectItem
+                                    v-for="a in authors"
+                                    :key="a.uuid"
+                                    :value="a.uuid"
+                                >
+                                    {{ a.name }}
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
 
                 <!-- Status filter -------------------------------------------- -->
                 <div class="mt-4">
@@ -287,10 +291,10 @@ defineOptions({ layout: AppLayout })
                     v-else
                     :class="
                         view === 'list'
-                            ? 'grid-cols-1'
-                            : 'grid-cols-2 md:grid-cols-5'
+                            ? 'grid-cols-1 gap-8 md:gap-4'
+                            : 'grid-cols-2 gap-6 md:grid-cols-5'
                     "
-                    class="grid gap-4"
+                    class="grid md:gap-4"
                 >
                     <li
                         v-for="book in filteredBooks"
@@ -298,8 +302,11 @@ defineOptions({ layout: AppLayout })
                         :class="view === 'list' ? 'flex gap-4' : ''"
                         class="w-full"
                     >
+                        <BookCardHorizontal
+                            v-if="view === 'list'"
+                            :book="book" />
                         <BookCard
-                            :horizontal="view === 'list'"
+                            v-if="view === 'grid'"
                             :book="book" />
                     </li>
                 </ul>

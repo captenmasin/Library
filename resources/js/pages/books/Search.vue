@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import PageTitle from '@/components/PageTitle.vue'
 import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
 import HorizontalSkeleton from '@/components/books/HorizontalSkeleton.vue'
-import SingleSearchResult from '@/components/books/SingleSearchResult.vue'
+import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import { BookApiResult } from '@/types/book'
 import { Label } from '@/components/ui/label'
 import { useRoute } from '@/composables/useRoute'
@@ -232,7 +232,7 @@ defineOptions({
                         class="-mt-2">
                         <ul
                             class="divide-y divide-muted-foreground/5">
-                            <SingleSearchResult
+                            <BookCardHorizontal
                                 v-for="book in hasSearch ? results.books : []"
                                 :key="book.identifier"
                                 class="py-2"

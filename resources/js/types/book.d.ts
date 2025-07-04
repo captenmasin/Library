@@ -27,7 +27,7 @@ export type Book = {
         updated_at: string,
     },
     user_tags: string[],
-    colour?: string,
+    colour: string,
     imported?: boolean,
     in_library: boolean,
     has_custom_cover?: boolean,

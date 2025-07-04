@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import DefaultCover from '~/images/default-cover.svg'
-import HorizontalSkeleton from '@/components/books/HorizontalSkeleton.vue'
 import { Link } from '@inertiajs/vue3'
 import { computed, PropType } from 'vue'
-import { BookApiResult } from '@/types/book'
 import { Button } from '@/components/ui/button'
+import { Book, BookApiResult } from '@/types/book'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -13,7 +12,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 
 const props = defineProps({
     book: {
-        type: Object as PropType<BookApiResult>,
+        type: Object as PropType<BookApiResult | Book>,
         required: true
     },
     narrow: {
@@ -29,7 +28,7 @@ const props = defineProps({
 const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, addingBooks, addBookToUser, removeBookFromUser } =
     useUserBookStatus()
 
-function select (book: BookApiResult, status: UserBookStatus) {
+function select (book: BookApiResult | Book, status: UserBookStatus) {
     if (book?.identifier) {
         if (addedBookIdentifiers.value.has(book.identifier)) {
             updateStatus(book, status)
@@ -54,7 +53,7 @@ const linkTag = computed(() => {
 
 <template>
     <div
-        class="flex flex-col items-center gap-2"
+        class="flex flex-col items-center gap-2 w-full"
         :class="narrow ? '' : 'md:flex-row md:gap-4'">
         <div class="flex gap-4">
             <component
@@ -91,7 +90,7 @@ const linkTag = computed(() => {
                 </p>
             </div>
         </div>
-        <div class="ml-auto flex w-full shrink-0 items-center justify-end gap-2 md:w-78">
+        <div class="ml-auto flex w-full shrink-0 items-center justify-end gap-2 md:w-full flex-1">
             <div
                 v-if="addingBooks.includes(book.identifier)"
                 class="animate-spin rounded-full border border-gray-200 bg-gray-100 p-1 text-gray-600">
