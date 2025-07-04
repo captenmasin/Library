@@ -54,8 +54,8 @@ const linkTag = computed(() => {
 <template>
     <div
         class="flex flex-col items-center gap-2 w-full"
-        :class="narrow ? '' : 'md:flex-row md:gap-4'">
-        <div class="flex gap-4">
+        :class="narrow ? '' : 'md:flex-row md:gap-8'">
+        <div class="flex gap-4 w-full">
             <component
                 :is="linkTag"
                 :href="book.links?.show ?? null"
