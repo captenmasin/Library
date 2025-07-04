@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\BookApiServiceInterface;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -13,6 +14,15 @@ class ISBNdbService implements BookApiServiceInterface
     public const ServiceName = 'ISBNdb';
 
     protected static string $baseUrl = 'https://api2.isbndb.com';
+
+    protected static function client(): PendingRequest
+    {
+        static $client;
+
+        return $client ??= Http::withHeaders([
+            'Authorization' => config('services.isbndb.key'),
+        ]);
+    }
 
     public static function search(
         ?string $query = null,
@@ -26,26 +36,27 @@ class ISBNdbService implements BookApiServiceInterface
 
         $sanitizedQuery = Str::slug($query);
         $sanitizedAuthor = Str::slug($author);
-        $cacheKey = "books:search:query:$sanitizedQuery:author:$sanitizedAuthor:maxResults:$maxResults:page:$page";
+        $hash = md5("$sanitizedQuery|$sanitizedAuthor|$maxResults|$page");
+        $cacheKey = "books:search:$hash";
 
         return Cache::remember($cacheKey, now()->addHour(), function () use ($query, $author, $maxResults, $page, $cacheKey) {
-            $queryParts = [];
-            $queryParts['page'] = $page; // API uses 1-based indexing
-            $queryParts['pageSize'] = $maxResults;
-            $queryParts['shouldMatchAll'] = 0;
-
-            if ($author) {
+            $queryParts = collect([
+                'page' => $page,
+                'pageSize' => $maxResults,
+                'shouldMatchAll' => 0,
+            ])->when($author, function ($parts) use ($author, &$query) {
                 $query .= ' '.$author;
-                $queryParts['shouldMatchAll'] = 1;
-            }
+
+                return $parts->put('shouldMatchAll', 1);
+            })->all();
 
             $url = Uri::of(self::$baseUrl)
                 ->withPath('books/'.urlencode($query))
                 ->withQuery($queryParts);
 
-            $response = Http::withHeaders([
-                'Authorization' => config('services.isbndb.key'),
-            ])->get($url);
+            $response = self::client()
+                ->retry(3, 200)
+                ->get($url);
 
             if (! $response->ok()) {
                 Cache::forget($cacheKey);
@@ -79,9 +90,9 @@ class ISBNdbService implements BookApiServiceInterface
 
     public static function getFromApi(string $id): ?array
     {
-        $response = Http::withHeaders([
-            'Authorization' => config('services.isbndb.key'),
-        ])->get(self::$baseUrl.'/book/'.urlencode($id));
+        $response = self::client()
+            ->retry(3, 200)
+            ->get(self::$baseUrl.'/book/'.urlencode($id));
 
         if (! $response->ok()) {
             return null;
@@ -96,10 +107,9 @@ class ISBNdbService implements BookApiServiceInterface
             return null;
         }
 
-        $subjects = $book['subjects'] ?? [];
-        $subjects = collect($subjects)->map(function ($subject) {
+        $subjects = array_values(array_unique(array_filter(array_map(function ($subject) {
             return trim(Str::before($subject, '--'));
-        })->filter()->unique()->values()->all();
+        }, $book['subjects'] ?? []))));
 
         $description = $book['overview'] ?? $book['synopsis'] ?? null;
 
