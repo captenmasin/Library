@@ -83,7 +83,9 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     public function getBookIdentifiers(): array
     {
-        $books = $this->books()->withPivot('status')->get();
+        $books = $this->relationLoaded('books')
+            ? $this->books
+            : $this->books()->withPivot('status')->get();
 
         return $books->pluck('pivot.status', 'identifier')->toArray();
     }

@@ -28,6 +28,7 @@ class UserResource extends JsonResource
 
         $data['email'] = $this->email;
         $data['settings'] = $this->settings()->all();
+        $data['book_identifiers'] = $this->getBookIdentifiers();
 
         return $data;
     }

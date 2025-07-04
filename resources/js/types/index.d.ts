@@ -5,7 +5,6 @@ import { UserBookStatus } from '@/enums/UserBookStatus'
 
 export interface Auth {
     user: User;
-    user_books: Record<string, UserBookStatus | string>
 }
 
 export interface BreadcrumbItem {

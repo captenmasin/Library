@@ -12,12 +12,18 @@ class BookFactory extends Factory
     public function definition(): array
     {
         return [
-            'persistSettings'                            => $this->faker->boolean(),
-            'settings'                                   => $this->faker->words(),
-            'settingsFieldName'                          => $this->faker->name(),
-            'registerMediaConversionsUsingModelInstance' => $this->faker->boolean(),
-            'defaultSettings'                            => $this->faker->words(),
-            'settingsRules'                              => $this->faker->words(),
+            'title' => $this->faker->sentence(3),
+            'description' => $this->faker->paragraph,
+            'published_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'settings' => [],
+            'identifier' => \Str::random(),
+            'path' => $this->faker->slug(),
+            'page_count' => rand(),
+            'service' => 'local',
+            'publisher_id' => null,
+            'codes' => [],
         ];
     }
 }

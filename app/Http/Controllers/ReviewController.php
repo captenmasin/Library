@@ -26,7 +26,7 @@ class ReviewController extends Controller
         return back()->with('success', 'Review saved.');
     }
 
-    public function destroy(DestroyReviewRequest $request, Review $review)
+    public function destroy(DestroyReviewRequest $request, Book $book, Review $review)
     {
         $review->delete();
 

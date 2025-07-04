@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Books\DestroyBookUserRequest;
-use App\Http\Resources\AuthorResource;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
 use Illuminate\Http\Request;
@@ -15,13 +14,23 @@ class UserBookController extends Controller
 {
     public function index(Request $request)
     {
-        $bookQuery = Auth::user()->books()->with(['authors', 'reviews', 'covers']);
+        $bookQuery = Auth::user()->books()->with([
+            'authors',
+            'reviews',
+            'covers',
+            'users' => fn ($q) => $q->where('user_id', auth()->id()),
+        ]);
+
         if ($request->filled('status')) {
             $statuses = Arr::wrap($request->input('status'));
             $bookQuery->wherePivotIn('status', $statuses);
         }
 
         $books = $bookQuery->get();
+
+        $authors = $books->flatMap(function ($book) {
+            return $book->authors;
+        })->unique('uuid')->values();
 
         $books = $books->sortByDesc('id');
 
@@ -90,8 +99,7 @@ class UserBookController extends Controller
             'selectedSort' => $sort,
             'selectedOrder' => $request->get('order', 'desc'),
             'searchQuery' => $request->get('search', ''),
-            'authors' => AuthorResource::collection(Auth::user()->books()->with('authors')->get()
-                ->flatMap(fn ($book) => $book->authors)->unique('uuid'))->values(),
+            'authors' => $authors,
         ])->withMeta([
             'title' => 'Books',
         ]);

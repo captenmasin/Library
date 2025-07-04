@@ -72,19 +72,30 @@ class BookResource extends JsonResource
         return $user->book_covers->contains('book_id', $this->id);
     }
 
+    protected function getUserPivot(User $user)
+    {
+        if ($this->relationLoaded('users')) {
+            return $this->users->firstWhere('id', $user->id)?->pivot;
+        }
+
+        return $this->users()
+            ->where('user_id', $user->id)
+            ->first()?->pivot;
+    }
+
     protected function isInLibrary(User $user): bool
     {
-        return $this->users()->get()->contains($user);
+        return (bool) $this->getUserPivot($user);
     }
 
     protected function getUserStatus(User $user): ?string
     {
-        return $this->users()->where('user_id', $user->id)->first()?->pivot?->status;
+        return $this->getUserPivot($user)?->status;
     }
 
     protected function getUserTags(User $user): ?array
     {
-        return $this->users()->where('user_id', $user->id)->first()?->pivot?->tags;
+        return $this->getUserPivot($user)?->tags;
     }
 
     protected function getUserReview(?User $user = null): ?ReviewResource

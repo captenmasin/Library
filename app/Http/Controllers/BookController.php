@@ -91,7 +91,7 @@ class BookController extends Controller
             $notes = $request->get('notes');
             $request->user()->notes()->updateOrCreate(
                 ['book_id' => $book->id],
-                ['title' => 'test', 'content' => $notes]
+                ['content' => $notes]
             );
         }
 

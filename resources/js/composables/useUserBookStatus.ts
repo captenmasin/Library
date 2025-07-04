@@ -6,11 +6,16 @@ import { usePage } from '@inertiajs/vue3'
 import { computed, onMounted, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function useUserBookStatus () {
     type StatusMap = Record<string, UserBookStatus>;
 
     const page = usePage()
-    const addedBooks = ref<Record<string, UserBookStatus | string>>({ ...page.props.auth.user_books })
+    const authed = page.props.authed
+    const addedBooks = authed
+        ? ref<Record<string, UserBookStatus | string>>({ ...page.props.auth.user.book_identifiers })
+        : ref<Record<string, UserBookStatus | string>>({})
+
     const selectedStatuses = ref<StatusMap>({})
     const addingBooks = ref<string[]>([])
     const addedBookIdentifiers = computed(() => new Set(Object.keys(addedBooks.value)))

@@ -61,8 +61,6 @@ Route::prefix('library')->name('library.')
     ->group(function () {
         Route::get('/', 'index')->name('index');
 
-        Route::post('/', 'store')->name('store');
-
         Route::put('{book:identifier}/tags', 'updateTags')->name('update_tags');
     });
 

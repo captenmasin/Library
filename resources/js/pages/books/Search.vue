@@ -101,7 +101,7 @@ defineOptions({
             </PageTitle>
         </div>
 
-        <div class="mt-4 md:mt-8 flex flex-col md:flex-row items-start gap-4">
+        <div class="mt-4 md:mt-8 flex flex-col md:flex-row items-start gap-8">
             <aside class="md:sticky top-4 left-0 w-full md:w-64">
                 <form
                     class="flex flex-col gap-2"

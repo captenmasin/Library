@@ -29,6 +29,7 @@ const { getImageUrl } = useImageTransform()
 
 const page = usePage()
 const auth = computed(() => page.props.auth)
+const authed = computed(() => page.props.authed)
 
 const isCurrentRoute = computed(() => (url: string) => page.url === url)
 
@@ -182,7 +183,7 @@ const rightNavItems: NavItem[] = []
                         </div>
                     </div>
 
-                    <DropdownMenu>
+                    <DropdownMenu v-if="authed">
                         <DropdownMenuTrigger :as-child="true">
                             <Button
                                 variant="ghost"

@@ -1,3 +1,5 @@
+import { UserBookStatus } from '@/enums/UserBookStatus'
+
 export type User = {
     name: string;
     username: string;
@@ -5,5 +7,5 @@ export type User = {
     avatar?: string;
     email_verified: boolean,
     settings?: Record<string, any>;
-    user_books?: Record<string, string>;
+    book_identifiers?: Record<string, UserBookStatus>;
 }
