@@ -5,6 +5,7 @@ import PageTitle from '@/components/PageTitle.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import CheckboxList from '@/components/CheckboxList.vue'
 import ShelfView from '@/components/books/ShelfView.vue'
+import BookViewTabs from '@/components/books/BookViewTabs.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import type { Book } from '@/types/book'
 import type { Author } from '@/types/author'
@@ -17,14 +18,7 @@ import { useUserSettings } from '@/composables/useUserSettings'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { computed, ref, watch, type PropType, nextTick } from 'vue'
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 /* --------------------------------------------------------------------------
  * Props & Refs
@@ -84,7 +78,7 @@ watch(
     { deep: true }
 )
 
-watch(view, newView => updateSingleSetting('library.view', newView))
+watch(view, (newView) => updateSingleSetting('library.view', newView))
 
 /* --------------------------------------------------------------------------
  * Computed
@@ -92,12 +86,7 @@ watch(view, newView => updateSingleSetting('library.view', newView))
 const filteredBooks = computed(() => props.books ?? [])
 
 const hasFiltered = computed(
-    () =>
-        !!currentSearch.value ||
-        !!author.value ||
-        sort.value !== 'added' ||
-        status.value.length > 0 ||
-        order.value !== 'desc'
+    () => !!currentSearch.value || !!author.value || sort.value !== 'added' || status.value.length > 0 || order.value !== 'desc'
 )
 
 /* --------------------------------------------------------------------------
@@ -129,50 +118,30 @@ defineOptions({ layout: AppLayout })
 <template>
     <div class="container mx-auto">
         <!-- Header --------------------------------------------------------- -->
-        <div class="flex flex-col md:flex-row md:items-center gap-4">
-            <PageTitle>
-                <template v-if="currentSearch">
-                    Search results for "{{ currentSearch }}"
-                </template>
-                <template v-else>
-                    All Books ({{ filteredBooks.length }})
-                </template>
-            </PageTitle>
+        <div class="flex flex-col gap-2 md:gap-4 md:flex-row md:items-center">
+            <div class="flex justify-between items-center gap-8">
+                <PageTitle>
+                    <template v-if="currentSearch">
+                        Search results for "{{ currentSearch }}"
+                    </template>
+                    <template v-else>
+                        All Books ({{ filteredBooks.length }})
+                    </template>
+                </PageTitle>
+                <BookViewTabs
+                    v-model="view"
+                    class="flex md:hidden max-w-32" />
+            </div>
 
             <!-- View & Sort Controls ---------------------------------------- -->
-            <div class="md:ml-auto flex-col w-full md:w-auto md:flex-row flex items-center gap-2">
+            <div class="flex w-full flex-col items-center gap-2 md:ml-auto md:w-auto md:flex-row">
                 <!-- View toggle -->
-                <Tabs
+                <BookViewTabs
                     v-model="view"
-                    class="w-full flex flex-1"
-                    :default-value="view">
-                    <TabsList class="w-full">
-                        <TabsTrigger
-                            class="px-4"
-                            value="list">
-                            <Icon
-                                name="LayoutList"
-                                class="w-4" /> List
-                        </TabsTrigger>
-                        <TabsTrigger
-                            class="px-4"
-                            value="grid">
-                            <Icon
-                                name="LayoutGrid"
-                                class="w-4" /> Grid
-                        </TabsTrigger>
-                        <TabsTrigger
-                            class="px-4"
-                            value="shelf">
-                            <Icon
-                                name="LayoutGrid"
-                                class="w-4" /> Shelf
-                        </TabsTrigger>
-                    </TabsList>
-                </Tabs>
+                    class="hidden md:flex" />
 
                 <!-- Sort dropdown & order -->
-                <div class="flex w-full md:w-48 items-center justify-end gap-2">
+                <div class="flex w-full items-center justify-end gap-2 md:w-48">
                     <Select v-model="sort">
                         <SelectTrigger class="w-full">
                             <SelectValue placeholder="Sort books" />
@@ -182,8 +151,7 @@ defineOptions({ layout: AppLayout })
                                 <SelectItem
                                     v-for="opt in sortOptions"
                                     :key="opt.value"
-                                    :value="opt.value"
-                                >
+                                    :value="opt.value">
                                     {{ opt.label }}
                                 </SelectItem>
                             </SelectGroup>
@@ -202,8 +170,10 @@ defineOptions({ layout: AppLayout })
                     <Button
                         class="cursor-pointer bg-white text-secondary-foreground md:hidden"
                         variant="outline"
+                        :class="displayFilters ? 'border-primary bg-primary text-primary-foreground' : ''"
                         size="icon"
-                        @pointerup="displayFilters = !displayFilters">
+                        @pointerup="displayFilters = !displayFilters"
+                    >
                         <Icon
                             name="Filter"
                             class="w-4" />
@@ -213,15 +183,14 @@ defineOptions({ layout: AppLayout })
         </div>
 
         <!-- Main layout ----------------------------------------------------- -->
-        <div class="mt-8 flex-col md:flex-row flex items-start gap-4">
+        <div class="mt-6 md:mt-8 flex flex-col items-start gap-4 md:flex-row">
             <aside
                 :class="displayFilters ? 'flex' : 'hidden'"
-                class="md:flex w-full md:w-64 flex-col gap-2">
+                class="w-full flex-col gap-2 md:flex md:w-64">
                 <!-- Search ---------------------------------------------------- -->
-                <div
-                    class="flex gap-2 flex-col">
+                <div class="flex flex-col gap-2">
                     <form
-                        class="w-full flex"
+                        class="flex w-full"
                         @submit.prevent="submitForm">
                         <div class="relative flex w-full">
                             <Input
@@ -234,8 +203,7 @@ defineOptions({ layout: AppLayout })
                                     type="submit"
                                     variant="link"
                                     class="cursor-pointer"
-                                    size="icon"
-                                >
+                                    size="icon">
                                     <Icon name="Search" />
                                 </Button>
                             </div>
@@ -257,8 +225,7 @@ defineOptions({ layout: AppLayout })
                                 <SelectItem
                                     v-for="a in authors"
                                     :key="a.uuid"
-                                    :value="a.uuid"
-                                >
+                                    :value="a.uuid">
                                     {{ a.name }}
                                 </SelectItem>
                             </SelectGroup>
@@ -281,8 +248,7 @@ defineOptions({ layout: AppLayout })
                     v-if="hasFiltered"
                     class="w-full"
                     as-child
-                    variant="secondary"
-                >
+                    variant="secondary">
                     <Link
                         :href="useRoute('library.index')"
                         preserve-scroll>
@@ -295,24 +261,17 @@ defineOptions({ layout: AppLayout })
             <section class="flex flex-1 flex-col">
                 <ShelfView
                     v-if="view === 'shelf'"
-                    :books="filteredBooks"
-                />
+                    :books="filteredBooks" />
 
                 <ul
                     v-else
-                    :class="
-                        view === 'list'
-                            ? 'grid-cols-1 gap-8 md:gap-4'
-                            : 'grid-cols-2 gap-6 md:grid-cols-5'
-                    "
-                    class="grid md:gap-4"
-                >
+                    :class="view === 'list' ? 'grid-cols-1 gap-8 md:gap-4' : 'grid-cols-2 gap-6 md:grid-cols-5'"
+                    class="grid md:gap-4">
                     <li
                         v-for="book in filteredBooks"
                         :key="book.identifier"
                         :class="view === 'list' ? 'flex gap-4' : ''"
-                        class="w-full"
-                    >
+                        class="w-full">
                         <BookCardHorizontal
                             v-if="view === 'list'"
                             :book="book" />
