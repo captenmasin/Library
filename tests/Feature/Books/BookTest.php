@@ -3,6 +3,7 @@
 use App\Actions\Books\SearchBooksFromApi;
 use App\Models\Book;
 use App\Models\User;
+use App\Services\ISBNdbService;
 use Inertia\Testing\AssertableInertia;
 
 test('search page is displayed', function () {
@@ -35,18 +36,22 @@ test('book search returns results', function () {
     $mock->shouldReceive('run')
         ->with('harry potter', null, 10, 1)
         ->andReturn([
-            'data' => [
+            'items' => [
                 [
                     'identifier' => '9780747532743',
                     'title' => 'Harry Potter',
                     'authors' => ['J.K. Rowling'],
+                    'publishedDate' => '1997-06-26',
+                    'description' => 'A young wizard embarks on an adventure.',
+                    'pageCount' => 223,
+                    'cover' => 'https://example.com/cover.jpg',
+                    'codes' => [
+                        ['type' => 'ISBN_13', 'identifier' => '9780747532743'],
+                        ['type' => 'ISBN_10', 'identifier' => '0747532745'],
+                    ],
                 ],
             ],
-            'meta' => [
-                'total' => 1,
-                'page' => 1,
-                'per_page' => 10,
-            ],
+            'total' => 1,
         ]);
 
     $this->app->instance(SearchBooksFromApi::class, $mock);
@@ -101,6 +106,25 @@ test('book preview redirects if book exists', function () {
 
 test('book preview displays for new book', function () {
     $identifier = '9780747532743';
+
+    $mock = Mockery::mock(ISBNdbService::class);
+    $mock->shouldReceive('get')
+        ->with($identifier)
+        ->andReturn([
+            'identifier' => $identifier,
+            'title' => 'Harry Potter',
+            'authors' => ['J.K. Rowling'],
+            'publishedDate' => '1997-06-26',
+            'description' => 'A young wizard embarks on an adventure.',
+            'pageCount' => 223,
+            'cover' => 'https://example.com/cover.jpg',
+            'codes' => [
+                ['type' => 'ISBN_13', 'identifier' => '9780747532743'],
+                ['type' => 'ISBN_10', 'identifier' => '0747532745'],
+            ],
+        ]);
+
+    $this->app->instance(ISBNdbService::class, $mock);
 
     $response = $this->get(route('books.preview', $identifier));
 

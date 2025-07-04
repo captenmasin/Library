@@ -53,7 +53,7 @@ return [
         //        'Dumps' => Command::from('php artisan solo:dumps')->lazy(),
         //        'Reverb' => Command::from('php artisan reverb:start --debug')->lazy(),
         //        'Pint' => Command::from('./vendor/bin/pint --ansi')->lazy(),
-        'Tests' => Command::from('./vendor/bin/pest --watch --parallel')->withEnv(['APP_ENV' => 'testing'])->lazy(),
+        'Tests' => Command::from('APP_ENV=testing vendor/bin/pest --watch --parallel')->withEnv(['APP_ENV' => 'testing'])->lazy(),
         'Nightwatch' => Command::from('php artisan nightwatch:agent')->lazy(),
     ],
 
