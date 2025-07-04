@@ -119,7 +119,7 @@ defineOptions({ layout: AppLayout })
 <template>
     <div class="container mx-auto">
         <!-- Header --------------------------------------------------------- -->
-        <div class="flex flex-col gap-4 md:flex-row md:items-center">
+        <div class="flex flex-col gap-2.5 md:gap-4 md:flex-row md:items-center">
             <div class="flex justify-between items-center gap-8">
                 <PageTitle class="flex-1">
                     <template v-if="currentSearch">
@@ -135,14 +135,14 @@ defineOptions({ layout: AppLayout })
             </div>
 
             <!-- View & Sort Controls ---------------------------------------- -->
-            <div class="flex w-full flex-col items-center gap-2 md:ml-auto md:w-auto md:flex-row">
+            <div class="flex w-full flex-col items-center gap-2.5 md:gap-2 md:ml-auto md:w-auto md:flex-row">
                 <!-- View toggle -->
                 <BookViewTabs
                     v-model="view"
                     class="hidden md:flex" />
 
                 <!-- Sort dropdown & order -->
-                <div class="flex w-full items-center justify-end gap-4 md:w-56">
+                <div class="flex w-full items-center justify-end gap-2.5 md:gap-2 md:w-56">
                     <Select v-model="sort">
                         <SelectTrigger class="w-full">
                             <span
