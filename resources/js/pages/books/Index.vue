@@ -25,14 +25,6 @@ import {
     SelectTrigger,
     SelectValue
 } from '@/components/ui/select'
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogFooter,
-    DialogTitle,
-    DialogTrigger
-} from '@/components/ui/dialog'
 
 /* --------------------------------------------------------------------------
  * Props & Refs
@@ -48,6 +40,7 @@ const props = defineProps({
 
 const params = useUrlSearchParams<'history'>('history')
 const { possibleStatuses } = useUserBookStatus()
+const displayFilters = ref(false)
 
 /** Search --------------------------------------------------------------- */
 const search = ref((params.search as string) || '')
@@ -131,7 +124,7 @@ defineOptions({ layout: AppLayout })
 <template>
     <div class="container mx-auto">
         <!-- Header --------------------------------------------------------- -->
-        <div class="flex flex-col md:flex-row items-center gap-4">
+        <div class="flex flex-col md:flex-row md:items-center gap-4">
             <PageTitle>
                 <template v-if="currentSearch">
                     Search results for "{{ currentSearch }}"
@@ -146,8 +139,9 @@ defineOptions({ layout: AppLayout })
                 <!-- View toggle -->
                 <Tabs
                     v-model="view"
+                    class="w-full flex flex-1"
                     :default-value="view">
-                    <TabsList>
+                    <TabsList class="w-full">
                         <TabsTrigger
                             class="px-4"
                             value="list">
@@ -200,16 +194,27 @@ defineOptions({ layout: AppLayout })
                     >
                         <Icon :name="order === 'asc' ? 'ArrowUpWideNarrow' : 'ArrowDownWideNarrow'" />
                     </Button>
+                    <Button
+                        class="cursor-pointer bg-white text-secondary-foreground md:hidden"
+                        variant="outline"
+                        size="icon"
+                        @pointerup="displayFilters = !displayFilters">
+                        <Icon
+                            name="Filter"
+                            class="w-4" />
+                    </Button>
                 </div>
             </div>
         </div>
 
         <!-- Main layout ----------------------------------------------------- -->
         <div class="mt-8 flex-col md:flex-row flex items-start gap-4">
-            <!-- Sidebar filters -->
-            <aside class="flex w-full md:w-64 flex-col gap-2">
+            <aside
+                :class="displayFilters ? 'flex' : 'hidden'"
+                class="md:flex w-full md:w-64 flex-col gap-2">
                 <!-- Search ---------------------------------------------------- -->
-                <div class="flex gap-2 md:flex-col">
+                <div
+                    class="flex gap-2 flex-col">
                     <form
                         class="w-full flex"
                         @submit.prevent="submitForm">
