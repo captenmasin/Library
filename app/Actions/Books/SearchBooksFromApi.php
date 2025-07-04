@@ -5,6 +5,7 @@ namespace App\Actions\Books;
 use App\Contracts\BookApiServiceInterface;
 use App\Data\BookData;
 use App\Models\Book;
+use App\Transformers\BookTransformer;
 use Cache;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -37,8 +38,13 @@ class SearchBooksFromApi
             $total = $results['total'] ?? 0;
             $books = collect($results['items'] ?? []);
 
-            $allBooks = Book::whereIn('identifier', $books->pluck('identifier'))->get()->keyBy('identifier');
-            $results = $books->map(fn ($book) => $this->transform($book, $allBooks));
+            $allBooks = Book::whereIn('identifier', $books->pluck('identifier'))
+                ->get()
+                ->keyBy('identifier');
+
+            $results = BookData::collect(
+                $books->map(fn ($book) => BookTransformer::fromIsbn($book, $allBooks))
+            );
 
             ImportBooksFromArray::dispatch($books);
 
@@ -53,26 +59,6 @@ class SearchBooksFromApi
     private function getCachedResultsKey(string $query = '', string $author = '', int $page = 1, int $maxResults = 30): string
     {
         return 'books:search:'.md5(strtolower(trim($query)).'__'.strtolower(trim($author)).'__'.$page.'__'.$maxResults);
-    }
-
-    private function transform($book, $allBooks): array
-    {
-        if (empty($book['identifier'])) {
-            return [];
-        }
-
-        if ($allBooks->has($book['identifier'])) {
-            $existing = $allBooks->get($book['identifier']);
-            $book['links']['show'] = route('books.show', $existing);
-        } else {
-            $book['links']['show'] = route('books.preview', ['identifier' => $book['identifier']]);
-        }
-
-        $book['authors'] = collect($book['authors'] ?? [])
-            ->map(fn ($author) => ['name' => $author, 'uuid' => null])
-            ->all();
-
-        return BookData::from($book)->toArray();
     }
 
     public function asController(Request $request): JsonResponse

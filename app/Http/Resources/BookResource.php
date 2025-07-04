@@ -26,6 +26,7 @@ class BookResource extends JsonResource
             'cover' => $this->relationLoaded('covers')
                 ? $this->getCover($request->user())
                 : null,
+            'description_clean' => strip_tags($this->description ?? ''),
             'in_library' => $request->user() && $this->isInLibrary($request->user()),
             'user_status' => $request->user() ? $this->getUserStatus($request->user()) : null,
             'user_tags' => $request->user() ? $this->getUserTags($request->user()) : [],

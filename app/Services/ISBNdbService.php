@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\BookApiServiceInterface;
-use App\Data\BookData;
+use App\Transformers\BookTransformer;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -69,10 +69,7 @@ class ISBNdbService implements BookApiServiceInterface
 
             return [
                 'total' => $response->json('total'),
-                'items' => collect($items)
-                    ->map(fn ($book) => self::transform($book))
-                    ->filter()
-                    ->all(),
+                'items' => $items,
             ];
         });
     }
@@ -80,7 +77,7 @@ class ISBNdbService implements BookApiServiceInterface
     public static function get(string $id): ?array
     {
         return Cache::remember("books:id:$id", now()->addWeek(), function () use ($id) {
-            return self::transform(self::getFromApi($id));
+            return (new BookTransformer)::fromIsbn(self::getFromApi($id));
         });
     }
 
@@ -100,42 +97,5 @@ class ISBNdbService implements BookApiServiceInterface
         }
 
         return $response->json('book');
-    }
-
-    protected static function transform(?array $book = null): ?array
-    {
-        if (! $book) {
-            return null;
-        }
-
-        $subjects = array_values(array_unique(array_filter(array_map(function ($subject) {
-            return trim(Str::before($subject, '--'));
-        }, $book['subjects'] ?? []))));
-
-        $description = $book['overview'] ?? $book['synopsis'] ?? null;
-
-        return BookData::from([
-            'codes' => [
-                ['type' => 'ISBN_13', 'identifier' => $book['isbn13'] ?? null],
-                ['type' => 'ISBN_10', 'identifier' => $book['isbn'] ?? null],
-            ],
-            'identifier' => $book['isbn13'] ?? $book['isbn'] ?? null,
-            'title' => $book['title'] ?? null,
-            'page_count' => $book['pages'] ?? null,
-            'categories' => $subjects ?? null,
-            'publisher' => [
-                'uuid' => $book['publisher_id'] ?? null,
-                'name' => $book['publisher'] ?? null,
-            ],
-            'description' => $description,
-            'description_clean' => strip_tags($description ?? ''),
-            'authors' => $book['authors'] ?? null,
-            'published_date' => $book['date_published'] ?? null,
-            'cover' => $book['image_original'] ?? $book['image'] ?? null,
-            'service' => self::ServiceName,
-            'links' => [
-                'show' => route('books.preview', ['identifier' => $book['isbn13'] ?? $book['isbn']]),
-            ],
-        ])->toArray();
     }
 }
