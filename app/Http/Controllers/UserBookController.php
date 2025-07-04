@@ -44,9 +44,9 @@ class UserBookController extends Controller
             });
         }
 
-        $sort = $request->get('sort', 'added');
+        $sort = $request->get('sort', null);
         if (! in_array($sort, ['title', 'rating', 'published_date', 'added', 'colour'])) {
-            $sort = 'added';
+            $sort = null;
         }
 
         $direction = $request->get('order', 'desc');
@@ -63,7 +63,7 @@ class UserBookController extends Controller
             }, SORT_REGULAR, $desc);
         } elseif ($sort === 'published_date') {
             $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
-        } elseif ($sort === 'added') {
+        } elseif ($sort === 'added' || is_null($sort)) {
             $books = $books->sortBy(function ($book) {
                 return $book->pivot->created_at;
             }, SORT_REGULAR, $desc);

@@ -18,6 +18,7 @@ import { useUserSettings } from '@/composables/useUserSettings'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { computed, ref, watch, type PropType, nextTick } from 'vue'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 /* --------------------------------------------------------------------------
@@ -27,7 +28,7 @@ const props = defineProps({
     books: Array as PropType<Book[]>,
     selectedStatuses: { type: Array as PropType<string[]>, default: () => [] },
     selectedAuthor: { type: String as PropType<string | null>, default: null },
-    selectedSort: { type: String, default: 'added' },
+    selectedSort: { type: String, default: null },
     selectedOrder: { type: String, default: 'desc' },
     authors: { type: Array as PropType<Author[]>, default: () => [] }
 })
@@ -57,7 +58,7 @@ const sortOptions = [
     { label: 'Added', value: 'added' },
     { label: 'Title', value: 'title' },
     { label: 'Rating', value: 'rating' },
-    { label: 'Published Date', value: 'published_date' },
+    { label: 'Published', value: 'published_date' },
     { label: 'Colour', value: 'colour' }
 ] as const
 
@@ -86,7 +87,7 @@ watch(view, (newView) => updateSingleSetting('library.view', newView))
 const filteredBooks = computed(() => props.books ?? [])
 
 const hasFiltered = computed(
-    () => !!currentSearch.value || !!author.value || sort.value !== 'added' || status.value.length > 0 || order.value !== 'desc'
+    () => !!currentSearch.value || !!author.value || sort.value !== null || status.value.length > 0 || order.value !== 'desc'
 )
 
 /* --------------------------------------------------------------------------
@@ -120,7 +121,7 @@ defineOptions({ layout: AppLayout })
         <!-- Header --------------------------------------------------------- -->
         <div class="flex flex-col gap-2 md:gap-4 md:flex-row md:items-center">
             <div class="flex justify-between items-center gap-8">
-                <PageTitle>
+                <PageTitle class="flex-1">
                     <template v-if="currentSearch">
                         Search results for "{{ currentSearch }}"
                     </template>
@@ -130,7 +131,7 @@ defineOptions({ layout: AppLayout })
                 </PageTitle>
                 <BookViewTabs
                     v-model="view"
-                    class="flex md:hidden max-w-32" />
+                    class="flex md:hidden shrink-0 w-32 flex-1 max-w-32" />
             </div>
 
             <!-- View & Sort Controls ---------------------------------------- -->
@@ -141,9 +142,12 @@ defineOptions({ layout: AppLayout })
                     class="hidden md:flex" />
 
                 <!-- Sort dropdown & order -->
-                <div class="flex w-full items-center justify-end gap-2 md:w-48">
+                <div class="flex w-full items-center justify-end gap-2 md:w-56">
                     <Select v-model="sort">
                         <SelectTrigger class="w-full">
+                            <span
+                                v-if="sort"
+                                class="text-muted-foreground">Sort:</span>
                             <SelectValue placeholder="Sort books" />
                         </SelectTrigger>
                         <SelectContent>
@@ -158,19 +162,29 @@ defineOptions({ layout: AppLayout })
                         </SelectContent>
                     </Select>
 
-                    <Button
-                        type="button"
-                        variant="outline"
-                        class="cursor-pointer bg-white text-secondary-foreground"
-                        size="icon"
-                        @click="order = order === 'asc' ? 'desc' : 'asc'"
-                    >
-                        <Icon :name="order === 'asc' ? 'ArrowUpWideNarrow' : 'ArrowDownWideNarrow'" />
-                    </Button>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    class="cursor-pointer bg-white text-secondary-foreground"
+                                    size="icon"
+                                    @click="order = order === 'asc' ? 'desc' : 'asc'"
+                                >
+                                    <Icon :name="order === 'asc' ? 'ArrowUpWideNarrow' : 'ArrowDownWideNarrow'" />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <span>
+                                    {{ order === 'asc' ? 'Ascending' : 'Descending' }}
+                                </span>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                     <Button
                         class="cursor-pointer bg-white text-secondary-foreground md:hidden"
                         variant="outline"
-                        :class="displayFilters ? 'border-primary bg-primary text-primary-foreground' : ''"
                         size="icon"
                         @pointerup="displayFilters = !displayFilters"
                     >
@@ -183,12 +197,12 @@ defineOptions({ layout: AppLayout })
         </div>
 
         <!-- Main layout ----------------------------------------------------- -->
-        <div class="mt-6 md:mt-8 flex flex-col items-start gap-4 md:flex-row">
+        <div class="mt-2 md:mt-8 flex flex-col items-start gap-4 md:flex-row">
             <aside
-                :class="displayFilters ? 'flex' : 'hidden'"
-                class="w-full flex-col gap-2 md:flex md:w-64">
+                :class="displayFilters ? 'h-[calc-size(auto,size)]' : 'h-0'"
+                class="w-[calc(100%+calc(var(--spacing)*8))] transition-[height] duration-500 px-4 md:px-0 overflow-hidden flex-col md:h-auto gap-2 md:flex md:w-64 bg-red-200 -mx-4 md:mx-0">
                 <!-- Search ---------------------------------------------------- -->
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2 mt-4 md:mt-0">
                     <form
                         class="flex w-full"
                         @submit.prevent="submitForm">
@@ -246,7 +260,7 @@ defineOptions({ layout: AppLayout })
                 <!-- Reset button -------------------------------------------- -->
                 <Button
                     v-if="hasFiltered"
-                    class="w-full"
+                    class="w-full mb-4"
                     as-child
                     variant="secondary">
                     <Link
@@ -258,7 +272,7 @@ defineOptions({ layout: AppLayout })
             </aside>
 
             <!-- Books list -------------------------------------------------- -->
-            <section class="flex flex-1 flex-col">
+            <section class="flex flex-1 mt-4 md:mt-0 flex-col">
                 <ShelfView
                     v-if="view === 'shelf'"
                     :books="filteredBooks" />
