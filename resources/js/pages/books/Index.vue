@@ -13,10 +13,10 @@ import { Button } from '@/components/ui/button'
 import { useUrlSearchParams } from '@vueuse/core'
 import { useRoute } from '@/composables/useRoute'
 import { Link, router, usePage } from '@inertiajs/vue3'
-import { computed, ref, watch, type PropType } from 'vue'
 import { useUserSettings } from '@/composables/useUserSettings'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
+import { computed, ref, watch, type PropType, nextTick } from 'vue'
 import {
     Select,
     SelectContent,
@@ -38,13 +38,14 @@ const props = defineProps({
     authors: { type: Array as PropType<Author[]>, default: () => [] }
 })
 
-const params = useUrlSearchParams<'history'>('history')
+const params = useUrlSearchParams('history')
 const { possibleStatuses } = useUserBookStatus()
-const displayFilters = ref(false)
 
 /** Search --------------------------------------------------------------- */
-const search = ref((params.search as string) || '')
-const currentSearch = ref((params.search as string) || '')
+const searchInput = ref<HTMLInputElement | null>(null)
+const search = ref(String(params.search || ''))
+const currentSearch = ref(String(params.search || ''))
+const displayFilters = ref(search.value !== '' || props.selectedStatuses.length > 0 || props.selectedAuthor !== null)
 
 /** Filters -------------------------------------------------------------- */
 const status = ref<string[]>(props.selectedStatuses)
@@ -104,6 +105,10 @@ const hasFiltered = computed(
  * -------------------------------------------------------------------------- */
 function submitForm () {
     currentSearch.value = search.value
+
+    nextTick(() => {
+        searchInput.value?.blur()
+    })
 
     router.get(
         useRoute('library.index'),
@@ -220,6 +225,7 @@ defineOptions({ layout: AppLayout })
                         @submit.prevent="submitForm">
                         <div class="relative flex w-full">
                             <Input
+                                ref="searchInput"
                                 v-model="search"
                                 class="pr-10"
                                 placeholder="Search" />

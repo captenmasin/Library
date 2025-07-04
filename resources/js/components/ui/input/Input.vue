@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cn } from '@/lib/utils'
 import { useVModel } from '@vueuse/core'
-import type { HTMLAttributes } from 'vue'
+import { HTMLAttributes, ref } from 'vue'
 
 const props = defineProps<{
     defaultValue?: string | number
@@ -17,10 +17,14 @@ const modelValue = useVModel(props, 'modelValue', emits, {
     passive: true,
     defaultValue: props.defaultValue
 })
+
+const input = ref<HTMLInputElement | null>(null)
+defineExpose({ focus: () => input.value?.focus(), blur: () => input.value?.blur() })
 </script>
 
 <template>
     <input
+        ref="input"
         v-model="modelValue"
         data-slot="input"
         :class="cn(
