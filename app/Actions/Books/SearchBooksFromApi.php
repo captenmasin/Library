@@ -3,11 +3,11 @@
 namespace App\Actions\Books;
 
 use App\Contracts\BookApiServiceInterface;
+use App\Data\BookData;
 use App\Models\Book;
 use Cache;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SearchBooksFromApi
@@ -69,14 +69,10 @@ class SearchBooksFromApi
         }
 
         $book['authors'] = collect($book['authors'] ?? [])
-            ->map(fn ($author) => [
-                'name' => $author ?? 'Unknown',
-                'uuid' => (string) Str::uuid(),
-            ])
-            ->values()
-            ->toArray();
+            ->map(fn ($author) => ['name' => $author, 'uuid' => null])
+            ->all();
 
-        return $book;
+        return BookData::from($book)->toArray();
     }
 
     public function asController(Request $request): JsonResponse

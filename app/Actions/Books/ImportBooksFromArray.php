@@ -24,10 +24,7 @@ class ImportBooksFromArray
                 continue;
             }
 
-            ImportBookFromData::dispatch(
-                $book['identifier'],
-                $book
-            );
+            ImportBookFromData::dispatch($book['identifier'], $book);
         }
     }
 }

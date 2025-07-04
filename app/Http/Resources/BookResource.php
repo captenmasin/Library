@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Data\BookData;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -11,37 +12,28 @@ class BookResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $user = $request->user();
-
-        return [
-            'path' => $this->path,
-            'identifier' => $this->identifier,
-            'title' => $this->title,
-            'description' => $this->description,
-            'description_clean' => strip_tags($this->description),
-            'published_date' => $this->published_date,
-            'categories' => $this->whenLoaded('categories', fn () => $this->categories->pluck('name')->toArray()),
-            'page_count' => $this->page_count,
-
-            'has_custom_cover' => $user ? $this->hasCustomCover($user) : false,
-            'cover' => $this->whenLoaded('covers', fn () => $this->getCover($user)),
-            'authors' => $this->whenLoaded('authors', fn () => $this->getAuthors()),
-            'publisher' => $this->whenLoaded('publisher', fn () => $this->getPublisher()),
-            'notes' => $this->whenLoaded('notes', fn () => $this->getNote($user)),
-            'user_review' => $this->whenLoaded('reviews', fn () => $this->getUserReview($user)),
-
-            'in_library' => $user && $this->isInLibrary($user),
-            'user_status' => $user ? $this->getUserStatus($user) : null,
-            'user_tags' => $user ? $this->getUserTags($user) : [],
-
-            'colour' => $this->settings()->get('colour', '#000000'),
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-
+        return BookData::from([
+            ...$this->attributesToArray(),
+            'categories' => $this->relationLoaded('categories')
+                ? $this->categories->pluck('name')->toArray()
+                : null,
+            'authors' => $this->relationLoaded('authors')
+                ? $this->getAuthors()->resolve()
+                : null,
+            'publisher' => $this->relationLoaded('publisher')
+                ? $this->getPublisher()
+                : null,
+            'cover' => $this->relationLoaded('covers')
+                ? $this->getCover($request->user())
+                : null,
+            'in_library' => $request->user() && $this->isInLibrary($request->user()),
+            'user_status' => $request->user() ? $this->getUserStatus($request->user()) : null,
+            'user_tags' => $request->user() ? $this->getUserTags($request->user()) : [],
+            'has_custom_cover' => $request->user() ? $this->hasCustomCover($request->user()) : false,
             'links' => [
                 'show' => route('books.show', $this),
             ],
-        ];
+        ])->toArray();
     }
 
     protected function getAuthors(): AnonymousResourceCollection
@@ -49,9 +41,11 @@ class BookResource extends JsonResource
         return AuthorResource::collection($this->authors);
     }
 
-    protected function getPublisher(): PublisherResource
+    protected function getPublisher(): ?array
     {
-        return new PublisherResource($this->publisher);
+        return $this->publisher ?
+            (new PublisherResource($this->publisher))->resolve()
+            : null;
     }
 
     protected function getCover(?User $user = null): ?string

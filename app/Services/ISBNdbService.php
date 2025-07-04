@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\BookApiServiceInterface;
+use App\Data\BookData;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -113,22 +114,28 @@ class ISBNdbService implements BookApiServiceInterface
 
         $description = $book['overview'] ?? $book['synopsis'] ?? null;
 
-        return [
+        return BookData::from([
             'codes' => [
                 ['type' => 'ISBN_13', 'identifier' => $book['isbn13'] ?? null],
                 ['type' => 'ISBN_10', 'identifier' => $book['isbn'] ?? null],
             ],
             'identifier' => $book['isbn13'] ?? $book['isbn'] ?? null,
             'title' => $book['title'] ?? null,
-            'pageCount' => $book['pages'] ?? null,
+            'page_count' => $book['pages'] ?? null,
             'categories' => $subjects ?? null,
-            'publisher' => $book['publisher'] ?? null,
+            'publisher' => [
+                'uuid' => $book['publisher_id'] ?? null,
+                'name' => $book['publisher'] ?? null,
+            ],
             'description' => $description,
             'description_clean' => strip_tags($description ?? ''),
             'authors' => $book['authors'] ?? null,
-            'publishedDate' => $book['date_published'] ?? null,
+            'published_date' => $book['date_published'] ?? null,
             'cover' => $book['image_original'] ?? $book['image'] ?? null,
             'service' => self::ServiceName,
-        ];
+            'links' => [
+                'show' => route('books.preview', ['identifier' => $book['isbn13'] ?? $book['isbn']]),
+            ],
+        ])->toArray();
     }
 }

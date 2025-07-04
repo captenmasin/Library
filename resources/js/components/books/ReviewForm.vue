@@ -33,7 +33,7 @@ function updateRating (rating: number) {
 const displayForm = ref(false)
 
 function submit () {
-    form.post(useRoute('reviews.store', props.book), {
+    form.post(useRoute('reviews.store', { book: props.book }), {
         preserveScroll: true
     })
 }

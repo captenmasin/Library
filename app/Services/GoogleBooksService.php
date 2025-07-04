@@ -119,13 +119,13 @@ class GoogleBooksService implements BookApiServiceInterface
             'codes' => $book['industryIdentifiers'] ?? [],
             'identifier' => $book['id'] ?? null,
             'title' => $book['title'] ?? null,
-            'pageCount' => $book['pageCount'] ?? null,
+            'page_count' => $book['pageCount'] ?? null,
             'categories' => $book['categories'] ?? null,
             'publisher' => $book['publisher'] ?? null,
             'description' => $book['description'] ?? null,
             'description_clean' => $book['description'] ? strip_tags($book['description']) : null,
             'authors' => $book['authors'] ?? null,
-            'publishedDate' => $book['publishedDate'] ?? null,
+            'published_date' => $book['publishedDate'] ?? null,
             'cover' => $book['imageLinks']['extraLarge'] ??
                       $book['imageLinks']['large'] ??
                       $book['imageLinks']['medium'] ??

@@ -24,7 +24,6 @@ class ImportBookFromData
         if (empty($data)) {
             $data = $this->booksApi->get($identifier);
             if (empty($data)) {
-                //                abort(404, "No data found for identifier: $identifier");
                 throw new \Exception("No data found for identifier: $identifier");
             }
         }
@@ -32,9 +31,9 @@ class ImportBookFromData
         $book = Book::create([
             'identifier' => $identifier,
             'codes' => $data['codes'],
-            'page_count' => $data['pageCount'] ?? null,
+            'page_count' => $data['page_count'] ?? null,
             'title' => $data['title'],
-            'published_date' => $data['publishedDate'],
+            'published_date' => $data['published_date'],
             'description' => $data['description'],
             'service' => $data['service'] ?? $this->booksApi::ServiceName,
         ]);
@@ -50,7 +49,6 @@ class ImportBookFromData
 
                 $book->updateColour();
             } catch (\Exception $e) {
-                // Handle the exception if the cover image cannot be fetched
                 \Log::error('Failed to fetch cover image for book: '.$identifier, ['error' => $e->getMessage()]);
             }
         }
@@ -79,7 +77,7 @@ class ImportBookFromData
         }
 
         if (! empty($data['publisher'])) {
-            $publisher = Publisher::firstOrCreate(['name' => $data['publisher']]);
+            $publisher = Publisher::firstOrCreate(['name' => $data['publisher']['name']]);
             $book->publisher()->associate($publisher)->save();
         }
 
