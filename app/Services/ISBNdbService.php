@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\BookApiServiceInterface;
+use Exception;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -40,9 +41,11 @@ class ISBNdbService implements BookApiServiceInterface
         $cacheKey = "books:search:$hash";
 
         return Cache::remember($cacheKey, now()->addHour(), function () use ($query, $author, $maxResults, $page, $cacheKey) {
+
             $queryParts = collect([
                 'page' => $page,
                 'pageSize' => $maxResults,
+                'column' => '',
                 'shouldMatchAll' => 0,
             ])->when($author, function ($parts) use ($author, &$query) {
                 $query .= ' '.$author;
@@ -50,13 +53,25 @@ class ISBNdbService implements BookApiServiceInterface
                 return $parts->put('shouldMatchAll', 1);
             })->all();
 
+            if (Str::startsWith($query, 'subject:')) {
+                $query = Str::after($query, 'subject:');
+                $queryParts['column'] = 'subjects';
+                $queryParts['shouldMatchAll'] = 1;
+            }
+
             $url = Uri::of(self::$baseUrl)
                 ->withPath('books/'.urlencode($query))
                 ->withQuery($queryParts);
 
-            $response = self::client()
-                ->retry(3, 200)
-                ->get($url);
+            try {
+                $response = self::client()
+                    ->retry(3, 200)
+                    ->get($url);
+            } catch (Exception $e) {
+                Cache::forget($cacheKey);
+
+                return [];
+            }
 
             if (! $response->ok()) {
                 Cache::forget($cacheKey);
