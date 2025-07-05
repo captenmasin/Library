@@ -24,6 +24,7 @@ class ImportBookFromData
     ): Book {
         if (is_string($data)) {
             $identifier = $data;
+            $data = null;
         } else {
             $identifier = $data['identifier'] ?? $data['isbn13'] ?? $data['isbn'] ?? null;
         }
@@ -36,7 +37,7 @@ class ImportBookFromData
             return $existing;
         }
 
-        if (empty($data) || is_string($data)) {
+        if (empty($data)) {
             $data = BookTransformer::fromIsbn($this->booksApi->get($identifier));
             if (empty($data)) {
                 throw new \Exception("No data found for identifier: $identifier");
@@ -72,7 +73,9 @@ class ImportBookFromData
 
         // Authors
         if (! empty($data['authors'])) {
-            $authorNames = collect($data['authors'])->pluck('name')->unique()->values();
+            $authorNames = collect($data['authors'])->filter(fn ($a) => isset($a['name']))
+                ->pluck('name')->unique()->values();
+
             $existing = $cache['authors'] ?? collect();
 
             $authorIds = $authorNames->map(function ($name) use ($existing) {

@@ -1,9 +1,10 @@
 <?php
 
+use App\Actions\Books\ImportBookFromData;
 use App\Actions\Books\SearchBooksFromApi;
+use App\Contracts\BookApiServiceInterface;
 use App\Models\Book;
 use App\Models\User;
-use App\Services\ISBNdbService;
 use Inertia\Testing\AssertableInertia;
 
 test('search page is displayed', function () {
@@ -106,15 +107,16 @@ test('book preview redirects if book exists', function () {
 
 test('book preview displays for new book', function () {
     $identifier = '9780747532743';
-
-    $mock = Mockery::mock(ISBNdbService::class);
+    $mock = Mockery::mock(BookApiServiceInterface::class);
     $mock->shouldReceive('get')
         ->with($identifier)
         ->andReturn([
-            'identifier' => $identifier,
+            'isbn' => $identifier,
             'title' => 'Harry Potter',
-            'authors' => ['J.K. Rowling'],
-            'publishedDate' => '1997-06-26',
+            'authors' => [
+                'J.K. Rowling',
+            ],
+            'published_date' => '1997-06-26',
             'description' => 'A young wizard embarks on an adventure.',
             'pageCount' => 223,
             'cover' => 'https://example.com/cover.jpg',
@@ -124,9 +126,13 @@ test('book preview displays for new book', function () {
             ],
         ]);
 
-    $this->app->instance(ISBNdbService::class, $mock);
+    $this->app->instance(BookApiServiceInterface::class, $mock);
 
-    $response = $this->get(route('books.preview', $identifier));
+    \Illuminate\Support\Facades\Queue::fake();
+
+    $response = $this->get(route('books.preview', ['identifier' => $identifier]));
+
+    ImportBookFromData::assertPushed(1);
 
     $response->assertStatus(200);
     $response->assertInertia(fn (AssertableInertia $page) => $page
