@@ -46,6 +46,9 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate
 
+      - name: Set up database
+        run: touch database/testing.sqlite && chmod 664 database/testing.sqlite
+
       - name: Run migrations
         run: php artisan migrate --force
 
