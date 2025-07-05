@@ -15,7 +15,6 @@ import { useUrlSearchParams } from '@vueuse/core'
 import { useRoute } from '@/composables/useRoute'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { useUserSettings } from '@/composables/useUserSettings'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { computed, ref, watch, type PropType, nextTick } from 'vue'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -275,6 +274,19 @@ defineOptions({ layout: AppLayout })
 
             <!-- Books list -------------------------------------------------- -->
             <section class="flex flex-1 mt-4 md:mt-0 flex-col">
+                <div
+                    class="flex items-center justify-center rounded-lg border-2 border-dashed py-16 px-4 gap-2 flex-col text-sm text-center text-muted-foreground border-primary/10">
+                    <Icon
+                        name="BookDashed"
+                        class="size-8" />
+                    <h3 class="font-semibold text-2xl font-serif">
+                        duhhhhhhh...
+                    </h3>
+                    <p>
+                        Please wait while we import the book. This may take a few minutes depending on the size of the book.
+                    </p>
+                </div>
+
                 <ShelfView
                     v-if="view === 'shelf'"
                     :books="filteredBooks" />

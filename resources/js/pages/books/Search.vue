@@ -266,7 +266,7 @@ defineOptions({
                         v-else
                         class="mb-4 flex items-center justify-center rounded-lg border-2 border-dashed py-16 px-4 gap-2 flex-col text-sm text-center text-muted-foreground border-primary/10">
                         <Icon
-                            name="BookOpen"
+                            name="BookDashed"
                             class="size-8" />
                         <h3 class="font-semibold text-2xl font-serif">
                             No books found
