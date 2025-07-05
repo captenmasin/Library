@@ -14,8 +14,8 @@ test('user can login and be redirected to books', function () {
             ->type('#email', $user->email)
             ->type('#password', 'password')
             ->press('Log in')
-            ->waitForLocation('/books')
-            ->assertPathIs('/books')
+            ->waitForLocation('/library')
+            ->assertPathIs('/library')
             ->assertSee('Books')
             ->fullLogout();
 

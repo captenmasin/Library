@@ -40,7 +40,7 @@ jobs:
         run: npm run build
 
       - name: Prepare test environment
-        run: cp .env.testing .env
+        run: cp .env.dusk .env
 
       - name: Generate app key
         run: php artisan key:generate
@@ -52,6 +52,9 @@ jobs:
         run: php artisan serve --no-reload --host=127.0.0.1 --port=8000 &
         env:
           APP_ENV: testing
+
+      - name: Install ChromeDriver for Dusk
+        run: php artisan dusk:chrome-driver
 
       - name: Run Laravel Dusk tests
         run: php artisan dusk

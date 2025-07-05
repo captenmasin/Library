@@ -11,8 +11,8 @@ test('user can register and be redirected to books', function () {
             ->type('#password', 'secret123')
             ->type('#password_confirmation', 'secret123')
             ->press('Create account')
-            ->waitForLocation('/books')
-            ->assertPathIs('/books')
+            ->waitForLocation('/library')
+            ->assertPathIs('/library')
             ->assertSee('Books')
             ->fullLogout();
     });
