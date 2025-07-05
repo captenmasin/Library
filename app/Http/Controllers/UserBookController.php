@@ -45,7 +45,7 @@ class UserBookController extends Controller
         }
 
         $sort = $request->get('sort', null);
-        if (! in_array($sort, ['title', 'rating', 'published_date', 'added', 'colour'])) {
+        if (! in_array($sort, ['title', 'rating', 'published_date', 'added', 'author', 'colour'])) {
             $sort = null;
         }
 
@@ -56,6 +56,10 @@ class UserBookController extends Controller
         if ($sort === 'title') {
             $books = $books->sortBy(function ($book) {
                 return strtolower($book->title);
+            }, SORT_NATURAL | SORT_FLAG_CASE, $desc);
+        }if ($sort === 'author') {
+            $books = $books->sortBy(function ($book) {
+                return strtolower(implode($book->authors->pluck('name')->toArray()));
             }, SORT_NATURAL | SORT_FLAG_CASE, $desc);
         } elseif ($sort === 'rating') {
             $books = $books->sortBy(function ($book) {

@@ -56,7 +56,9 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book->load(['authors', 'reviews', 'notes', 'covers', 'publisher', 'categories']);
+        $book->load(['authors', 'reviews', 'notes', 'covers', 'publisher', 'categories',
+            'users' => fn ($query) => $query->where('user_id', Auth::id()),
+        ]);
 
         return Inertia::render('books/Show', [
             'book' => new BookResource($book),

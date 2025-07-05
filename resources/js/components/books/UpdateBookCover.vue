@@ -108,6 +108,7 @@ const reset = () => {
             <div class="absolute bottom-2 flex w-full items-center gap-2 p-2">
                 <Button
                     v-if="!coverPreview"
+                    size="sm"
                     class="flex-1 cursor-pointer rounded-full text-xs"
                     @click="clickCoverInput"
                 >
@@ -120,7 +121,8 @@ const reset = () => {
                 <Button
                     v-if="coverPreview"
                     variant="ghost"
-                    class="flex-1 cursor-pointer rounded-full bg-green-200 text-xs text-green-700 backdrop-blur-lg"
+                    size="sm"
+                    class="flex-1 cursor-pointer rounded-full bg-green-200/75 hover:bg-green-200 hover:text-green-800 text-xs text-green-700 backdrop-blur-lg"
                     @click="updateBookInformation"
                 >
                     <Icon
@@ -132,6 +134,7 @@ const reset = () => {
                 <Button
                     v-if="coverPreview && displayUndo"
                     variant="ghost"
+                    size="sm"
                     class="flex-1 cursor-pointer rounded-full bg-white/75 text-xs backdrop-blur-lg"
                     @click="reset"
                 >
@@ -166,7 +169,8 @@ const reset = () => {
             >
         </div>
 
-        <div v-show="!coverPreview || !canUpdateCover">
+        <div
+            v-show="!coverPreview || !canUpdateCover">
             <slot />
         </div>
 
@@ -174,11 +178,13 @@ const reset = () => {
             v-if="canUpdateCover"
             @submit.prevent="updateBookInformation">
             <div class="col-span-6 sm:col-span-4">
-                <div v-show="coverPreview">
+                <div
+                    v-show="coverPreview"
+                    class="aspect-book">
                     <img
                         :src="coverPreview"
                         alt="Cover Preview"
-                        class="w-full rounded-md aspect-cover">
+                        class="rounded-md size-full object-cover">
                 </div>
 
                 <div

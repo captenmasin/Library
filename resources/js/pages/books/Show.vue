@@ -75,10 +75,12 @@ defineOptions({
         <div class="flex gap-8">
             <div class="flex w-1/5 flex-col">
                 <UpdateBookCover :book>
-                    <Image
-                        width="250"
-                        class="w-full rounded-md aspect-book"
-                        :src="book.cover" />
+                    <div class="aspect-book rounded-md overflow-hidden">
+                        <Image
+                            width="250"
+                            class="size-full object-cover"
+                            :src="book.cover" />
+                    </div>
                 </UpdateBookCover>
 
                 <div class="mt-4">

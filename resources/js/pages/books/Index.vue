@@ -57,6 +57,7 @@ const { updateSingleSetting } = useUserSettings()
 const sortOptions = [
     { label: 'Added', value: 'added' },
     { label: 'Title', value: 'title' },
+    { label: 'Author', value: 'author' },
     { label: 'Rating', value: 'rating' },
     { label: 'Published', value: 'published_date' },
     { label: 'Colour', value: 'colour' }
@@ -148,7 +149,7 @@ defineOptions({ layout: AppLayout })
                             <span
                                 v-if="sort"
                                 class="text-muted-foreground">Sort:</span>
-                            <SelectValue placeholder="Sort books" />
+                            <SelectValue placeholder="Sort by..." />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
@@ -200,7 +201,7 @@ defineOptions({ layout: AppLayout })
         <div class="mt-2 md:mt-8 flex flex-col items-start gap-4 md:flex-row">
             <aside
                 :class="displayFilters ? 'h-[calc-size(auto,size)] overflow-auto border-secondary' : 'h-0 overflow-hidden border-background'"
-                class="w-[calc(100%+calc(var(--spacing)*8))] transition-[height,border-color] relative duration-500 px-4 md:px-0 border-y flex-col md:h-auto gap-2 md:flex md:w-64 bg-muted md:bg-transparent -mx-4 md:mx-0">
+                class="w-[calc(100%+calc(var(--spacing)*8))] transition-[height,border-color] md:border-0 md:overflow-visible relative duration-500 px-4 md:px-0 border-y flex-col md:h-auto gap-2 md:flex md:w-64 bg-muted md:bg-transparent -mx-4 md:mx-0">
                 <!-- Search ---------------------------------------------------- -->
                 <div class="flex flex-col gap-2 mt-4 md:mt-0">
                     <form
