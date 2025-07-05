@@ -24,6 +24,12 @@ class ImportBookFromData
     ): Book {
         if (is_string($data)) {
             $identifier = $data;
+        } else {
+            $identifier = $data['identifier'] ?? $data['isbn13'] ?? $data['isbn'] ?? null;
+        }
+
+        if (empty($identifier)) {
+            throw new \InvalidArgumentException('Identifier is required to import a book.');
         }
 
         if (! $force && ($existing = Book::where('identifier', $identifier)->first())) {

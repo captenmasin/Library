@@ -77,7 +77,7 @@ class BookController extends Controller
             return redirect()->route('books.show', Book::where('identifier', $identifier)->first());
         }
 
-        ImportBookFromData::dispatch($identifier);
+        ImportBookFromData::dispatchSync($identifier);
 
         return Inertia::render('books/Preview', [
             'identifier' => $identifier,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue'
-import { router, usePoll } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
 
 defineProps({
     identifier: {
