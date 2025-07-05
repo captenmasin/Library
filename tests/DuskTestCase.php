@@ -15,6 +15,10 @@ abstract class DuskTestCase extends BaseTestCase
     {
         parent::setUp();
 
+        // run `touch database/testing.sqlite`
+        unlink(database_path('testing.sqlite'));
+        touch(database_path('testing.sqlite'));
+
         $this->artisan('migrate:fresh', ['--env' => 'dusk.local']);
     }
 
