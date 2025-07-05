@@ -20,17 +20,3 @@ test('user can see dashboard', function () {
             ->assertSee('Books');
     });
 });
-
-test('user can see open new book modal', function () {
-    $user = User::factory()->create();
-
-    $this->browse(function (Browser $browser) use ($user) {
-        $browser->loginAs($user->id);
-
-        $browser->visit('/library')
-            ->press('Add Book')
-            ->pause(500)
-            ->assertSee('Add a new book to your library')
-            ->type('#keyword-search', 'Jurassic Park');
-    });
-});

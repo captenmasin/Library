@@ -52,9 +52,10 @@ jobs:
         run: php artisan serve --no-reload --host=127.0.0.1 --port=8000 &
         env:
           APP_ENV: testing
+          APP_URL: http://127.0.0.1:8000
 
       - name: Install ChromeDriver for Dusk
-        run: php artisan dusk:chrome-driver
+        run: php artisan dusk:chrome-driver --detect
 
       - name: Run Laravel Dusk tests
         run: php artisan dusk
