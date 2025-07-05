@@ -57,6 +57,7 @@ jobs:
         env:
           APP_ENV: testing
           APP_URL: http://127.0.0.1:8000
+          DB_CONNECTION: testing
           APP_DEBUG: true
 
       - name: Install ChromeDriver for Dusk
