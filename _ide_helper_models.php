@@ -49,7 +49,7 @@ namespace App\Models{
      * @property string|null $service
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Author> $authors
      * @property-read int|null $authors_count
-     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Category> $categories
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $categories
      * @property-read int|null $categories_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Cover> $covers
      * @property-read int|null $covers_count
@@ -119,13 +119,13 @@ namespace App\Models{
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Book> $books
      * @property-read int|null $books_count
      *
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereCreatedAt($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereName($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Tag newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Tag newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Tag query()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Tag whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Tag whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Tag whereName($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|Tag whereUpdatedAt($value)
      */
     class Category extends \Eloquent {}
 }

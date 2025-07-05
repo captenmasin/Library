@@ -17,6 +17,7 @@ class UserBookController extends Controller
         $bookQuery = Auth::user()->books()->with([
             'authors',
             'reviews',
+            'tags',
             'covers',
             'users' => fn ($q) => $q->where('user_id', auth()->id()),
         ]);
@@ -27,10 +28,6 @@ class UserBookController extends Controller
         }
 
         $books = $bookQuery->get();
-
-        $authors = $books->flatMap(function ($book) {
-            return $book->authors;
-        })->unique('uuid')->values();
 
         $books = $books->sortByDesc('id');
 
@@ -57,7 +54,8 @@ class UserBookController extends Controller
             $books = $books->sortBy(function ($book) {
                 return strtolower($book->title);
             }, SORT_NATURAL | SORT_FLAG_CASE, $desc);
-        }if ($sort === 'author') {
+        }
+        if ($sort === 'author') {
             $books = $books->sortBy(function ($book) {
                 return strtolower(implode($book->authors->pluck('name')->toArray()));
             }, SORT_NATURAL | SORT_FLAG_CASE, $desc);
@@ -105,7 +103,9 @@ class UserBookController extends Controller
             'selectedSort' => $sort,
             'selectedOrder' => $request->get('order', 'desc'),
             'searchQuery' => $request->get('search', ''),
-            'authors' => $authors,
+
+            'authors' => Inertia::defer(fn () => $books->flatMap(fn ($book) => $book->authors)->unique('uuid')->values()),
+            'tags' => Inertia::defer(fn () => $books->flatMap(fn ($book) => $book->tags)->unique('name')->values()),
         ])->withMeta([
             'title' => 'Books',
         ]);

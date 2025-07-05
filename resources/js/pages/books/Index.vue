@@ -227,7 +227,6 @@ defineOptions({ layout: AppLayout })
 
                     <!-- Author filter -------------------------------------------- -->
                     <Select
-                        v-if="authors.length"
                         v-model="author">
                         <SelectTrigger class="w-full">
                             <SelectValue placeholder="Filter by author" />
@@ -237,12 +236,14 @@ defineOptions({ layout: AppLayout })
                                 <SelectItem :value="null">
                                     All Authors
                                 </SelectItem>
-                                <SelectItem
-                                    v-for="a in authors"
-                                    :key="a.uuid"
-                                    :value="a.uuid">
-                                    {{ a.name }}
-                                </SelectItem>
+                                <template v-if="authors.length">
+                                    <SelectItem
+                                        v-for="a in authors"
+                                        :key="a.uuid"
+                                        :value="a.uuid">
+                                        {{ a.name }}
+                                    </SelectItem>
+                                </template>
                             </SelectGroup>
                         </SelectContent>
                     </Select>

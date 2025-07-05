@@ -1,10 +1,10 @@
 <?php
 
 use App\Models\Book;
-use App\Models\Category;
 use App\Models\Cover;
 use App\Models\Post;
 use App\Models\Publisher;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -52,11 +52,11 @@ Artisan::command('make:admin', function () {
 Artisan::command('reset', function () {
     Book::all()->each(fn ($book) => $book->delete());
     Cover::all()->each(fn ($cover) => $cover->delete());
-    Category::all()->each(fn ($category) => $category->delete());
+    Tag::all()->each(fn ($tag) => $tag->delete());
     Publisher::all()->each(fn ($publisher) => $publisher->delete());
     Media::where('model_type', Cover::class)->get()->each(fn ($book) => $book->delete());
     DB::table('book_user')->truncate();
     DB::table('author_book')->truncate();
     DB::table('authors')->truncate();
-    DB::table('book_category')->truncate();
+    DB::table('book_tag')->truncate();
 });

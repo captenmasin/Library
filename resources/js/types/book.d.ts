@@ -13,7 +13,7 @@ export type Book = {
     cover: string,
     description: string,
     description_clean: string,
-    categories?: string[],
+    tags?: string[],
     authors?: Author[],
     publisher?: Publisher,
     user_status: UserBookStatus | null,
@@ -39,7 +39,7 @@ export type BookApiResult = {
     identifier: string
     title: string
     pageCount?: number
-    categories?: string[]
+    tags?: string[]
     publisher?: string
     description?: string
     description_clean?: string

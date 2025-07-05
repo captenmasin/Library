@@ -55,9 +55,9 @@ class Book extends Model implements HasMedia
         $this->settings()->set('colour', $colour);
     }
 
-    public function categories()
+    public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Tag::class);
     }
 
     public function users(): BelongsToMany
@@ -100,7 +100,9 @@ class Book extends Model implements HasMedia
     public function getPrimaryCoverAttribute(): string
     {
         if (! $this->primaryCover()?->hasMedia('image')) {
-            return Vite::asset('resources/images/default-cover.svg');
+            return
+                $this->original_cover ??
+                Vite::asset('resources/images/default-cover.svg');
         }
 
         return $this->primaryCover()->image;

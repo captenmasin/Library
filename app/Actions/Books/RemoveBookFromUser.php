@@ -19,6 +19,10 @@ class RemoveBookFromUser
             throw new \Exception('Book not found in user library.');
         }
 
+        $user->book_covers->where('book_id', $book->id)->each(function ($cover) {
+            $cover->delete();
+        });
+
         $user->books()->detach($book);
     }
 

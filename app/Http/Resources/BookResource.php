@@ -20,7 +20,7 @@ class BookResource extends JsonResource
             'description' => $this->description,
             'description_clean' => strip_tags($this->description),
             'published_date' => $this->published_date,
-            'categories' => $this->whenLoaded('categories', fn () => $this->categories->pluck('name')->toArray()),
+            'tags' => $this->whenLoaded('tags', fn () => $this->tags->pluck('name')->toArray()),
             'page_count' => $this->page_count,
 
             'has_custom_cover' => $user ? $this->hasCustomCover($user) : false,

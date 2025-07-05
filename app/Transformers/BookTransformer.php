@@ -37,7 +37,7 @@ class BookTransformer
             ],
             'title' => $data['title'] ?? null,
             'pageCount' => $data['pages'] ?? null,
-            'categories' => $subjects ?? null,
+            'tags' => $subjects ?? null,
             'publisher' => ! empty($data['publisher']) ? [
                 'name' => $data['publisher'],
                 'uuid' => null,

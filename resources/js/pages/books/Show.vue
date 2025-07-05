@@ -167,18 +167,18 @@ defineOptions({
                     </div>
                 </dl>
                 <div
-                    v-if="book.categories"
+                    v-if="book.tags && book.tags.length > 0"
                     class="mt-1">
                     <p class="font-medium text-sm/6">
-                        Categories
+                        Tags
                     </p>
                     <ul class="space-y-1 space-x-1">
                         <li
-                            v-for="category in book.categories"
-                            :key="category"
+                            v-for="tag in book.tags"
+                            :key="tag"
                             class="inline-block rounded-full px-2 text-xs bg-muted py-0.5 text-muted-foreground"
                         >
-                            {{ category }}
+                            {{ tag }}
                         </li>
                     </ul>
                 </div>

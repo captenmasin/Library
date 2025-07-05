@@ -20,22 +20,16 @@ class SearchBooksFromApi
         int $maxResults = 30,
         int $page = 1): array
     {
-        $results = $this->booksApi->search(
-            query: $query,
-            author: $author,
-            maxResults: $maxResults,
-            page: $page
-        );
+        $results = $this->booksApi->search(query: $query, author: $author, maxResults: $maxResults, page: $page);
 
         $total = $results['total'] ?? 0;
-        $books = collect($results['items'] ?? []);
-        $results = $books->map(fn ($book) => BookTransformer::fromIsbn($book));
+        $books = collect($results['items'] ?? [])->map(fn ($book) => BookTransformer::fromIsbn($book));
 
-        ImportBooksFromArray::dispatch($books);
+        ImportBooksFromApiSearchJob::dispatch($books);
 
         return [
             'total' => $total,
-            'books' => $results,
+            'books' => $books,
         ];
     }
 
