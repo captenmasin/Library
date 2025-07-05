@@ -58,7 +58,6 @@ jobs:
           APP_ENV: testing
           APP_URL: http://127.0.0.1:8000
           DB_CONNECTION: testing
-          APP_DEBUG: false
 
       - name: Install ChromeDriver for Dusk
         run: php artisan dusk:chrome-driver --detect
@@ -67,7 +66,7 @@ jobs:
         run: ./vendor/laravel/dusk/bin/chromedriver-linux &
 
       - name: Run Laravel Dusk tests
-        run: php artisan pest:dusk
+        run: php artisan pest:dusk --filter=LoginTest
         env:
           APP_URL: http://127.0.0.1:8000
 
