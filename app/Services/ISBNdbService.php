@@ -67,11 +67,8 @@ class ISBNdbService implements BookApiServiceInterface
             $items = $response->json('books') ?? [];
 
             return [
-                'total' => $response->json('total'),
-                'items' => collect($items)
-                    ->map(fn ($book) => self::transform($book))
-                    ->filter()
-                    ->all(),
+                'total' => $response->json('total') ?? 0,
+                'items' => $items,
             ];
         });
     }
@@ -79,7 +76,7 @@ class ISBNdbService implements BookApiServiceInterface
     public static function get(string $id): ?array
     {
         return Cache::remember("books:id:$id", now()->addWeek(), function () use ($id) {
-            return self::transform(self::getFromApi($id));
+            return self::getFromApi($id);
         });
     }
 
@@ -99,36 +96,5 @@ class ISBNdbService implements BookApiServiceInterface
         }
 
         return $response->json('book');
-    }
-
-    protected static function transform(?array $book = null): ?array
-    {
-        if (! $book) {
-            return null;
-        }
-
-        $subjects = array_values(array_unique(array_filter(array_map(function ($subject) {
-            return trim(Str::before($subject, '--'));
-        }, $book['subjects'] ?? []))));
-
-        $description = $book['overview'] ?? $book['synopsis'] ?? null;
-
-        return [
-            'codes' => [
-                ['type' => 'ISBN_13', 'identifier' => $book['isbn13'] ?? null],
-                ['type' => 'ISBN_10', 'identifier' => $book['isbn'] ?? null],
-            ],
-            'identifier' => $book['isbn13'] ?? $book['isbn'] ?? null,
-            'title' => $book['title'] ?? null,
-            'pageCount' => $book['pages'] ?? null,
-            'categories' => $subjects ?? null,
-            'publisher' => $book['publisher'] ?? null,
-            'description' => $description,
-            'description_clean' => strip_tags($description ?? ''),
-            'authors' => $book['authors'] ?? null,
-            'publishedDate' => $book['date_published'] ?? null,
-            'cover' => $book['image_original'] ?? $book['image'] ?? null,
-            'service' => self::ServiceName,
-        ];
     }
 }

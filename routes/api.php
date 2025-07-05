@@ -10,6 +10,7 @@ use App\Actions\Books\UpdateUserBookStatus;
 use App\Actions\Users\UpdateSingleUserSetting;
 use App\Actions\Users\UpdateUserSettings;
 use App\Contracts\BookApiServiceInterface;
+use App\Transformers\BookTransformer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,7 @@ Route::name('api.')->group(function () {
         //        Route::get('barcode', GetBookByBarcode::class)->name('get_by_barcode');
 
         Route::get('test/{identifier}', function ($identifier, BookApiServiceInterface $booksApi) {
-            $book = $booksApi::get($identifier);
+            $book = (new BookTransformer)::fromIsbn($booksApi::get($identifier));
 
             ImportBookFromData::dispatch(
                 $book['identifier'],

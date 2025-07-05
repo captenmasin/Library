@@ -3,11 +3,9 @@
 namespace App\Actions\Books;
 
 use App\Contracts\BookApiServiceInterface;
-use App\Models\Book;
-use Cache;
+use App\Transformers\BookTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SearchBooksFromApi
@@ -20,63 +18,25 @@ class SearchBooksFromApi
         ?string $query = null,
         ?string $author = null,
         int $maxResults = 30,
-        int $page = 1,
-        bool $cache = true): array
+        int $page = 1): array
     {
-        $cacheKey = $this->getCachedResultsKey(query: $query ?? '', author: $author ?? '', page: $page, maxResults: $maxResults);
-        $cacheTTL = $cache ? now()->addDay() : null;
+        $results = $this->booksApi->search(
+            query: $query,
+            author: $author,
+            maxResults: $maxResults,
+            page: $page
+        );
 
-        return Cache::remember($cacheKey, $cacheTTL, function () use ($query, $author, $maxResults, $page) {
-            $results = $this->booksApi::search(
-                query: $query,
-                author: $author,
-                maxResults: $maxResults,
-                page: $page
-            );
+        $total = $results['total'] ?? 0;
+        $books = collect($results['items'] ?? []);
+        $results = $books->map(fn ($book) => BookTransformer::fromIsbn($book));
 
-            $total = $results['total'] ?? 0;
-            $books = collect($results['items'] ?? []);
+        ImportBooksFromArray::dispatch($books);
 
-            $allBooks = Book::whereIn('identifier', $books->pluck('identifier'))->get()->keyBy('identifier');
-            $results = $books->map(fn ($book) => $this->transform($book, $allBooks));
-
-            ImportBooksFromArray::dispatch($books);
-
-            return [
-                'total' => $total,
-                'books' => $results,
-            ];
-        });
-
-    }
-
-    private function getCachedResultsKey(string $query = '', string $author = '', int $page = 1, int $maxResults = 30): string
-    {
-        return 'books:search:'.md5(strtolower(trim($query)).'__'.strtolower(trim($author)).'__'.$page.'__'.$maxResults);
-    }
-
-    private function transform($book, $allBooks): array
-    {
-        if (empty($book['identifier'])) {
-            return [];
-        }
-
-        if ($allBooks->has($book['identifier'])) {
-            $existing = $allBooks->get($book['identifier']);
-            $book['links']['show'] = route('books.show', $existing);
-        } else {
-            $book['links']['show'] = route('books.preview', ['identifier' => $book['identifier']]);
-        }
-
-        $book['authors'] = collect($book['authors'] ?? [])
-            ->map(fn ($author) => [
-                'name' => $author ?? 'Unknown',
-                'uuid' => (string) Str::uuid(),
-            ])
-            ->values()
-            ->toArray();
-
-        return $book;
+        return [
+            'total' => $total,
+            'books' => $results,
+        ];
     }
 
     public function asController(Request $request): JsonResponse

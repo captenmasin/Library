@@ -34,7 +34,7 @@ class ImportBookFromData
             'codes' => $data['codes'],
             'page_count' => $data['pageCount'] ?? null,
             'title' => $data['title'],
-            'published_date' => $data['publishedDate'],
+            'published_date' => $data['published_date'],
             'description' => $data['description'],
             'service' => $data['service'] ?? $this->booksApi::ServiceName,
         ]);

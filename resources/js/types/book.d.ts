@@ -47,7 +47,7 @@ export type BookApiResult = {
         uuid: string
         name: string
     }[]
-    publishedDate?: string
+    published_date?: string
     cover?: string
     service: string
     links: {
