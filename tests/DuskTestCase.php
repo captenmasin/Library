@@ -7,6 +7,7 @@ use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Illuminate\Support\Collection;
 use Laravel\Dusk\TestCase as BaseTestCase;
+use PHPUnit\Framework\Attributes\AfterClass;
 use PHPUnit\Framework\Attributes\BeforeClass;
 
 abstract class DuskTestCase extends BaseTestCase
@@ -14,10 +15,6 @@ abstract class DuskTestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // run `touch database/testing.sqlite`
-        unlink(database_path('testing.sqlite'));
-        touch(database_path('testing.sqlite'));
 
         $this->artisan('migrate:fresh', ['--env' => 'dusk.local']);
     }
@@ -28,6 +25,14 @@ abstract class DuskTestCase extends BaseTestCase
     #[BeforeClass]
     public static function prepare(): void
     {
+        $dbPath = __DIR__.'/../database/testing.sqlite';
+
+        if (file_exists($dbPath)) {
+            unlink($dbPath);
+        }
+
+        touch($dbPath);
+
         if (! static::runningInSail()) {
             static::startChromeDriver(['--port=9515']);
         }
@@ -61,5 +66,15 @@ abstract class DuskTestCase extends BaseTestCase
                 ChromeOptions::CAPABILITY, $options
             )
         );
+    }
+
+    #[AfterClass]
+    public static function cleanup(): void
+    {
+        $path = base_path('database/testing.sqlite');
+
+        if (file_exists($path)) {
+            unlink($path);
+        }
     }
 }
