@@ -19,6 +19,10 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
+    includeActions: {
+        type: Boolean,
+        default: true
+    },
     target: {
         type: String as PropType<'_blank' | '_self'>,
         default: '_self'
@@ -38,6 +42,10 @@ function select (book: BookApiResult | Book, status: UserBookStatus) {
     }
 }
 
+const isLink = computed(() => {
+    return props.book.links?.show !== undefined && props.book.links?.show !== null
+})
+
 const linkTag = computed(() => {
     if (props.target === '_blank') {
         return 'a'
@@ -49,6 +57,10 @@ const linkTag = computed(() => {
 
     return 'span'
 })
+
+const url = computed(() => {
+    return props.book.links?.show ?? null
+})
 </script>
 
 <template>
@@ -58,7 +70,7 @@ const linkTag = computed(() => {
         <div class="flex gap-4 w-full">
             <component
                 :is="linkTag"
-                :href="book.links?.show ?? null"
+                :href="url"
                 :target="target"
                 prefetch>
                 <div class="aspect-book w-18 shrink-0 overflow-hidden rounded-sm shadow-sm md:w-22">
@@ -72,10 +84,12 @@ const linkTag = computed(() => {
                 <div class="flex">
                     <component
                         :is="linkTag"
-                        :href="book.links?.show ?? null"
+                        :href="url"
                         :target="target"
                         prefetch>
-                        <h3 class="line-clamp-2 font-serif text-base/5 md:line-clamp-4 md:text-lg/6">
+                        <h3
+                            :class="isLink ? 'hover:text-primary' : ''"
+                            class="line-clamp-2 font-serif transition-colors text-base/5 md:line-clamp-4 md:text-lg/6">
                             {{ book.title }}
                         </h3>
                     </component>
@@ -90,20 +104,25 @@ const linkTag = computed(() => {
                 </p>
             </div>
         </div>
-        <div class="ml-auto flex w-full shrink-0 items-center justify-end gap-2 md:w-full flex-1">
+        <div
+            v-if="includeActions"
+            class="ml-auto flex w-full shrink-0 items-center justify-end gap-2 md:w-full flex-1">
             <div
                 v-if="addingBooks.includes(book.identifier)"
-                class="animate-spin rounded-full border border-gray-200 bg-gray-100 p-1 text-gray-600">
-                <Icon
-                    name="LoaderCircle"
-                    class="w-4" />
+                class="w-9 shrink-0 aspect-square">
+                <div
+                    class="animate-spin rounded-full bg-muted size-full flex items-center justify-center text-muted-foreground">
+                    <Icon
+                        name="LoaderCircle"
+                        class="size-5" />
+                </div>
             </div>
 
             <TooltipProvider v-if="addedBookIdentifiers.has(book.identifier)">
                 <Tooltip>
                     <TooltipTrigger>
                         <Button
-                            variant="destructive-ghost"
+                            variant="secondary"
                             size="icon"
                             @click="removeBookFromUser(book)"
                         >
