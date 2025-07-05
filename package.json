@@ -10,6 +10,7 @@
         "lint": "eslint \"resources/**/*.{ts,tsx,js,vue}\" --fix"
     },
     "devDependencies": {
+        "@biomejs/biome": "2.0.6",
         "@tailwindcss/typography": "^0.5.16",
         "@types/node": "^22.13.5",
         "eslint": "^8.57.1",
@@ -29,6 +30,7 @@
         "prettier-plugin-tailwindcss": "^0.6.11",
         "tailwindcss-motion": "^1.1.1",
         "typescript": "^5.1.6",
+        "ultracite": "5.0.32",
         "vue-tsc": "^2.2.4"
     },
     "dependencies": {
