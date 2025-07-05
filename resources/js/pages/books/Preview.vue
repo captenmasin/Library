@@ -9,9 +9,9 @@ defineProps({
     }
 })
 
-const interval = setInterval(function () {
+setInterval(function () {
     router.reload()
-}, 5000)
+}, 2000)
 
 defineOptions({
     layout: AppLayout

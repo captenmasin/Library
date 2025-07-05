@@ -15,8 +15,8 @@ return new class extends Migration
         }
 
         // Drop the category_book pivot table
-        if (Schema::hasTable('category_book')) {
-            Schema::dropIfExists('category_book');
+        if (Schema::hasTable('book_category')) {
+            Schema::dropIfExists('book_category');
         }
     }
 

@@ -18,17 +18,19 @@ class ImportBookFromData
     public function __construct(protected BookApiServiceInterface $booksApi) {}
 
     public function handle(
-        ?array $data = null,
+        null|string|array $data = null,
         bool $force = false,
         array $cache = [] // ['authors' => Collection, 'tags' => Collection, 'publishers' => Collection]
     ): Book {
-        $identifier = $data['identifier'] ?? $data['isbn13'] ?? $data['isbn'] ?? null;
+        if (is_string($data)) {
+            $identifier = $data;
+        }
 
         if (! $force && ($existing = Book::where('identifier', $identifier)->first())) {
             return $existing;
         }
 
-        if (empty($data)) {
+        if (empty($data) || is_string($data)) {
             $data = BookTransformer::fromIsbn($this->booksApi->get($identifier));
             if (empty($data)) {
                 throw new \Exception("No data found for identifier: $identifier");
