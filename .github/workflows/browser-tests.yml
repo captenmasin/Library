@@ -55,7 +55,6 @@ jobs:
       - name: Start Laravel server
         run: php artisan serve --no-reload &
         env:
-          APP_ENV: testing
           APP_URL: http://127.0.0.1:8000
           DB_CONNECTION: testing
           APP_DEBUG: true
