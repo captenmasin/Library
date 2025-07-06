@@ -6,7 +6,6 @@ use Auth;
 use App\Models\Book;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use App\Enums\UserPermission;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\ReviewResource;
 use App\Actions\Books\FetchOrCreateBook;
@@ -60,8 +59,6 @@ class BookController extends Controller
         $book->load(['authors', 'reviews', 'notes', 'covers', 'publisher', 'tags',
             'users' => fn ($query) => $query->where('user_id', Auth::id()),
         ]);
-
-        dd(\request()->user()->can(UserPermission::VIEW_HORIZON_PANEL));
 
         $relatedBooks = $book->relatedBooksByAuthorsAndTags();
         $relatedBooks->map(fn ($related) => $related->load(['authors', 'covers']));
