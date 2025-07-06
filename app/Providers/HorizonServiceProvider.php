@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Laravel\Horizon\Horizon;
+use App\Enums\UserPermission;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
 
@@ -28,7 +29,9 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate(): void
     {
         Gate::define('viewHorizon', function ($user = null) {
-            //            return $user->hasRole('admin') || $user->hasPermissionTo('view-horizon');
+            dd($user->can(UserPermission::VIEW_HORIZON_PANEL));
+
+            return $user->can(UserPermission::VIEW_HORIZON_PANEL);
         });
     }
 }
