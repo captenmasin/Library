@@ -97,6 +97,7 @@ class UserBookController extends Controller
         $selectedStatuses = $request->get('status', []);
 
         return Inertia::render('books/Index', [
+            'totalBooks' => $request->user()->loadCount('books')->books_count,
             'books' => BookResource::collection($books->values()),
             'selectedStatuses' => $selectedStatuses,
             'selectedAuthor' => $request->get('author'),

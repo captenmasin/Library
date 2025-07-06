@@ -25,6 +25,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
  * -------------------------------------------------------------------------- */
 const props = defineProps({
     books: Array as PropType<Book[]>,
+    totalBooks: { type: Number, default: 0 },
     selectedStatuses: { type: Array as PropType<string[]>, default: () => [] },
     selectedAuthor: { type: String as PropType<string | null>, default: null },
     selectedSort: { type: String, default: null },
@@ -278,19 +279,16 @@ defineOptions({ layout: AppLayout })
             <!-- Books list -------------------------------------------------- -->
             <section class="mt-4 flex flex-1 flex-col md:mt-0">
                 <div
-                    class="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-16 text-center text-sm text-muted-foreground"
-                >
+                    v-if="!filteredBooks.length"
+                    class="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-16 text-center text-sm text-muted-foreground">
                     <Icon
                         name="BookDashed"
                         class="size-8" />
                     <h3 class="font-serif text-2xl font-semibold">
                         No books found
                     </h3>
-                    <p v-if="hasFiltered">
-                        Try adjusting your search or filters.
-                    </p>
                     <div
-                        v-else
+                        v-if="totalBooks === 0"
                         class="flex flex-col">
                         <p>You haven't added any books yet.</p>
                         <div class="flex mx-auto">
@@ -303,6 +301,9 @@ defineOptions({ layout: AppLayout })
                             </Button>
                         </div>
                     </div>
+                    <p v-else>
+                        Try adjusting your search or filters.
+                    </p>
                 </div>
 
                 <ShelfView
