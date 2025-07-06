@@ -41,7 +41,6 @@ class ISBNdbService implements BookApiServiceInterface
         $cacheKey = "books:search:$hash";
 
         return Cache::remember($cacheKey, now()->addHour(), function () use ($query, $author, $maxResults, $page, $cacheKey) {
-
             $queryParts = collect([
                 'page' => $page,
                 'pageSize' => $maxResults,

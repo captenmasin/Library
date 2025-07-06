@@ -4,6 +4,7 @@ import Image from '@/components/Image.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import TagForm from '@/components/books/TagForm.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
+import BookCard from '@/components/books/BookCard.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue'
@@ -20,6 +21,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 
 const props = defineProps({
     book: { type: Object as PropType<Book>, required: true },
+    related: { type: Array as PropType<Book[]> },
     reviews: {
         type: Array as PropType<Review[]>,
         default: () => []
@@ -127,6 +129,18 @@ defineOptions({
                 <div
                     class="mt-4 max-w-none font-serif prose"
                     v-html="book.description" />
+
+                <div class="bg-red-200">
+                    <div class="flex w-full">
+                        <div
+                            v-for="relatedBook in related"
+                            :key="relatedBook.identifier"
+                            class="w-full">
+                            <BookCard :book="relatedBook" />
+                        </div>
+                    </div>
+                </div>
+
                 <div class="mt-8">
                     <!--                    <TagForm :book="book" />-->
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Laravel\Scout\Searchable;
 use App\Observers\BookObserver;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Support\Facades\Vite;
@@ -18,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Book extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\BookFactory> */
-    use HasFactory, HasSettingsField, InteractsWithMedia;
+    use HasFactory, HasSettingsField, InteractsWithMedia, Searchable;
 
     protected static $unguarded = true;
 
@@ -34,6 +35,24 @@ class Book extends Model implements HasMedia
     public function getRouteKeyName(): string
     {
         return 'path';
+    }
+
+    public function searchableAs(): string
+    {
+        return app()->environment().'_books';
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'authors' => $this->authors()->get()->pluck('name')->toArray(),
+            'tags' => $this->tags()->get()->pluck('name')->toArray(),
+            'identifier' => $this->identifier,
+            'path' => $this->path,
+        ];
     }
 
     protected static function booted(): void
@@ -53,6 +72,59 @@ class Book extends Model implements HasMedia
         $cover = $this->primaryCover()?->getFirstMedia('image');
         $colour = $cover ? getDominantColour($cover->getPath()) : '#000000';
         $this->settings()->set('colour', $colour);
+    }
+
+    public function relatedBooksBySearch(int $limit = 6)
+    {
+        $authors = $this->authors->pluck('name')->toArray();
+        $tags = $this->tags->pluck('name')->toArray();
+
+        $searchTerms = array_merge($authors, $tags);
+        $query = implode(' ', $searchTerms);
+
+        return Book::search($query)
+            ->take($limit * 2)
+            ->get()
+            ->filter(fn ($book) => $book->title !== $this->title && $book->id !== $this->id)
+            ->take($limit)
+            ->values();
+    }
+
+    public function relatedBooksByAuthorsAndTags(int $limit = 6)
+    {
+        $this->loadMissing(['authors', 'tags']);
+
+        $authorIds = $this->authors->pluck('id');
+        $tagIds = $this->tags->pluck('id');
+
+        // Load all other books with authors and tags, excluding same title
+        $candidates = Book::with(['authors', 'tags'])
+            ->where('id', '!=', $this->id)
+            ->where('title', '!=', $this->title)
+            ->get();
+
+        $scored = $candidates->map(function ($book) use ($authorIds, $tagIds) {
+            $score = 0;
+
+            // Score for shared authors
+            $sharedAuthors = $book->authors->pluck('id')->intersect($authorIds);
+            $score += $sharedAuthors->count() * 5;
+
+            // Score for shared tags
+            $sharedTags = $book->tags->pluck('id')->intersect($tagIds);
+            $score += $sharedTags->count() * 2;
+
+            return [
+                'book' => $book,
+                'score' => $score,
+            ];
+        })->filter(fn ($entry) => $entry['score'] > 0)
+            ->sortByDesc('score')
+            ->take($limit)
+            ->pluck('book')
+            ->values(); // Re-index
+
+        return $scored;
     }
 
     public function tags(): BelongsToMany

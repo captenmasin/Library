@@ -47,6 +47,7 @@ class ImportBookFromData
         $book = Book::create([
             'identifier' => $identifier,
             'codes' => $data['codes'],
+            'edition' => $data['edition'],
             'page_count' => $data['pageCount'] ?? null,
             'title' => $data['title'],
             'published_date' => $data['published_date'],
@@ -58,7 +59,8 @@ class ImportBookFromData
         //         Add primary cover
         $primaryCover = $book->covers()->create(['is_primary' => true]);
 
-        if ($data['cover']) {
+        if ($data['cover_large'] || $data['cover']) {
+            $data['cover'] = $data['cover_large'] ?? $data['cover'];
             try {
                 $primaryCover->addMediaFromUrl($data['cover'])
                     ->toMediaCollection('image');

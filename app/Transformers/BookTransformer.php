@@ -45,8 +45,10 @@ class BookTransformer
             'description' => $description,
             'description_clean' => strip_tags($description ?? ''),
             'authors' => $authors,
+            'edition' => $data['edition'] ?? null,
             'published_date' => $data['date_published'] ?? null,
-            'cover' => $data['image_original'] ?? $data['image'] ?? null,
+            'cover' => $data['image'] ?? null,
+            'cover_large' => $data['image_original'] ?? null,
             'service' => ISBNdbService::ServiceName,
             'links' => $links,
         ];

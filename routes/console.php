@@ -2,33 +2,20 @@
 
 use App\Models\Tag;
 use App\Models\Book;
-use App\Models\Post;
 use App\Models\User;
 use App\Models\Cover;
 use App\Models\Publisher;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use App\Console\Commands\ConfigureRelatedBooks;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
+Schedule::command(ConfigureRelatedBooks::class)->daily();
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
-
-Artisan::command('test', function () {
-    foreach (range(0, 10) as $i) {
-        $addBook = rand(0, 3) === 1;
-        Post::factory()->create([
-            'user_id' => User::first(),
-            'book_id' => $addBook ? Book::query()->inRandomOrder()->first()->id : null,
-        ]);
-    }
-
-    //    Book::all()->each(function ($book) {
-    //        $book->slug = \Illuminate\Support\Str::slug($book->title);
-    //        $book->saveQuietly();
-    //    });
-});
 
 Artisan::command('make:admin', function () {
     $name = \Laravel\Prompts\text('Name:');
