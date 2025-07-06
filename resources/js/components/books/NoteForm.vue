@@ -53,6 +53,7 @@ function openNoteForm () {
                             <Link
                                 :href="
                                     useRoute('notes.destroy', {
+                                        book: book,
                                         note: book.notes,
                                     })
                                 "

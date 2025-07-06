@@ -24,7 +24,7 @@ class NoteController extends Controller
         return back()->with('success', 'Note added.');
     }
 
-    public function destroy(DestroyNoteRequest $request, Note $note)
+    public function destroy(DestroyNoteRequest $request, Book $book, Note $note)
     {
         $note->delete();
 
