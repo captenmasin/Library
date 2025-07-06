@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Artisan;
 use App\Console\Commands\ConfigureRelatedBooks;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-Schedule::command('horizon:snapshot')->everyFiveMinutes();
+Schedule::command('horizon:snapshot')->everyMinute();
+// Schedule::command('horizon:snapshot')->everyFiveMinutes();
 Schedule::command(ConfigureRelatedBooks::class)->daily();
 
 Artisan::command('inspire', function () {

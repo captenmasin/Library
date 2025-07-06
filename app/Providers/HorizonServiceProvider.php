@@ -33,7 +33,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
                 return true;
             }
 
-            return $user->can(UserPermission::VIEW_HORIZON_PANEL);
+            return $user && $user->can(UserPermission::VIEW_HORIZON_PANEL);
         });
     }
 }

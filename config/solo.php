@@ -48,13 +48,12 @@ return [
         'Vite' => 'npm run dev',
         'Queue' => Command::from('php artisan horizon')->lazy(),
         'Logs' => EnhancedTailCommand::file(storage_path('logs/laravel.log')),
+        'Scheduler' => Command::from('php artisan schedule:work')->lazy(),
 
-        // Lazy commands do not automatically start when Solo starts.
-        //        'Dumps' => Command::from('php artisan solo:dumps')->lazy(),
-        //        'Reverb' => Command::from('php artisan reverb:start --debug')->lazy(),
-        'Pint' => Command::from('./vendor/bin/pint --ansi')->lazy(),
+        // 'Dumps' => Command::from('php artisan solo:dumps')->lazy(),
+        // 'Reverb' => Command::from('php artisan reverb:start --debug')->lazy(),
         'Tests' => Command::from('APP_ENV=testing vendor/bin/pest --watch --parallel')->withEnv(['APP_ENV' => 'testing'])->lazy(),
-        'Nightwatch' => Command::from('php artisan nightwatch:agent')->lazy(),
+        //        'Nightwatch' => Command::from('php artisan nightwatch:agent')->lazy(),
     ],
 
     /**
