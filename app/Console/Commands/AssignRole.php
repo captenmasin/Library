@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use App\Enums\UserRole;
 use Illuminate\Console\Command;
 
@@ -31,13 +32,13 @@ class AssignRole extends Command
 
         $users = multiselect(
             label: 'Select users to assign the role to',
-            options: collect(\App\Models\User::all())
+            options: collect(User::all())
                 ->mapWithKeys(fn ($user) => [$user->id => $user->name])
                 ->toArray(),
             required: true
         );
 
-        $users = \App\Models\User::whereIn('id', $users)->get();
+        $users = User::whereIn('id', $users)->get();
         foreach ($users as $user) {
             foreach ($roles as $role) {
                 $user->assignRole($role);
