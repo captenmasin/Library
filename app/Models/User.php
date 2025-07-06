@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Filament\Panel;
 use App\Traits\HasAvatar;
+use App\Enums\UserPermission;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Traits\HasRoles;
@@ -97,8 +98,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return false;
-        //        return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
+        return $this->can(UserPermission::VIEW_ADMIN_PANEL);
     }
 
     public function book_covers(): HasMany
