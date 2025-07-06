@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use App\Observers\BookObserver;
-use Glorand\Model\Settings\Traits\HasSettingsField;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Vite;
 use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Support\Facades\Vite;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Glorand\Model\Settings\Traits\HasSettingsField;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[ObservedBy([BookObserver::class])]
 class Book extends Model implements HasMedia

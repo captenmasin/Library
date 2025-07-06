@@ -2,18 +2,18 @@
 
 namespace App\Providers;
 
-use App\Contracts\BookApiServiceInterface;
-use App\Services\GoogleBooksService;
+use Inertia\Response;
+use Laravel\Dusk\Browser;
 use App\Services\ISBNdbService;
+use App\Services\GoogleBooksService;
+use Illuminate\Support\Facades\Vite;
 use Artesaos\SEOTools\Facades\JsonLd;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\SEOTools;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Inertia\Response;
-use Laravel\Dusk\Browser;
+use App\Contracts\BookApiServiceInterface;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {

@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Books;
 
 use App\Enums\UserBookStatus;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreBookUserRequest extends FormRequest
 {

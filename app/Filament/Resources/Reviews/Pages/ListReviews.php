@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Reviews\Pages;
 
-use App\Filament\Resources\Reviews\ReviewResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\Reviews\ReviewResource;
 
 class ListReviews extends ListRecords
 {

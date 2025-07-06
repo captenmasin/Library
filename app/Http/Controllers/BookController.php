@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use App\Models\Book;
+use Inertia\Inertia;
+use Illuminate\Http\Request;
+use App\Http\Resources\BookResource;
+use App\Http\Resources\ReviewResource;
 use App\Actions\Books\FetchOrCreateBook;
 use App\Actions\Books\ImportBookFromData;
 use App\Actions\Books\SearchBooksFromApi;
 use App\Http\Requests\Books\StoreBookRequest;
 use App\Http\Requests\Books\UpdateBookRequest;
-use App\Http\Resources\BookResource;
-use App\Http\Resources\ReviewResource;
-use App\Models\Book;
-use Auth;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class BookController extends Controller
 {
@@ -105,7 +105,7 @@ class BookController extends Controller
     {
         Auth::user()->books()->detach($book);
 
-        return redirect()->route('library.index');
+        return redirect()->route('user.books.index');
         //            ->banner('Book '.$book->code.' removed successfully');
     }
 }

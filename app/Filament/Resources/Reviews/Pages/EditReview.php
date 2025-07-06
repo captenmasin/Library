@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Reviews\Pages;
 
-use App\Filament\Resources\Reviews\ReviewResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Reviews\ReviewResource;
 
 class EditReview extends EditRecord
 {

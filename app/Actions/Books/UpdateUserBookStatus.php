@@ -2,15 +2,15 @@
 
 namespace App\Actions\Books;
 
-use App\Enums\UserBookStatus;
-use App\Http\Requests\Books\UpdateBookUserRequest;
+use Exception;
 use App\Models\Book;
 use App\Models\User;
-use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Enums\UserBookStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Http\Requests\Books\UpdateBookUserRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UpdateUserBookStatus
 {

@@ -1,24 +1,22 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Actions\Books\AddBookToUser;
+use Illuminate\Support\Facades\Http;
+use App\Transformers\BookTransformer;
+use Illuminate\Support\Facades\Route;
 use App\Actions\Books\FetchOrCreateBook;
-use App\Actions\Books\GetBookByBarcode;
 use App\Actions\Books\ImportBookFromData;
 use App\Actions\Books\RemoveBookFromUser;
 use App\Actions\Books\SearchBooksFromApi;
-use App\Actions\Books\UpdateUserBookStatus;
-use App\Actions\Users\UpdateSingleUserSetting;
 use App\Actions\Users\UpdateUserSettings;
 use App\Contracts\BookApiServiceInterface;
-use App\Transformers\BookTransformer;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Route;
+use App\Actions\Books\UpdateUserBookStatus;
+use App\Actions\Users\UpdateSingleUserSetting;
 
 Route::name('api.')->group(function () {
     Route::prefix('books')->name('books.')->group(function () {
         Route::get('search', SearchBooksFromApi::class)->name('search');
-        //        Route::get('barcode', GetBookByBarcode::class)->name('get_by_barcode');
 
         Route::get('test/{identifier}', function ($identifier, BookApiServiceInterface $booksApi) {
             $book = (new BookTransformer)::fromIsbn($booksApi::get($identifier));

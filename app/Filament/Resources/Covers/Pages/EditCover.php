@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Covers\Pages;
 
-use App\Filament\Resources\Covers\CoverResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Covers\CoverResource;
 
 class EditCover extends EditRecord
 {

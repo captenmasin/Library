@@ -2,12 +2,12 @@
 
 namespace App\Actions\Books;
 
-use App\Http\Requests\Books\DestroyBookUserRequest;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Http\Requests\Books\DestroyBookUserRequest;
 
 class RemoveBookFromUser
 {

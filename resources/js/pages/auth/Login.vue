@@ -16,7 +16,7 @@ defineProps<{
 }>()
 
 const form = useForm({
-    email: '',
+    login: '',
     password: '',
     remember: true
 })
@@ -37,7 +37,7 @@ const submit = async () => {
 <template>
     <AuthBase
         title="Log in to your account"
-        description="Enter your email and password below to log in">
+        description="Enter your email/username and password below to log in">
         <div
             v-if="status"
             class="mb-4 text-center text-sm font-medium text-green-600">
@@ -49,17 +49,14 @@ const submit = async () => {
             @submit.prevent="submit">
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
+                    <Label for="login">Email address or username</Label>
                     <Input
-                        id="email"
-                        v-model="form.email"
-                        type="email"
+                        id="login"
+                        v-model="form.login"
                         autofocus
                         :tabindex="1"
-                        autocomplete="email"
-                        placeholder="email@example.com"
                     />
-                    <InputError :message="form.errors.email" />
+                    <InputError :message="form.errors.login" />
                 </div>
 
                 <div class="grid gap-2">

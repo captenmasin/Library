@@ -101,7 +101,7 @@ function submitForm () {
     })
 
     router.get(
-        useRoute('library.index'),
+        useRoute('user.books.index'),
         {
             search: search.value,
             author: author.value,
@@ -119,8 +119,8 @@ defineOptions({ layout: AppLayout })
 <template>
     <div class="container mx-auto">
         <!-- Header --------------------------------------------------------- -->
-        <div class="flex flex-col gap-2.5 md:gap-4 md:flex-row md:items-center">
-            <div class="flex justify-between items-center gap-8">
+        <div class="flex flex-col gap-2.5 md:flex-row md:items-center md:gap-4">
+            <div class="flex items-center justify-between gap-8">
                 <PageTitle class="flex-1">
                     <template v-if="currentSearch">
                         Search results for "{{ currentSearch }}"
@@ -131,18 +131,18 @@ defineOptions({ layout: AppLayout })
                 </PageTitle>
                 <BookViewTabs
                     v-model="view"
-                    class="flex md:hidden shrink-0 w-32 flex-1 max-w-32" />
+                    class="flex w-32 max-w-32 flex-1 shrink-0 md:hidden" />
             </div>
 
             <!-- View & Sort Controls ---------------------------------------- -->
-            <div class="flex w-full flex-col items-center gap-2.5 md:gap-2 md:ml-auto md:w-auto md:flex-row">
+            <div class="flex w-full flex-col items-center gap-2.5 md:ml-auto md:w-auto md:flex-row md:gap-2">
                 <!-- View toggle -->
                 <BookViewTabs
                     v-model="view"
                     class="hidden md:flex" />
 
                 <!-- Sort dropdown & order -->
-                <div class="flex w-full items-center justify-end gap-2.5 md:gap-2 md:w-56">
+                <div class="flex w-full items-center justify-end gap-2.5 md:w-56 md:gap-2">
                     <Select v-model="sort">
                         <SelectTrigger class="w-full">
                             <span
@@ -183,11 +183,14 @@ defineOptions({ layout: AppLayout })
                         </Tooltip>
                     </TooltipProvider>
                     <Button
-                        class="cursor-pointer bg-white text-secondary-foreground md:hidden"
+                        class="relative cursor-pointer bg-white text-secondary-foreground md:hidden"
                         variant="outline"
                         size="icon"
                         @pointerup="displayFilters = !displayFilters"
                     >
+                        <div
+                            v-if="hasFiltered"
+                            class="absolute top-1.5 right-1.5 size-2 rounded-full bg-primary ring-2 ring-primary/20" />
                         <Icon
                             name="Filter"
                             class="w-4" />
@@ -197,12 +200,13 @@ defineOptions({ layout: AppLayout })
         </div>
 
         <!-- Main layout ----------------------------------------------------- -->
-        <div class="mt-2 md:mt-8 flex flex-col items-start gap-4 md:flex-row">
+        <div class="mt-2 flex flex-col items-start gap-4 md:mt-8 md:flex-row">
             <aside
                 :class="displayFilters ? 'h-[calc-size(auto,size)] overflow-auto border-secondary' : 'h-0 overflow-hidden border-background'"
-                class="w-[calc(100%+calc(var(--spacing)*8))] transition-[height,border-color] md:border-0 md:overflow-visible relative duration-500 px-4 md:px-0 border-y flex-col md:h-auto gap-2 md:flex md:w-64 bg-muted md:bg-transparent -mx-4 md:mx-0">
+                class="relative -mx-4 w-[calc(100%+calc(var(--spacing)*8))] flex-col gap-2 border-y bg-muted px-4 transition-[height,border-color] duration-500 md:mx-0 md:flex md:h-auto md:w-64 md:overflow-visible md:border-0 md:bg-transparent md:px-0"
+            >
                 <!-- Search ---------------------------------------------------- -->
-                <div class="flex flex-col gap-2 mt-4 md:mt-0">
+                <div class="mt-4 flex flex-col gap-2 md:mt-0">
                     <form
                         class="flex w-full"
                         @submit.prevent="submitForm">
@@ -225,8 +229,7 @@ defineOptions({ layout: AppLayout })
                     </form>
 
                     <!-- Author filter -------------------------------------------- -->
-                    <Select
-                        v-model="author">
+                    <Select v-model="author">
                         <SelectTrigger class="w-full">
                             <SelectValue placeholder="Filter by author" />
                         </SelectTrigger>
@@ -249,7 +252,7 @@ defineOptions({ layout: AppLayout })
                 </div>
 
                 <!-- Status filter -------------------------------------------- -->
-                <div class="mt-4">
+                <div class="my-4">
                     <p class="mb-2 font-serif">
                         Filter by status
                     </p>
@@ -261,11 +264,11 @@ defineOptions({ layout: AppLayout })
                 <!-- Reset button -------------------------------------------- -->
                 <Button
                     v-if="hasFiltered"
-                    class="w-full mt-4 mb-4"
+                    class="mb-4 w-full"
                     as-child
                     variant="outline">
                     <Link
-                        :href="useRoute('library.index')"
+                        :href="useRoute('user.books.index')"
                         preserve-scroll>
                         Reset
                     </Link>
@@ -273,18 +276,33 @@ defineOptions({ layout: AppLayout })
             </aside>
 
             <!-- Books list -------------------------------------------------- -->
-            <section class="flex flex-1 mt-4 md:mt-0 flex-col">
+            <section class="mt-4 flex flex-1 flex-col md:mt-0">
                 <div
-                    class="flex items-center justify-center rounded-lg border-2 border-dashed py-16 px-4 gap-2 flex-col text-sm text-center text-muted-foreground border-primary/10">
+                    class="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-16 text-center text-sm text-muted-foreground"
+                >
                     <Icon
                         name="BookDashed"
                         class="size-8" />
-                    <h3 class="font-semibold text-2xl font-serif">
-                        duhhhhhhh...
+                    <h3 class="font-serif text-2xl font-semibold">
+                        No books found
                     </h3>
-                    <p>
-                        Please wait while we import the book. This may take a few minutes depending on the size of the book.
+                    <p v-if="hasFiltered">
+                        Try adjusting your search or filters.
                     </p>
+                    <div
+                        v-else
+                        class="flex flex-col">
+                        <p>You haven't added any books yet.</p>
+                        <div class="flex mx-auto">
+                            <Button
+                                class="mt-4"
+                                as-child>
+                                <Link :href="useRoute('books.search')">
+                                    Search for books
+                                </Link>
+                            </Button>
+                        </div>
+                    </div>
                 </div>
 
                 <ShelfView

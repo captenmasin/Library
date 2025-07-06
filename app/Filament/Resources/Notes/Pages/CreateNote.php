@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Notes\Pages;
 
-use App\Filament\Resources\Notes\NoteResource;
 use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\Notes\NoteResource;
 
 class CreateNote extends CreateRecord
 {

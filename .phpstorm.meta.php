@@ -3772,7 +3772,7 @@ namespace PHPSTORM_META {
         'api.books.search', 'api.books.test', 'api.books.test2', 'api.books.fetch_or_create', 'api.user.books.update_status',
         'api.user.books.store', 'api.user.books.destroy', 'api.user.settings.single.update', 'api.user.settings.multiple.update', 'test', 'books.search', 'books.show', 'books.preview',
         'books.update', 'books.destroy', 'notes.store', 'notes.destroy', 'reviews.store',
-        'reviews.destroy', 'cover.update', 'cover.destroy', 'library.index', 'library.store',
+        'reviews.destroy', 'cover.update', 'cover.destroy', 'user.books.index', 'library.store',
         'library.update_tags', 'user.settings.profile.edit', 'user.settings.library.edit', 'user.settings.profile.danger', 'user.settings.password.edit',
         'user.settings.profile.update', 'user.settings.profile.destroy', 'user.settings.password.update', 'user.settings.appearance', 'image.transform',
         'register', 'login', 'password.request',

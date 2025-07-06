@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Notes\Pages;
 
-use App\Filament\Resources\Notes\NoteResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\Notes\NoteResource;
 
 class ListNotes extends ListRecords
 {

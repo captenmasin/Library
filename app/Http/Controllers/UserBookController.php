@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Books\DestroyBookUserRequest;
-use App\Http\Resources\BookResource;
 use App\Models\Book;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
+use App\Http\Resources\BookResource;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Books\DestroyBookUserRequest;
 
 class UserBookController extends Controller
 {
@@ -123,10 +123,10 @@ class UserBookController extends Controller
 
     public function edit(Request $request)
     {
-        return Inertia::render('settings/Library', [
+        return Inertia::render('settings/Books', [
 
         ])->withMeta([
-            'title' => 'Library Settings',
+            'title' => 'Book Settings',
             'description' => 'Manage your book collection and settings.',
         ]);
     }

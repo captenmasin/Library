@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Book;
-use App\Models\Review;
 use App\Models\User;
+use App\Models\Review;
 
 test('user can create book review', function () {
     $user = User::factory()->create();

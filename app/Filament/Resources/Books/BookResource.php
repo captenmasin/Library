@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\Books;
 
-use App\Filament\Resources\Books\Pages\CreateBook;
+use BackedEnum;
+use App\Models\Book;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use App\Filament\Resources\Books\Pages\EditBook;
 use App\Filament\Resources\Books\Pages\ListBooks;
+use App\Filament\Resources\Books\Pages\CreateBook;
 use App\Filament\Resources\Books\Schemas\BookForm;
 use App\Filament\Resources\Books\Tables\BooksTable;
-use App\Models\Book;
-use BackedEnum;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 
 class BookResource extends Resource
 {

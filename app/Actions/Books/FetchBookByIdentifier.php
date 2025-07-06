@@ -3,8 +3,8 @@
 namespace App\Actions\Books;
 
 use App\Models\Book;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class FetchBookByIdentifier

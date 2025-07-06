@@ -1,15 +1,15 @@
 <?php
 
-use App\Enums\UserBookStatus;
 use App\Models\Book;
 use App\Models\User;
+use App\Enums\UserBookStatus;
 use Inertia\Testing\AssertableInertia;
 
 test('library page is displayed', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)
-        ->get(route('library.index'));
+        ->get(route('user.books.index'));
 
     $response->assertStatus(200);
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -30,7 +30,7 @@ test('library page shows user books', function () {
     }
 
     $response = $this->actingAs($user)
-        ->get(route('library.index'));
+        ->get(route('user.books.index'));
 
     $response->assertStatus(200);
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -58,7 +58,7 @@ test('library can be filtered by status', function () {
     }
 
     $response = $this->actingAs($user)
-        ->get(route('library.index', ['status' => UserBookStatus::Completed->value]));
+        ->get(route('user.books.index', ['status' => UserBookStatus::Completed->value]));
 
     $response->assertStatus(200);
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -99,7 +99,7 @@ test('book tags can be updated', function () {
     $tags = ['fiction', 'fantasy'];
 
     $response = $this->actingAs($user)
-        ->put(route('library.update_tags', $book), [
+        ->put(route('user.books.update_tags', $book), [
             'tags' => $tags,
         ]);
 
@@ -114,7 +114,7 @@ test('book tags can be updated', function () {
 });
 
 test('library page requires authentication', function () {
-    $response = $this->get(route('library.index'));
+    $response = $this->get(route('user.books.index'));
 
     $response->assertRedirect(route('login'));
 });

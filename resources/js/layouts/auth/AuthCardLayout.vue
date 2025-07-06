@@ -14,7 +14,7 @@ defineProps<{
     <div class="flex flex-col items-center justify-center gap-6 p-6 min-h-svh bg-muted md:p-10">
         <div class="flex w-full max-w-md flex-col gap-6">
             <Link
-                :href="useRoute('library.index')"
+                :href="useRoute('user.books.index')"
                 class="flex items-center gap-2 self-center font-medium">
                 <div class="flex h-9 w-9 items-center justify-center">
                     <AppLogoIcon class="fill-current text-black size-9 dark:text-white" />

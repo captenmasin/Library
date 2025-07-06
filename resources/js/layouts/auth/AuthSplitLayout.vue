@@ -18,7 +18,7 @@ defineProps<{
         <div class="relative hidden h-full flex-col p-10 text-white bg-muted dark:border-r lg:flex">
             <div class="absolute inset-0 bg-zinc-900" />
             <Link
-                :href="useRoute('library.index')"
+                :href="useRoute('user.books.index')"
                 class="relative z-20 flex items-center text-lg font-medium">
                 <AppLogoIcon class="mr-2 fill-current text-white size-8" />
                 {{ name }}

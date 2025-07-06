@@ -2,13 +2,13 @@
 
 namespace App\Actions\Books;
 
-use App\Enums\UserBookStatus;
-use App\Http\Requests\Books\StoreBookUserRequest;
 use App\Models\Book;
 use App\Models\User;
+use App\Enums\UserBookStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Http\Requests\Books\StoreBookUserRequest;
 
 class AddBookToUser
 {

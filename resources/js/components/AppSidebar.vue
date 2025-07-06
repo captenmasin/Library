@@ -12,7 +12,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 const mainNavItems: NavItem[] = [
     {
         title: 'Books',
-        href: useRoute('library.index'),
+        href: useRoute('user.books.index'),
         icon: LayoutGrid
     }
 ]
@@ -32,7 +32,7 @@ const footerNavItems: NavItem[] = [
                     <SidebarMenuButton
                         size="lg"
                         as-child>
-                        <Link :href="useRoute('library.index')">
+                        <Link :href="useRoute('user.books.index')">
                             <AppLogo />
                         </Link>
                     </SidebarMenuButton>

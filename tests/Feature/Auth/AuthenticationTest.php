@@ -12,20 +12,45 @@ test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
 
     $response = $this->post('/login', [
-        'email' => $user->email,
+        'login' => $user->email,
         'password' => 'password',
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('library.index', absolute: false));
+    $response->assertRedirect(route('user.books.index', absolute: false));
+});
+
+test('users can authenticate using their username', function () {
+    $user = User::factory()->create();
+
+    $response = $this->post('/login', [
+        'login' => $user->username,
+        'password' => 'password',
+    ]);
+
+    $this->assertAuthenticated();
+    $response->assertRedirect(route('user.books.index', absolute: false));
 });
 
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
     $this->post('/login', [
-        'email' => $user->email,
+        'login' => $user->email,
         'password' => 'wrong-password',
+    ]);
+
+    $this->assertGuest();
+});
+
+test('users can not authenticate with invalid username', function () {
+    User::factory()->create([
+        'username' => 'testuser',
+    ]);
+
+    $this->post('/login', [
+        'login' => 'wrongusername',
+        'password' => 'password',
     ]);
 
     $this->assertGuest();

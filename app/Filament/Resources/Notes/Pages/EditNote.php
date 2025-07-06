@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Notes\Pages;
 
-use App\Filament\Resources\Notes\NoteResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Notes\NoteResource;
 
 class EditNote extends EditRecord
 {

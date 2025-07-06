@@ -2,9 +2,9 @@
 
 namespace App\Actions\Books;
 
+use App\Models\Tag;
 use App\Models\Author;
 use App\Models\Publisher;
-use App\Models\Tag;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class ImportBooksFromApiSearchJob

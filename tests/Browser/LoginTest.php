@@ -5,60 +5,85 @@ use Laravel\Dusk\Browser;
 
 test('user can login and be redirected to books', function () {
     $this->browse(function (Browser $browser) {
+        $password = Str::password();
+
         $user = User::factory()->create([
-            'password' => 'password',
+            'password' => $password,
         ]);
 
         $browser->visit('/login')
             ->assertSee('Log in')
-            ->type('#email', $user->email)
-            ->type('#password', 'password')
+            ->type('#login', $user->email) // email OR username
+            ->type('#password', $password)
             ->press('Log in')
-            ->waitForLocation('/library')
-            ->assertPathIs('/library')
+            ->waitForLocation('/books')
+            ->assertPathIs('/books')
             ->assertSee('Books')
             ->fullLogout();
+    });
+});
 
-        $browser->visit('/test-logout');
+test('user can login using username', function () {
+    $this->browse(function (Browser $browser) {
+        $password = Str::password();
+
+        User::factory()->create([
+            'username' => 'testuser123',
+            'password' => $password,
+        ]);
+
+        $browser->visit('/login')
+            ->assertSee('Log in')
+            ->type('#login', 'testuser123')
+            ->type('#password', $password)
+            ->press('Log in')
+            ->waitForLocation('/books')
+            ->assertPathIs('/books')
+            ->assertSee('Books')
+            ->fullLogout();
     });
 });
 
 test('user cannot login with invalid credentials', function () {
     $this->browse(function (Browser $browser) {
+        $password = Str::password();
+        $wrongPassword = Str::password();
+
         $user = User::factory()->create([
-            'password' => 'password',
+            'password' => $password,
         ]);
 
         $browser->visit('/login')
             ->assertSee('Log in')
-            ->waitFor('#email')
-            ->type('#email', $user->email)
-            ->type('#password', 'wrong-password')
+            ->waitFor('#login')
+            ->type('#login', $user->email)
+            ->type('#password', $wrongPassword)
             ->pressAndWaitFor('Log in')
+            ->waitForText('These credentials do not match our records.', 5)
             ->assertSee('These credentials do not match our records.');
 
         $browser->visit('/login')
             ->assertSee('Log in')
-            ->waitFor('#email')
-            ->type('#email', 'wrongemail@example.com')
-            ->type('#password', 'wrong-password')
+            ->waitFor('#login')
+            ->type('#login', 'wrongemail@example.com')
+            ->type('#password', $wrongPassword)
             ->pressAndWaitFor('Log in')
             ->assertSee('These credentials do not match our records.');
     });
 });
 
-test('email and password are required', function () {
+test('login and password are required', function () {
     $this->browse(function (Browser $browser) {
         $browser->visit('/login')
             ->press('Log in')
-            ->waitForText('The email field is required')
-            ->assertSee('The email field is required')
-            ->assertSee('The password field is required');
+            ->waitForText('The login field is required', 5)
+            ->assertSee('The login field is required.')
+            ->assertSee('The password field is required.');
 
         $browser->visit('/login')
             ->press('Log in')
-            ->type('#email', 'email@example.com')
-            ->waitForText('The password field is required')
-            ->assertSee('The password field is required');
+            ->type('#login', 'someuser')
+            ->waitForText('The password field is required.', 5)
+            ->assertSee('The password field is required.');
     });
 });

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class UpdateUsersTableAddSettings extends Migration
 {
@@ -13,7 +13,7 @@ class UpdateUsersTableAddSettings extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('users', 'settings')) {
+        if (! Schema::hasColumn('users', 'settings')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->json('settings')->after('remember_token')->nullable();
             });

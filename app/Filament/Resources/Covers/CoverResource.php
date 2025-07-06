@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\Covers;
 
-use App\Filament\Resources\Covers\Pages\CreateCover;
+use BackedEnum;
+use App\Models\Cover;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use App\Filament\Resources\Covers\Pages\EditCover;
 use App\Filament\Resources\Covers\Pages\ListCovers;
+use App\Filament\Resources\Covers\Pages\CreateCover;
 use App\Filament\Resources\Covers\Schemas\CoverForm;
 use App\Filament\Resources\Covers\Tables\CoversTable;
-use App\Models\Cover;
-use BackedEnum;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 
 class CoverResource extends Resource
 {

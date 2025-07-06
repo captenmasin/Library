@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\Authors;
 
-use App\Filament\Resources\Authors\Pages\CreateAuthor;
+use BackedEnum;
+use App\Models\Author;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use App\Filament\Resources\Authors\Pages\EditAuthor;
 use App\Filament\Resources\Authors\Pages\ListAuthors;
+use App\Filament\Resources\Authors\Pages\CreateAuthor;
 use App\Filament\Resources\Authors\Schemas\AuthorForm;
 use App\Filament\Resources\Authors\Tables\AuthorsTable;
-use App\Models\Author;
-use BackedEnum;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 
 class AuthorResource extends Resource
 {

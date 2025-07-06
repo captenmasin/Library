@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Book;
-use App\Models\Cover;
-use App\Models\Post;
-use App\Models\Publisher;
 use App\Models\Tag;
+use App\Models\Book;
+use App\Models\Post;
 use App\Models\User;
+use App\Models\Cover;
+use App\Models\Publisher;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 Artisan::command('inspire', function () {

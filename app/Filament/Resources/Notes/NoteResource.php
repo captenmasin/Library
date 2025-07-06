@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\Notes;
 
-use App\Filament\Resources\Notes\Pages\CreateNote;
+use BackedEnum;
+use App\Models\Note;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
 use App\Filament\Resources\Notes\Pages\EditNote;
 use App\Filament\Resources\Notes\Pages\ListNotes;
+use App\Filament\Resources\Notes\Pages\CreateNote;
 use App\Filament\Resources\Notes\Schemas\NoteForm;
 use App\Filament\Resources\Notes\Tables\NotesTable;
-use App\Models\Note;
-use BackedEnum;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 
 class NoteResource extends Resource
 {

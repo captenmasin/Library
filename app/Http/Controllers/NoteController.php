@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DestroyNoteRequest;
-use App\Http\Requests\StoreNoteRequest;
 use App\Models\Book;
 use App\Models\Note;
+use App\Http\Requests\StoreNoteRequest;
+use App\Http\Requests\DestroyNoteRequest;
 
 class NoteController extends Controller
 {

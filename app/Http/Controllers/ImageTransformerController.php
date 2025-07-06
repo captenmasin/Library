@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\AllowedMimeTypes;
-use App\Enums\AllowedOptions;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Drivers\Gd\Encoders\WebpEncoder;
-use Intervention\Image\Encoders\AutoEncoder;
+use Illuminate\Http\Request;
+use App\Enums\AllowedOptions;
+use Illuminate\Http\Response;
+use App\Enums\AllowedMimeTypes;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\RateLimiter;
 use Intervention\Image\Encoders\GifEncoder;
-use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\Encoders\PngEncoder;
+use Intervention\Image\Encoders\AutoEncoder;
+use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\Laravel\Facades\Image;
+use Intervention\Image\Drivers\Gd\Encoders\WebpEncoder;
 
 class ImageTransformerController extends \Illuminate\Routing\Controller
 {

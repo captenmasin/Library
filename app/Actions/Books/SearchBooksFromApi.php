@@ -2,11 +2,11 @@
 
 namespace App\Actions\Books;
 
-use App\Contracts\BookApiServiceInterface;
-use App\Transformers\BookTransformer;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Transformers\BookTransformer;
 use Lorisleiva\Actions\Concerns\AsAction;
+use App\Contracts\BookApiServiceInterface;
 
 class SearchBooksFromApi
 {
