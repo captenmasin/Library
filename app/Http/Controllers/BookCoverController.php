@@ -13,7 +13,7 @@ class BookCoverController extends Controller
     {
         Validator::make($request->all(), [
             'cover' => ['nullable', 'mimes:jpg,jpeg,png,webp,gif', 'max:20480'],
-        ])->validateWithBag('updateBookInformation');
+        ])->validateWithBag('bookCoverBag');
 
         if ($request->file('cover')) {
             $newCover = $book->covers()->create([

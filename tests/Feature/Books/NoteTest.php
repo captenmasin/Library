@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Book;
-use App\Models\User;
 use App\Models\Note;
+use App\Models\User;
 
 // Test that a user can add a note to a book
 
@@ -106,4 +106,3 @@ test('notes require authentication', function () {
     $this->delete("/{$book->path}/notes/{$note->id}")
         ->assertRedirect(route('login'));
 });
-
