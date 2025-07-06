@@ -205,14 +205,8 @@ return [
         ],
 
         'local' => [
-            'production' => [
-
-            ],
-            'development' => [
-
-            ],
-            'local' => [
-
+            'supervisor-1' => [
+                'maxProcesses' => 3,
             ],
         ],
     ],
