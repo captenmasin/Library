@@ -29,7 +29,6 @@ const submit = () => {
         preserveScroll: true,
         onSuccess: () => {
             displayNoteForm.value = false
-            noteForm.content = ''
         }
     })
 }

@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Activity;
+use App\Enums\ActivityType;
+use Illuminate\Database\Eloquent\Model;
+
 if (! function_exists('getDominantColour')) {
     function getDominantColour($imagePath): string
     {
@@ -77,5 +81,18 @@ if (! function_exists('rgbToHue')) {
         }
 
         return ($hue < 0) ? $hue + 360 : $hue;
+    }
+}
+
+if (! function_exists('logActivity')) {
+    function logActivity(ActivityType $type, ?Model $subject = null, array $properties = []): void
+    {
+        Activity::create([
+            'user_id' => auth()->id(),
+            'type' => $type,
+            'subject_type' => $subject?->getMorphClass(),
+            'subject_id' => $subject?->getKey(),
+            'properties' => $properties,
+        ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Actions\Books;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Enums\ActivityType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -22,6 +23,11 @@ class RemoveBookFromUser
         $user->book_covers->where('book_id', $book->id)->each(function ($cover) {
             $cover->delete();
         });
+
+        logActivity(
+            ActivityType::BookRemoved,
+            $book
+        );
 
         $user->books()->detach($book);
     }

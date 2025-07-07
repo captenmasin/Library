@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Inertia\Inertia;
+use App\Enums\ActivityType;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use App\Enums\UserBookStatus;
 use App\Http\Resources\BookResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Books\DestroyBookUserRequest;
@@ -24,7 +26,11 @@ class UserBookController extends Controller
 
         if ($request->filled('status')) {
             $statuses = Arr::wrap($request->input('status'));
-            $bookQuery->wherePivotIn('status', $statuses);
+            $statuses = collect($statuses)->filter(fn ($status) => in_array($status, UserBookStatus::values()))->values()->all();
+
+            if (! empty($statuses)) {
+                $bookQuery->wherePivotIn('status', $statuses);
+            }
         }
 
         $books = $bookQuery->get();
@@ -137,6 +143,11 @@ class UserBookController extends Controller
         if (! $request->user()->books()->where('book_id', $book->id)->exists()) {
             return redirect()->back()->with('message', 'Book not found in your collection.');
         }
+
+        logActivity(
+            ActivityType::BookRemoved,
+            $book
+        );
 
         $request->user()->books()->detach($book);
 

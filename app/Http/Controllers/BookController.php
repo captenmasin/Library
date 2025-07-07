@@ -12,7 +12,6 @@ use App\Actions\Books\FetchOrCreateBook;
 use App\Actions\Books\ImportBookFromData;
 use App\Actions\Books\SearchBooksFromApi;
 use App\Http\Requests\Books\StoreBookRequest;
-use App\Http\Requests\Books\UpdateBookRequest;
 
 class BookController extends Controller
 {
@@ -86,23 +85,6 @@ class BookController extends Controller
         return Inertia::render('books/Preview', [
             'identifier' => $identifier,
         ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateBookRequest $request, Book $book)
-    {
-        if ($request->has('notes')) {
-            $notes = $request->get('notes');
-            $request->user()->notes()->updateOrCreate(
-                ['book_id' => $book->id],
-                ['content' => $notes]
-            );
-        }
-
-        return redirect()->back()
-            ->with('success', 'Book updated successfully');
     }
 
     public function destroy(Book $book)

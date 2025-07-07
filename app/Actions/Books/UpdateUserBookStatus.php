@@ -5,6 +5,7 @@ namespace App\Actions\Books;
 use Exception;
 use App\Models\Book;
 use App\Models\User;
+use App\Enums\ActivityType;
 use App\Enums\UserBookStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -16,7 +17,7 @@ class UpdateUserBookStatus
 {
     use AsAction;
 
-    public function handle(User $user, Book $book, string $status): int
+    public function handle(User $user, Book $book, UserBookStatus $status): int
     {
         $updated = $user->books()
             ->updateExistingPivot($book->id, ['status' => $status]);
@@ -24,6 +25,10 @@ class UpdateUserBookStatus
         if (! $updated) {
             throw new ModelNotFoundException('Book not found in your library.');
         }
+
+        logActivity(ActivityType::BookStatusUpdated, $book, [
+            'status' => $status,
+        ]);
 
         return $updated;
     }
@@ -34,14 +39,14 @@ class UpdateUserBookStatus
             $this->handle(
                 $request->user(),
                 $book,
-                $request->get('status', UserBookStatus::PlanToRead)
+                $request->enum('status', UserBookStatus::class, default: UserBookStatus::PlanToRead)
             );
 
             return $request->wantsJson()
                 ? response()->json([
                     'success' => true,
                     'message' => 'Book status updated successfully.',
-                    'status' => $request->get('status', UserBookStatus::PlanToRead),
+                    'status' => $request->enum('status', UserBookStatus::class),
                 ])
                 : redirect()->back()->with('success', 'Book status updated successfully.');
 

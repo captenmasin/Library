@@ -4,6 +4,7 @@ use App\Models\Tag;
 use App\Models\Book;
 use App\Models\User;
 use App\Models\Cover;
+use App\Models\Activity;
 use App\Models\Publisher;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Inspiring;
@@ -42,6 +43,7 @@ Artisan::command('reset', function () {
     Book::all()->each(fn ($book) => $book->delete());
     Cover::all()->each(fn ($cover) => $cover->delete());
     Tag::all()->each(fn ($tag) => $tag->delete());
+    //    Activity::all()->each(fn ($activity) => $activity->delete());
     Publisher::all()->each(fn ($publisher) => $publisher->delete());
     Media::where('model_type', Cover::class)->get()->each(fn ($book) => $book->delete());
     DB::table('book_user')->truncate();

@@ -21,7 +21,8 @@ export function useUserBookStatus () {
     const addedBookIdentifiers = computed(() => new Set(Object.keys(addedBooks.value)))
 
     const possibleStatuses = Object.entries(UserBookStatus).map(([key, value]) => ({
-        value: key,
+        value,
+        slug: key,
         label: value
     }))
 
@@ -55,6 +56,7 @@ export function useUserBookStatus () {
 
             if (response?.book?.identifier) {
                 const book = response.book
+                console.log(status)
                 useRequest(useRoute('api.user.books.store'), 'POST', {
                     identifier: book.identifier,
                     status: status || 'PlanToRead'

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Books;
 
 use App\Enums\UserBookStatus;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,7 +25,7 @@ class UpdateBookUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['sometimes', 'string', 'in:'.implode(',', UserBookStatus::names())],
+            'status' => ['sometimes', 'string', Rule::enum(UserBookStatus::class)],
         ];
     }
 }

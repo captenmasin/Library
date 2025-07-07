@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import Icon from '@/components/Icon.vue'
 import DefaultCover from '~/images/default-cover.svg'
+import BookActions from '@/components/books/BookActions.vue'
 import { Link } from '@inertiajs/vue3'
 import { computed, PropType } from 'vue'
-import { Button } from '@/components/ui/button'
 import { Book, BookApiResult } from '@/types/book'
-import { UserBookStatus } from '@/enums/UserBookStatus'
-import { useUserBookStatus } from '@/composables/useUserBookStatus'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const props = defineProps({
     book: {
@@ -28,19 +23,6 @@ const props = defineProps({
         default: '_self'
     }
 })
-
-const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, addingBooks, addBookToUser, removeBookFromUser } =
-    useUserBookStatus()
-
-function select (book: BookApiResult | Book, status: UserBookStatus) {
-    if (book?.identifier) {
-        if (addedBookIdentifiers.value.has(book.identifier)) {
-            updateStatus(book, status)
-        } else {
-            addBookToUser(book.identifier, status)
-        }
-    }
-}
 
 const isLink = computed(() => {
     return props.book.links?.show !== undefined && props.book.links?.show !== null
@@ -80,7 +62,7 @@ const url = computed(() => {
                         class="size-full bg-gray-200 object-cover">
                 </div>
             </component>
-            <div class="flex flex-col">
+            <div class="flex flex-col min-w-0 w-full">
                 <div class="flex">
                     <component
                         :is="linkTag"
@@ -106,54 +88,8 @@ const url = computed(() => {
         </div>
         <div
             v-if="includeActions"
-            class="ml-auto flex w-full shrink-0 items-center justify-end gap-2 md:w-full flex-1">
-            <div
-                v-if="addingBooks.includes(book.identifier)"
-                class="w-9 shrink-0 aspect-square">
-                <div
-                    class="animate-spin rounded-full bg-muted size-full flex items-center justify-center text-muted-foreground">
-                    <Icon
-                        name="LoaderCircle"
-                        class="size-5" />
-                </div>
-            </div>
-
-            <TooltipProvider v-if="addedBookIdentifiers.has(book.identifier)">
-                <Tooltip>
-                    <TooltipTrigger>
-                        <Button
-                            variant="secondary"
-                            size="icon"
-                            @click="removeBookFromUser(book)"
-                        >
-                            <Icon
-                                name="Trash"
-                                class="w-4" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent> Remove from library </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-
-            <div class="w-full md:w-44">
-                <Select
-                    v-model="selectedStatuses[book.identifier]"
-                    @update:model-value="(value) => select(book, value as UserBookStatus)">
-                    <SelectTrigger class="w-full">
-                        <SelectValue placeholder="Add to library" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectItem
-                                v-for="status in possibleStatuses"
-                                :key="status.value"
-                                :value="status.value">
-                                {{ status.label }}
-                            </SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-            </div>
+            class="ml-auto shrink-0 w-56">
+            <BookActions :book="book" />
         </div>
     </div>
 </template>

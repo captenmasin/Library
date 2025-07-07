@@ -22,8 +22,6 @@ const result = ref(null)
 const book = ref(null)
 const loading = ref(false)
 
-const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, addingBooks, addBookToUser, removeBookFromUser } = useUserBookStatus()
-
 let controls = null
 
 const { play } = useSound(BarcodeScanned)
@@ -98,16 +96,6 @@ function stopScan () {
     scanning.value = false
     if (controls) {
         controls.stop() // stop the camera
-    }
-}
-
-function select (book, status) {
-    if (book?.identifier) {
-        if (addedBookIdentifiers.value.has(book.identifier)) {
-            updateStatus(book, status)
-        } else {
-            addBookToUser(book.identifier, status)
-        }
     }
 }
 

@@ -101,6 +101,11 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return $this->can(UserPermission::VIEW_ADMIN_PANEL);
     }
 
+    public function activities(): HasMany
+    {
+        return $this->hasMany(Activity::class);
+    }
+
     public function book_covers(): HasMany
     {
         return $this->hasMany(Cover::class);

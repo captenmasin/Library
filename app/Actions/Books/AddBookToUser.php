@@ -4,6 +4,7 @@ namespace App\Actions\Books;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Enums\ActivityType;
 use App\Enums\UserBookStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -14,14 +15,20 @@ class AddBookToUser
 {
     use AsAction;
 
-    public function handle(Book $book, User $user, ?string $status = null): void
+    public function handle(Book $book, User $user, ?UserBookStatus $status = null): void
     {
         if ($user->books()->where('book_id', $book->id)->exists()) {
             throw new \Exception('Book already exists in your library.');
         }
 
         $user->books()->attach($book, [
-            'status' => $status ?? UserBookStatus::PlanToRead,
+            'status' => $status->value ?? UserBookStatus::PlanToRead,
+        ]);
+
+        logActivity(ActivityType::BookAdded, $book, [
+            'book_identifier' => $book->identifier,
+            'book_title' => $book->title,
+            'status' => $status->value ?? UserBookStatus::PlanToRead->value,
         ]);
     }
 
@@ -29,7 +36,12 @@ class AddBookToUser
     {
         try {
             $book = Book::where('identifier', $request->get('identifier'))->firstOr(fn () => null);
-            $this->handle($book, $request->user(), $request->get('status', UserBookStatus::PlanToRead));
+            $status = $request->enum('status', UserBookStatus::class);
+            $this->handle(
+                $book,
+                $request->user(),
+                $request->enum('status', UserBookStatus::class, default: UserBookStatus::PlanToRead)
+            );
 
             return $request->wantsJson()
                 ? response()->json([

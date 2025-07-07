@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Books;
 
 use App\Enums\UserBookStatus;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,7 +26,7 @@ class StoreBookUserRequest extends FormRequest
     {
         return [
             'identifier' => ['required', 'exists:books,identifier'],
-            'status' => ['required', 'string', 'in:'.implode(',', UserBookStatus::names())],
+            'status' => ['required', Rule::enum(UserBookStatus::class)],
         ];
     }
 }

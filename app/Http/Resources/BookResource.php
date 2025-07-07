@@ -16,7 +16,7 @@ class BookResource extends JsonResource
         return [
             'path' => $this->path,
             'identifier' => $this->identifier,
-            'title' => $this->title,
+            'title' => html_entity_decode($this->title),
             'description' => $this->description,
             'description_clean' => strip_tags($this->description),
             'published_date' => $this->published_date,

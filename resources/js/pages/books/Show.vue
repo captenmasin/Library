@@ -6,6 +6,7 @@ import TagForm from '@/components/books/TagForm.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
+import BookActions from '@/components/books/BookActions.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue'
 import { Review } from '@/types/review'
@@ -27,30 +28,6 @@ const props = defineProps({
         default: () => []
     }
 })
-
-const { possibleStatuses, updateStatus, addBookToUser, removeBookFromUser } = useUserBookStatus()
-
-const statusForm = useForm({
-    status: props.book.user_status
-})
-
-function reset () {
-    statusForm.status = null
-    router.reload()
-}
-
-watch(
-    () => statusForm.status,
-    (newStatus, oldStatus) => {
-        if (newStatus && newStatus !== oldStatus) {
-            if (props.book?.in_library) {
-                updateStatus(props.book, newStatus, () => router.reload())
-            } else {
-                addBookToUser(props.book.identifier, newStatus, () => router.reload())
-            }
-        }
-    }
-)
 
 const data = [
     {
@@ -86,35 +63,7 @@ defineOptions({
                 </UpdateBookCover>
 
                 <div class="mt-4">
-                    <div class="flex flex-col">
-                        <Select v-model="statusForm.status">
-                            <SelectTrigger class="w-full">
-                                <SelectValue placeholder="Add to library" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectItem
-                                        v-for="status in possibleStatuses"
-                                        :key="status.value"
-                                        :value="status.value">
-                                        {{ status.label }}
-                                    </SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                        <div class="flex justify-end">
-                            <Button
-                                v-if="book.in_library"
-                                class="flex text-xs text-destructive"
-                                variant="link"
-                                @click="removeBookFromUser(book, reset)">
-                                <Icon
-                                    name="trash"
-                                    class="w-3" />
-                                Remove
-                            </Button>
-                        </div>
-                    </div>
+                    <BookActions :book="book" />
                 </div>
             </div>
             <div class="flex w-3/5 flex-col">

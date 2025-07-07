@@ -89,27 +89,6 @@ test('book details can be viewed', function () {
     );
 });
 
-test('book can be updated with notes', function () {
-    $user = User::factory()->create();
-    $book = Book::factory()->create();
-    $notes = 'These are my test notes for this book.';
-
-    $response = $this->actingAs($user)
-        ->patch(route('books.update', $book), [
-            'notes' => $notes,
-        ]);
-
-    $response->assertRedirect();
-    $response->assertSessionHas('success');
-
-    // Check that the note was actually saved
-    $this->assertDatabaseHas('notes', [
-        'user_id' => $user->id,
-        'book_id' => $book->id,
-        'content' => $notes,
-    ]);
-});
-
 test('book preview redirects if book exists', function () {
     $book = Book::factory()->create();
 

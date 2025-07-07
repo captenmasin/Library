@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Enums\ActivityType;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +22,15 @@ class BookCoverController extends Controller
             ]);
 
             $newCover->addMedia($request->file('cover'))->toMediaCollection('image');
+
+            logActivity(
+                ActivityType::BookCoverUpdated,
+                $newCover,
+                [
+                    'book_identifier' => $book->identifier,
+                    'book_title' => $book->title,
+                ]
+            );
         }
 
         return redirect()->back()->with('success', __('Book cover updated successfully.'));
@@ -28,6 +38,15 @@ class BookCoverController extends Controller
 
     public function destroy(Request $request, Book $book)
     {
+        logActivity(
+            ActivityType::BookCoverRemoved,
+            null,
+            [
+                'book_identifier' => $book->identifier,
+                'book_title' => $book->title,
+            ]
+        );
+
         $request->user()->book_covers()->where('book_id', $book->id)->delete();
     }
 }
