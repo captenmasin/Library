@@ -27,6 +27,8 @@ class UpdateUserBookStatus
         }
 
         logActivity(ActivityType::BookStatusUpdated, $book, [
+            'book_identifier' => $book->identifier,
+            'book_title' => $book->title,
             'status' => $status,
         ]);
 

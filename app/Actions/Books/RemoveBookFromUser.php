@@ -26,7 +26,10 @@ class RemoveBookFromUser
 
         logActivity(
             ActivityType::BookRemoved,
-            $book
+            $book, [
+                'book_identifier' => $book->identifier,
+                'book_title' => $book->title,
+            ]
         );
 
         $user->books()->detach($book);
