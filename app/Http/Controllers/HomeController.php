@@ -14,16 +14,17 @@ class HomeController extends Controller
     {
         return Inertia::render('Home', [
             'stats' => [
-                'books' => 0,
+                'booksInLibrary' => 0,
                 'completedBooks' => 0,
-                'readingBooks' => 0,
+                'planToRead' => 0,
             ],
             'currentlyReading' => BookResource::collection(
                 $request->user()->books()
+                    ->with(['covers', 'authors'])
                     ->wherePivot('status', UserBookStatus::Reading)
                     ->get()
             ),
-            'activities' => ActivityResource::collection($request->user()->activities()->get()),
+            'activities' => ActivityResource::collection($request->user()->activities()->orderByDesc('id')->get()),
         ]);
     }
 }

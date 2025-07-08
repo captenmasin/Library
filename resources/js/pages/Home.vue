@@ -1,20 +1,42 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue'
+import BookCard from '@/components/books/BookCard.vue'
 import { PropType } from 'vue'
+import { Book } from '@/types/book'
+import { useTimeAgo } from '@vueuse/core'
 import { Activity } from '@/types/activity'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+
+type Stats = {
+    booksInLibrary: number
+    completedBooks: number
+    planToRead: number
+}
 
 defineProps({
     activities: {
         type: Array as PropType<Activity[]>,
         default: () => []
+    },
+    currentlyReading: {
+        type: Array as PropType<Book[]>,
+        default: () => []
+    },
+    stats: {
+        type: Object as PropType<Stats>,
+        default: () => ({})
     }
 })
+
+function getTimeAgo (date) {
+    return useTimeAgo(new Date(date))
+}
 
 defineOptions({ layout: AppLayout })
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-50 py-10 px-6 sm:px-10">
+    <div>
         <header class="mb-10">
             <h1 class="text-3xl font-bold font-serif text-gray-800">
                 Welcome back, Mason
@@ -35,7 +57,7 @@ defineOptions({ layout: AppLayout })
                             Books in library
                         </p>
                         <p class="text-2xl font-bold text-gray-800">
-                            42
+                            {{ stats.booksInLibrary || 0 }}
                         </p>
                     </div>
                     <svg
@@ -57,7 +79,7 @@ defineOptions({ layout: AppLayout })
                             Completed
                         </p>
                         <p class="text-2xl font-bold text-green-600">
-                            17
+                            {{ stats.completedBooks || 0 }}
                         </p>
                     </div>
                     <svg
@@ -79,7 +101,7 @@ defineOptions({ layout: AppLayout })
                             Plan to read
                         </p>
                         <p class="text-2xl font-bold text-blue-600">
-                            12
+                            {{ stats.planToRead || 0 }}
                         </p>
                     </div>
                     <svg
@@ -101,40 +123,17 @@ defineOptions({ layout: AppLayout })
             <h2 class="text-xl font-semibold text-gray-700 mb-4">
                 Continue reading
             </h2>
-            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                <div class="flex items-start gap-4 bg-white p-4 rounded-lg shadow">
-                    <img
-                        src="/placeholder-cover.png"
-                        alt="Book cover"
-                        class="w-16 h-24 object-cover rounded"
-                    >
-                    <div class="flex-1">
-                        <h3 class="text-md font-semibold">
-                            The Way of Kings
-                        </h3>
-                        <p class="text-sm text-gray-500">
-                            Brandon Sanderson
-                        </p>
-                        <p class="mt-2 text-xs text-gray-400">
-                            Last read: 3 days ago
-                        </p>
-                    </div>
-                </div>
-                <!-- Repeat for other books -->
-            </div>
-        </section>
 
-        <ul>
-            <li
-                v-for="activity in activities"
-                :key="activity.id"
-                class="text-sm text-muted-foreground py-4 border-b"
-            >
-                <h2>{{ activity.id }}</h2>
-                <p v-html="activity.description" />
-                <!--                <small>{{ activity.created_at }}</small>-->
-            </li>
-        </ul>
+            <ul
+                class="grid grid-cols-2 gap-6 md:grid-cols-6 md:gap-4">
+                <li>
+                    <BookCard
+                        v-for="book in currentlyReading"
+                        :key="book.identifier"
+                        :book="book" />
+                </li>
+            </ul>
+        </section>
 
         <section class="mb-12">
             <div class="flex items-center justify-between mb-4">
@@ -145,15 +144,30 @@ defineOptions({ layout: AppLayout })
                     href="#"
                     class="text-sm text-blue-600 hover:underline">View all</a>
             </div>
-            <ul class="bg-white rounded-xl shadow divide-y divide-gray-100">
-                <li class="p-4 text-sm text-gray-700">
-                    You added <strong>1984</strong> to your library.
-                </li>
-                <li class="p-4 text-sm text-gray-700">
-                    You marked <strong>Dune</strong> as completed.
-                </li>
-                <li class="p-4 text-sm text-gray-700">
-                    You reviewed <strong>Project Hail Mary</strong>.
+            <ul class="bg-white rounded-xl shadow divide-y divide-muted">
+                <li
+                    v-for="activity in activities"
+                    :key="activity.id"
+                    class="p-4 text-sm flex justify-between items-center">
+                    <p
+                        class="text-secondary-foreground"
+                        v-html="activity.description" />
+                    <div class="flex shrink-0">
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <p class="text-secondary-foreground/50">
+                                        {{ getTimeAgo(activity.created_at) }}
+                                    </p>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>
+                                        {{ new Date(activity.created_at).toLocaleString() }}
+                                    </p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
                 </li>
             </ul>
         </section>

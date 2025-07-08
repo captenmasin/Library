@@ -2,22 +2,30 @@
 
 namespace App\Http\Controllers\Settings;
 
+use Throwable;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
+use Spatie\LaravelPasskeys\Actions\StorePasskeyAction;
+use Spatie\LaravelPasskeys\Actions\GeneratePasskeyRegisterOptionsAction;
 
 class PasswordController extends Controller
 {
     /**
      * Show the user's password settings page.
      */
-    public function edit(): Response
+    public function edit(Request $request): Response
     {
-        return Inertia::render('settings/Password');
+        return Inertia::render('settings/Password', [
+            'passkeys' => $request->user()->passkeys()->get()
+                ->map(fn ($key) => $key->only(['id', 'name', 'last_used_at'])),
+        ]);
     }
 
     /**
@@ -35,5 +43,55 @@ class PasswordController extends Controller
         ]);
 
         return back();
+    }
+
+    // POST profile.passkeys.create
+    public function storePassKey()
+    {
+        $data = request()->validate([
+            'passkey' => 'required|json',
+            'options' => 'required|json',
+        ]);
+
+        $user = auth()->user();
+        $storePasskeyAction = app(StorePasskeyAction::class);
+
+        try {
+            $storePasskeyAction->execute(
+                $user,
+                $data['passkey'],
+                $data['options'],
+                request()->getHost(),
+                ['name' => Str::random(10)],
+            );
+
+            // Redirect back
+            return redirect()->back();
+
+        } catch (Throwable $e) {
+            throw ValidationException::withMessages([
+                'name' => __('passkeys::passkeys.error_something_went_wrong_generating_the_passkey'),
+            ]);
+        }
+    }
+
+    // DELETE profile.passkeys.delete
+    public function deletePasskey(Request $request, string $id)
+    {
+        $request->user()->passkeys()->where('id', $id)->delete();
+
+        return redirect()->back()
+            ->with('success', 'Passkey deleted successfully');
+    }
+
+    public function generatePasskeyOptions()
+    {
+        $options = app(GeneratePasskeyRegisterOptionsAction::class)->execute(auth()->user());
+
+        // ❌ BAD if $options is already JSON encoded
+        // return response()->json($options); // leads to double-encoded JSON
+
+        // ✅ GOOD: ensure $options is a raw array/object
+        return $options;
     }
 }

@@ -3,18 +3,18 @@ import AppLogo from '@/components/AppLogo.vue'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import UserMenuContent from '@/components/UserMenuContent.vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
-import { Link, usePage } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { getInitials } from '@/composables/useInitials'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import { useImageTransform } from '@/composables/useImageTransform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { LayoutGrid, LibraryBig, Menu, NotebookTabsIcon, Plus, SearchIcon } from 'lucide-vue-next'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Home, LayoutGrid, LibraryBig, Menu, NotebookTabsIcon, Plus, SearchIcon } from 'lucide-vue-next'
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu'
 
 interface Props {
@@ -31,13 +31,27 @@ const page = usePage()
 const auth = computed(() => page.props.auth)
 const authed = computed(() => page.props.authed)
 
-const isCurrentRoute = computed(() => (url: string) => page.url === url)
+const mobileMenuOpen = ref(false)
+
+const isCurrentRoute = computed(() => (url: string) => {
+    let cleanedUrl = url.replace(page.props.app.url, '')
+    if (cleanedUrl === '') {
+        cleanedUrl = '/'
+    }
+
+    return page.url === cleanedUrl
+})
 
 const activeItemStyles = computed(
     () => (url: string) => (isCurrentRoute.value(url) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : '')
 )
 
 const mainNavItems: NavItem[] = [
+    {
+        title: 'Home',
+        href: useRoute('home'),
+        icon: Home
+    },
     {
         title: 'Library',
         href: useRoute('user.books.index'),
@@ -51,6 +65,10 @@ const mainNavItems: NavItem[] = [
 ]
 
 const rightNavItems: NavItem[] = []
+
+router.on('navigate', (event) => {
+    mobileMenuOpen.value = false
+})
 </script>
 
 <template>
@@ -59,7 +77,7 @@ const rightNavItems: NavItem[] = []
             <div class="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
                 <!-- Mobile Menu -->
                 <div class="lg:hidden">
-                    <Sheet>
+                    <Sheet v-model:open="mobileMenuOpen">
                         <SheetTrigger :as-child="true">
                             <Button
                                 variant="ghost"
@@ -70,14 +88,14 @@ const rightNavItems: NavItem[] = []
                         </SheetTrigger>
                         <SheetContent
                             side="left"
-                            class="p-6 w-[300px]">
+                            class="w-[300px] p-6">
                             <SheetTitle class="sr-only">
                                 Navigation Menu
                             </SheetTitle>
                             <SheetHeader class="flex justify-start text-left">
-                                <AppLogoIcon class="fill-current text-black size-6 dark:text-white" />
+                                <AppLogoIcon class="size-6 rounded-sm fill-current text-black dark:text-white" />
                             </SheetHeader>
-                            <div class="flex h-full flex-1 flex-col justify-between py-6 space-y-4">
+                            <div class="flex h-full flex-1 flex-col justify-between space-y-4 py-6">
                                 <nav class="-mx-3 space-y-1">
                                     <Link
                                         v-for="item in mainNavItems"
@@ -100,7 +118,7 @@ const rightNavItems: NavItem[] = []
                                         :href="item.href"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        class="flex items-center text-sm font-medium space-x-2"
+                                        class="flex items-center space-x-2 text-sm font-medium"
                                     >
                                         <component
                                             :is="item.icon"
@@ -117,8 +135,8 @@ const rightNavItems: NavItem[] = []
                 <Link
                     :href="useRoute('home')"
                     class="flex items-center gap-x-2">
-                    <div class="flex aspect-square items-center justify-center size-8">
-                        <AppLogoIcon class="fill-current text-white size-full dark:text-black" />
+                    <div class="flex aspect-square size-8 items-center justify-center">
+                        <AppLogoIcon class="size-full rounded-lg fill-current text-white dark:text-black" />
                     </div>
                 </Link>
 
@@ -142,7 +160,7 @@ const rightNavItems: NavItem[] = []
                                 </Link>
                                 <div
                                     v-if="isCurrentRoute(item.href)"
-                                    class="absolute bottom-0 left-0 w-full translate-y-px bg-black h-0.5 dark:bg-white"
+                                    class="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"
                                 />
                             </NavigationMenuItem>
                         </NavigationMenuList>
@@ -162,7 +180,7 @@ const rightNavItems: NavItem[] = []
                                                 variant="ghost"
                                                 size="icon"
                                                 as-child
-                                                class="h-9 w-9 cursor-pointer group">
+                                                class="group h-9 w-9 cursor-pointer">
                                                 <a
                                                     :href="item.href"
                                                     target="_blank"
@@ -170,7 +188,7 @@ const rightNavItems: NavItem[] = []
                                                     <span class="sr-only">{{ item.title }}</span>
                                                     <component
                                                         :is="item.icon"
-                                                        class="opacity-80 size-5 group-hover:opacity-100" />
+                                                        class="size-5 opacity-80 group-hover:opacity-100" />
                                                 </a>
                                             </Button>
                                         </TooltipTrigger>
@@ -188,9 +206,9 @@ const rightNavItems: NavItem[] = []
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                class="relative w-auto rounded-full p-1 size-10 focus-within:ring-primary focus-within:ring-2"
+                                class="relative size-10 w-auto rounded-full p-1 focus-within:ring-2 focus-within:ring-primary"
                             >
-                                <Avatar class="overflow-hidden rounded-full size-8">
+                                <Avatar class="size-8 overflow-hidden rounded-full">
                                     <AvatarImage
                                         v-if="auth.user.avatar"
                                         :src="getImageUrl(auth.user.avatar, { width: 32, height: 32, crop: 'center' })"

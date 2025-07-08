@@ -15,11 +15,13 @@ use Glorand\Model\Settings\Traits\HasSettingsField;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\LaravelPasskeys\Models\Concerns\HasPasskeys;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\LaravelPasskeys\Models\Concerns\InteractsWithPasskeys;
 
-class User extends Authenticatable implements HasMedia, MustVerifyEmail
+class User extends Authenticatable implements HasMedia, HasPasskeys, MustVerifyEmail
 {
-    use HasApiTokens, HasAvatar, HasFactory, HasRoles, HasSettingsField, InteractsWithMedia, Notifiable;
+    use HasApiTokens, HasAvatar, HasFactory, HasRoles, HasSettingsField, InteractsWithMedia, InteractsWithPasskeys, Notifiable;
 
     /**
      * The attributes that are mass assignable.

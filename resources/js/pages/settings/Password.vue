@@ -3,13 +3,22 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import InputError from '@/components/InputError.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
-import { ref } from 'vue'
+import { toast } from 'vue-sonner'
+import { PropType, ref } from 'vue'
+import { UserPasskey } from '@/types/user'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { type BreadcrumbItem } from '@/types'
-import { Head, useForm } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
+import { router, useForm } from '@inertiajs/vue3'
+import { useRequest } from '@/composables/useRequest'
+import { startRegistration } from '@simplewebauthn/browser'
+
+defineProps({
+    passkeys: {
+        type: Array as PropType<UserPasskey[]>
+    }
+})
 
 const passwordInput = ref<HTMLInputElement | null>(null)
 const currentPasswordInput = ref<HTMLInputElement | null>(null)
@@ -40,6 +49,29 @@ const updatePassword = () => {
             }
         }
     })
+}
+
+async function addPassKey () {
+    try {
+        const response = await useRequest(useRoute('profile.passkeys.generate-options'), 'GET')
+
+        const options = typeof response === 'string' ? JSON.parse(response) : response
+
+        const credential = await startRegistration(options)
+
+        router.post(useRoute('profile.passkeys.store'), {
+            options: JSON.stringify(options),
+            passkey: JSON.stringify(credential)
+        })
+    } catch (error) {
+        toast.error('Failed to register passkey. Please try again.')
+    }
+}
+
+function deletePasskey (id) {
+    if (confirm('Are you SURE you want to delete this passkey?')) {
+        router.delete(useRoute('profile.passkeys.delete', id))
+    }
 }
 
 defineOptions({
@@ -119,6 +151,36 @@ defineOptions({
                     </div>
                 </form>
             </div>
+
+            <HeadingSmall
+                title="Passkeys"
+                description="Paaaaaaaaaasskeys" />
+
+            <div v-if="passkeys && passkeys?.length > 0">
+                <h2 class="mb-4 font-bold">
+                    Your passkeys:
+                </h2>
+                <div class="divide-y">
+                    <div
+                        v-for="passkey in passkeys"
+                        :key="passkey.id"
+                        class="flex items-center justify-between py-2">
+                        <div>
+                            <p>Name: {{ passkey.name }}</p>
+                            <p>Last used at: {{ passkey.last_used_at || 'Never' }}</p>
+                        </div>
+                        <button @click="deletePasskey(passkey.id)">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button
+                class="btn"
+                @click.prevent="addPassKey">
+                Add a passkey
+            </button>
         </SettingsLayout>
     </div>
 </template>

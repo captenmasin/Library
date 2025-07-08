@@ -2,13 +2,16 @@
 import AuthBase from '@/layouts/AuthLayout.vue'
 import TextLink from '@/components/TextLink.vue'
 import InputError from '@/components/InputError.vue'
+import { toast } from 'vue-sonner'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LoaderCircle } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Head, useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useRequest } from '@/composables/useRequest'
+import { Head, router, useForm } from '@inertiajs/vue3'
+import { startRegistration } from '@simplewebauthn/browser/esm'
 
 defineProps<{
     status?: string;
@@ -32,6 +35,22 @@ const submit = async () => {
         }
     })
 }
+
+async function loginWithPassKey () {
+    try {
+        const response = await useRequest(useRoute('passkeys.authentication_options'), 'GET')
+
+        const options = typeof response === 'string' ? JSON.parse(response) : response
+
+        const startAuthenticationResponse = await window.startAuthentication({ optionsJSON: options })
+
+        router.post(useRoute('passkeys.login'), {
+            start_authentication_response: JSON.stringify(startAuthenticationResponse)
+        })
+    } catch (error) {
+        toast.error('Failed to log in with passkey. Please try again.')
+    }
+}
 </script>
 
 <template>
@@ -44,6 +63,12 @@ const submit = async () => {
             {{ status }}
         </div>
 
+        <Button
+            type="button"
+            @click="loginWithPassKey">
+            Login with Passkey
+        </Button>
+
         <form
             class="flex flex-col gap-6"
             @submit.prevent="submit">
@@ -54,8 +79,7 @@ const submit = async () => {
                         id="login"
                         v-model="form.login"
                         autofocus
-                        :tabindex="1"
-                    />
+                        :tabindex="1" />
                     <InputError :message="form.errors.login" />
                 </div>
 

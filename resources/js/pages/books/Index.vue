@@ -317,7 +317,6 @@ defineOptions({ layout: AppLayout })
                     <li
                         v-for="book in filteredBooks"
                         :key="book.identifier"
-                        :class="view === 'list' ? 'flex gap-4' : ''"
                         class="w-full">
                         <BookCardHorizontal
                             v-if="view === 'list'"
