@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Glorand\Model\Settings\Traits\HasSettingsField;
@@ -19,7 +20,7 @@ use Spatie\LaravelPasskeys\Models\Concerns\HasPasskeys;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\LaravelPasskeys\Models\Concerns\InteractsWithPasskeys;
 
-class User extends Authenticatable implements HasMedia, HasPasskeys, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, HasMedia, HasPasskeys, MustVerifyEmail
 {
     use HasApiTokens, HasAvatar, HasFactory, HasRoles, HasSettingsField, InteractsWithMedia, InteractsWithPasskeys, Notifiable;
 

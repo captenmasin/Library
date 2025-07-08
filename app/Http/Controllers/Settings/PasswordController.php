@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use Throwable;
+use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Str;
@@ -86,12 +87,6 @@ class PasswordController extends Controller
 
     public function generatePasskeyOptions()
     {
-        $options = app(GeneratePasskeyRegisterOptionsAction::class)->execute(auth()->user());
-
-        // ❌ BAD if $options is already JSON encoded
-        // return response()->json($options); // leads to double-encoded JSON
-
-        // ✅ GOOD: ensure $options is a raw array/object
-        return $options;
+        return app(GeneratePasskeyRegisterOptionsAction::class)->execute(auth()->user());
     }
 }
