@@ -13,12 +13,22 @@ use App\Filament\Resources\Books\Pages\ListBooks;
 use App\Filament\Resources\Books\Pages\CreateBook;
 use App\Filament\Resources\Books\Schemas\BookForm;
 use App\Filament\Resources\Books\Tables\BooksTable;
+use App\Filament\Resources\Books\RelationManagers\NotesRelationManager;
+use App\Filament\Resources\Books\RelationManagers\UsersRelationManager;
+use App\Filament\Resources\Books\RelationManagers\CoversRelationManager;
+use App\Filament\Resources\Books\RelationManagers\AuthorsRelationManager;
+use App\Filament\Resources\Books\RelationManagers\PublisherRelationManager;
 
 class BookResource extends Resource
 {
     protected static ?string $model = Book::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
+
+    public static function getRecordTitle($record): string
+    {
+        return $record->title;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -33,7 +43,11 @@ class BookResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AuthorsRelationManager::class,
+            PublisherRelationManager::class,
+            UsersRelationManager::class,
+            CoversRelationManager::class,
+            NotesRelationManager::class,
         ];
     }
 

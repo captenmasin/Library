@@ -15,15 +15,15 @@ class PasskeysTable
         return $table
             ->columns([
                 TextColumn::make('authenticatable.name')
+                    ->label('User')
                     ->numeric()
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->dateTime()
                     ->sortable(),
                 TextColumn::make('last_used_at')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -33,7 +33,7 @@ class PasskeysTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                //                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

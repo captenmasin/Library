@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Books\Schemas;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
 
 class BookForm
 {
@@ -12,15 +13,24 @@ class BookForm
     {
         return $schema
             ->components([
+                TextInput::make('identifier')
+                    ->disabled(),
+                TextInput::make('path')
+                    ->disabled(),
                 TextInput::make('title')
+                    ->columnSpanFull()
                     ->required(),
-                TextInput::make('description'),
+                RichEditor::make('description')
+                    ->columnSpanFull(),
+                TextInput::make('original_cover')
+                    ->label('Original Cover URL')
+                    ->url()
+                    ->columnSpanFull(),
+                TextInput::make('page_count')
+                    ->numeric(),
                 TextInput::make('published_date'),
-                Textarea::make('settings')
-                    ->columnSpanFull(),
-                TextInput::make('identifier'),
-                Textarea::make('codes')
-                    ->columnSpanFull(),
+                Textarea::make('settings'),
+                Textarea::make('codes'),
             ]);
     }
 }

@@ -1,6 +1,8 @@
 import { UserBookStatus } from '@/enums/UserBookStatus'
+import { UserPermission } from '@/enums/UserPermission'
 
 export type User = {
+    permissions: string[];
     name: string;
     username: string;
     email?: string;

@@ -11,7 +11,7 @@ export function useUserBookStatus () {
     type StatusMap = Record<string, UserBookStatus>;
 
     const page = usePage()
-    const authed = page.props.authed
+    const authed = page.props.auth.check
     const addedBooks = authed
         ? ref<Record<string, UserBookStatus | string>>({ ...page.props.auth.user.book_identifiers })
         : ref<Record<string, UserBookStatus | string>>({})

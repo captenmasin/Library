@@ -28,6 +28,7 @@ class UserResource extends JsonResource
 
         $data['email'] = $this->email;
         $data['settings'] = $this->settings()->all();
+        $data['permissions'] = $this->getAllPermissions()->pluck('name')->toArray();
         $data['book_identifiers'] = $this->getBookIdentifiers();
 
         return $data;

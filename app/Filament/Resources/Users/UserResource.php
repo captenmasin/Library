@@ -13,12 +13,18 @@ use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\Tables\UsersTable;
+use App\Filament\Resources\Users\RelationManagers\BooksRelationManager;
+use App\Filament\Resources\Users\RelationManagers\NotesRelationManager;
+use App\Filament\Resources\Users\RelationManagers\CoversRelationManager;
+use App\Filament\Resources\Users\RelationManagers\ReviewsRelationManager;
+use App\Filament\Resources\Users\RelationManagers\PasskeysRelationManager;
+use App\Filament\Resources\Users\RelationManagers\ActivitiesRelationManager;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUser;
 
     public static function form(Schema $schema): Schema
     {
@@ -33,7 +39,12 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            BooksRelationManager::class,
+            NotesRelationManager::class,
+            ReviewsRelationManager::class,
+            CoversRelationManager::class,
+            ActivitiesRelationManager::class,
+            PasskeysRelationManager::class,
         ];
     }
 

@@ -17,7 +17,6 @@ class NoteResource extends JsonResource
         return [
             'id' => $this->id,
             'content' => $this->content,
-            'content_html' => nl2br($this->content),
         ];
     }
 }

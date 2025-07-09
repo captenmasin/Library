@@ -13,12 +13,14 @@ use App\Filament\Resources\Reviews\Pages\ListReviews;
 use App\Filament\Resources\Reviews\Pages\CreateReview;
 use App\Filament\Resources\Reviews\Schemas\ReviewForm;
 use App\Filament\Resources\Reviews\Tables\ReviewsTable;
+use App\Filament\Resources\Reviews\RelationManagers\BookRelationManager;
+use App\Filament\Resources\Reviews\RelationManagers\UserRelationManager;
 
 class ReviewResource extends Resource
 {
     protected static ?string $model = Review::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;
 
     public static function form(Schema $schema): Schema
     {
@@ -33,7 +35,8 @@ class ReviewResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            BookRelationManager::class,
+            UserRelationManager::class,
         ];
     }
 

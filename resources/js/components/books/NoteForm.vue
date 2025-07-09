@@ -42,8 +42,8 @@ function openNoteForm () {
     <div class="mt-1">
         <div v-if="book.notes && !displayNoteForm">
             <div
-                class="text-sm"
-                v-html="book.notes.content_html" />
+                class="text-sm prose prose-sm max-w-none"
+                v-html="useMarkdown(book.notes.content)" />
 
             <div class="mt-4 flex items-center gap-4">
                 <TooltipProvider>

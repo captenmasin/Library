@@ -16,6 +16,10 @@ class AuthorsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
+                TextColumn::make('books_count')
+                    ->counts('books')
+                    ->label('Books')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

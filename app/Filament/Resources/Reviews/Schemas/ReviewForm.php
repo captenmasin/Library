@@ -3,8 +3,9 @@
 namespace App\Filament\Resources\Reviews\Schemas;
 
 use Filament\Schemas\Schema;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\MarkdownEditor;
 
 class ReviewForm
 {
@@ -12,16 +13,18 @@ class ReviewForm
     {
         return $schema
             ->components([
-                TextInput::make('book_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('rating')
-                    ->required()
-                    ->numeric(),
-                Textarea::make('content')
+                Select::make('book_id')
+                    ->relationship('book', 'title')
+                    ->columnSpan(1)
+                    ->required(),
+                Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required(),
+                Select::make('rating')
+                    ->options(fn () => collect(range(1, 5))->mapWithKeys(fn ($value) => [$value => str_repeat('★', $value)]))
+                    ->required(),
+                TextInput::make('title'),
+                MarkdownEditor::make('content')
                     ->columnSpanFull(),
             ]);
     }

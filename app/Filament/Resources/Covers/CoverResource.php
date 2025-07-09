@@ -13,12 +13,13 @@ use App\Filament\Resources\Covers\Pages\ListCovers;
 use App\Filament\Resources\Covers\Pages\CreateCover;
 use App\Filament\Resources\Covers\Schemas\CoverForm;
 use App\Filament\Resources\Covers\Tables\CoversTable;
+use App\Filament\Resources\Covers\RelationManagers\BookRelationManager;
 
 class CoverResource extends Resource
 {
     protected static ?string $model = Cover::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
     public static function form(Schema $schema): Schema
     {
@@ -33,7 +34,7 @@ class CoverResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            BookRelationManager::class,
         ];
     }
 

@@ -14,9 +14,12 @@ class BooksTable
     {
         return $table
             ->columns([
-                TextColumn::make('title')
+                TextColumn::make('identifier')
                     ->searchable(),
-                TextColumn::make('description')
+                TextColumn::make('title')
+                    ->limit(30)
+                    ->searchable(),
+                TextColumn::make('published_date')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -26,10 +29,6 @@ class BooksTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('published_date')
-                    ->searchable(),
-                TextColumn::make('identifier')
-                    ->searchable(),
             ])
             ->filters([
                 //

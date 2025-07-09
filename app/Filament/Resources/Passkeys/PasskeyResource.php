@@ -18,7 +18,7 @@ class PasskeyResource extends Resource
 {
     protected static ?string $model = Passkey::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedKey;
 
     public static function form(Schema $schema): Schema
     {
@@ -41,8 +41,8 @@ class PasskeyResource extends Resource
     {
         return [
             'index' => ListPasskeys::route('/'),
-            'create' => CreatePasskey::route('/create'),
-            'edit' => EditPasskey::route('/{record}/edit'),
+            //            'create' => CreatePasskey::route('/create'),
+            //            'edit' => EditPasskey::route('/{record}/edit'),
         ];
     }
 }

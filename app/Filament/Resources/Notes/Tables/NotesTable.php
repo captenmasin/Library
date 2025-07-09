@@ -16,14 +16,19 @@ class NotesTable
             ->columns([
                 TextColumn::make('user.name')
                     ->numeric()
+                    ->width(150)
                     ->sortable(),
                 TextColumn::make('book.title')
-                    ->numeric()
+                    ->limit(32)
+                    ->width(250)
+                    ->sortable(),
+                TextColumn::make('content')
+                    ->limit(50)
+                    ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

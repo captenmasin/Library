@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import AppLogo from '@/components/AppLogo.vue'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import UserMenuContent from '@/components/UserMenuContent.vue'
@@ -9,6 +8,8 @@ import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { getInitials } from '@/composables/useInitials'
 import { Link, router, usePage } from '@inertiajs/vue3'
+import { UserPermission } from '@/enums/UserPermission'
+import { useAuthedUser } from '@/composables/useAuthedUser.ts'
 import { useImageTransform } from '@/composables/useImageTransform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -28,8 +29,8 @@ const props = withDefaults(defineProps<Props>(), {
 const { getImageUrl } = useImageTransform()
 
 const page = usePage()
-const auth = computed(() => page.props.auth)
-const authed = computed(() => page.props.authed)
+
+const { authed, authedUser } = useAuthedUser()
 
 const mobileMenuOpen = ref(false)
 
@@ -210,12 +211,12 @@ router.on('navigate', (event) => {
                             >
                                 <Avatar class="size-8 overflow-hidden rounded-full">
                                     <AvatarImage
-                                        v-if="auth.user.avatar"
-                                        :src="getImageUrl(auth.user.avatar, { width: 32, height: 32, crop: 'center' })"
-                                        :alt="auth.user.name"
+                                        v-if="authedUser.avatar"
+                                        :src="getImageUrl(authedUser.avatar, { width: 32, height: 32, crop: 'center' })"
+                                        :alt="authedUser.name"
                                     />
                                     <AvatarFallback class="rounded-lg bg-neutral-200 font-semibold text-black dark:bg-neutral-700 dark:text-white">
-                                        {{ getInitials(auth.user?.name) }}
+                                        {{ getInitials(authedUser?.name) }}
                                     </AvatarFallback>
                                 </Avatar>
                             </Button>
@@ -223,7 +224,7 @@ router.on('navigate', (event) => {
                         <DropdownMenuContent
                             align="end"
                             class="w-56">
-                            <UserMenuContent :user="auth.user" />
+                            <UserMenuContent :user="authedUser" />
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

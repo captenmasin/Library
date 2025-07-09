@@ -4,6 +4,7 @@ import { User } from '@/types/user'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 
 export interface Auth {
+    check: boolean;
     user: User;
 }
 

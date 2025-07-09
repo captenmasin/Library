@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Notes\Schemas;
 
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\MarkdownEditor;
 
 class NoteForm
 {
@@ -17,7 +17,7 @@ class NoteForm
                     ->required(),
                 Select::make('book_id')
                     ->relationship('book', 'title'),
-                Textarea::make('content')
+                MarkdownEditor::make('content')
                     ->required()
                     ->columnSpanFull(),
             ]);

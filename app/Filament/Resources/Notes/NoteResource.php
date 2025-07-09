@@ -13,12 +13,14 @@ use App\Filament\Resources\Notes\Pages\ListNotes;
 use App\Filament\Resources\Notes\Pages\CreateNote;
 use App\Filament\Resources\Notes\Schemas\NoteForm;
 use App\Filament\Resources\Notes\Tables\NotesTable;
+use App\Filament\Resources\Notes\RelationManagers\BookRelationManager;
+use App\Filament\Resources\Notes\RelationManagers\UserRelationManager;
 
 class NoteResource extends Resource
 {
     protected static ?string $model = Note::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
     public static function form(Schema $schema): Schema
     {
@@ -33,7 +35,8 @@ class NoteResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            BookRelationManager::class,
+            UserRelationManager::class,
         ];
     }
 

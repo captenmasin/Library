@@ -37,7 +37,9 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $currentUser = Auth::check() ? (new UserResource($request->user()->load('books')))->asUser() : null;
+        $currentUser = Auth::check()
+            ? (new UserResource($request->user()->load('books', 'roles', 'permissions')))->asUser()
+            : null;
 
         return [
             ...parent::share($request),
@@ -51,8 +53,8 @@ class HandleInertiaRequests extends Middleware
             'currentPath' => request()->path(),
             'auth' => fn () => [
                 'user' => $currentUser,
+                'check' => Auth::check(),
             ],
-            'authed' => Auth::check(),
 
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

@@ -8,6 +8,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 
 class CoversTable
 {
@@ -15,10 +16,15 @@ class CoversTable
     {
         return $table
             ->columns([
+                ImageColumn::make('image')
+                    ->imageHeight(60)
+                    ->imageWidth(40),
                 TextColumn::make('book.title')
                     ->numeric()
+                    ->limit(30)
                     ->sortable(),
                 IconColumn::make('is_primary')
+                    ->sortable()
                     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -28,7 +34,7 @@ class CoversTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('user_id')
+                TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
             ])
