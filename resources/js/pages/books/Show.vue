@@ -77,7 +77,7 @@ defineOptions({
                 </p>
                 <div
                     class="mt-4 max-w-none font-serif prose"
-                    v-html="book.description" />
+                    v-html="useMarkdown(book.description)" />
 
                 <div class="bg-red-200">
                     <div class="flex w-full">
