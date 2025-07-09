@@ -25,7 +25,9 @@ class SearchBooksFromApi
         $total = $results['total'] ?? 0;
         $books = collect($results['items'] ?? [])->map(fn ($book) => BookTransformer::fromIsbn($book));
 
-        ImportBooksFromApiSearchJob::dispatch($books);
+        if (count($books) > 0) {
+            ImportBooksFromApiSearchJob::dispatch($books);
+        }
 
         return [
             'total' => $total,
