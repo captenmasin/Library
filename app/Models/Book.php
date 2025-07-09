@@ -28,7 +28,7 @@ class Book extends Model implements HasMedia
     protected function casts(): array
     {
         return [
-            //            'codes' => 'array',
+            'codes' => 'array',
         ];
     }
 

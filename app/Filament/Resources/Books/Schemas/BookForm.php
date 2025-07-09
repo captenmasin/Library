@@ -29,8 +29,10 @@ class BookForm
                 TextInput::make('page_count')
                     ->numeric(),
                 TextInput::make('published_date'),
-                Textarea::make('settings'),
-                Textarea::make('codes'),
+                Textarea::make('settings')
+                    ->formatStateUsing(fn ($state) => is_array($state) || is_object($state) ? json_encode($state, JSON_PRETTY_PRINT) : $state),
+                Textarea::make('codes')
+                    ->formatStateUsing(fn ($state) => is_array($state) || is_object($state) ? json_encode($state, JSON_PRETTY_PRINT) : $state),
             ]);
     }
 }
