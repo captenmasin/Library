@@ -54,6 +54,8 @@ class ImportBookFromData
             'description' => $data['description'],
             'service' => $data['service'] ?? $this->booksApi::ServiceName,
             'original_cover' => $data['cover'] ?? null,
+            'binding' => $data['binding'] ?? null,
+            'language' => $data['language'] ?? null,
         ]);
 
         //         Add primary cover

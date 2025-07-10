@@ -41,34 +41,6 @@ function submit () {
 
 <template>
     <div>
-        <div class="mb-4">
-            <label class="mb-1 block">Rating</label>
-            <div class="flex items-center gap-3 py-2">
-                <div class="flex space-x-1">
-                    <button
-                        v-for="star in 5"
-                        :key="star"
-                        type="button"
-                        :aria-label="`Rate ${star} star`"
-                        @click="updateRating(star)"
-                    >
-                        <span class="cursor-pointer">
-                            <Icon
-                                name="Star"
-                                :class="star <= form.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 hover:text-yellow-400'"
-                                class="size-5" />
-                        </span>
-                    </button>
-                </div>
-                <button
-                    :class="form.rating < 1 ? 'opacity-0 pointer-events-none' : ''"
-                    class="cursor-pointer text-sm text-destructive hover:underline"
-                    @click="form.rating = 0; submit()">
-                    Clear
-                </button>
-            </div>
-        </div>
-
         <form
             v-if="displayForm"
             class="mb-4 flex flex-col gap-4"

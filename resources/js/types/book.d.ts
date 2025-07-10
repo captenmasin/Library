@@ -18,6 +18,12 @@ export type Book = {
     publisher?: Publisher,
     user_status: UserBookStatus | null,
     user_review: Review,
+    user_rating?: {
+        id: number,
+        value: number
+    },
+    average_rating?: number,
+    ratings_count?: number,
     page_count: number,
     notes?: {
         id: number,

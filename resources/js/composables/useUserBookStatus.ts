@@ -51,6 +51,7 @@ export function useUserBookStatus () {
 
     async function addBookToUser (identifier: string, status: UserBookStatus, successCallback?: () => void) {
         addingBooks.value.push(identifier)
+
         try {
             const response = await useRequest(useRoute('api.books.fetch_or_create', identifier), 'GET')
 
@@ -92,21 +93,26 @@ export function useUserBookStatus () {
     }
 
     async function removeBookFromUser (book: Book | BookApiResult, successCallback?: () => void) {
-        useRequest(useRoute('api.user.books.destroy', book.identifier), 'DELETE').then((response) => {
-            if (response.success) {
-                toast.success(response.message)
-                delete addedBooks.value[book.identifier]
-                delete selectedStatuses.value[book.identifier]
+        delete addedBooks.value[book.identifier]
+        delete selectedStatuses.value[book.identifier]
 
-                if (successCallback) {
-                    successCallback()
+        useRequest(useRoute('api.user.books.destroy', book.identifier), 'DELETE')
+            .then((response) => {
+                if (response.success) {
+                    toast.success(response.message)
+                    delete addedBooks.value[book.identifier]
+                    delete selectedStatuses.value[book.identifier]
+
+                    if (successCallback) {
+                        successCallback()
+                    }
+                } else {
+                    toast.error(response.message || 'Failed to remove book')
                 }
-            } else {
-                toast.error(response.message || 'Failed to remove book')
-            }
-        }).catch(error => {
-            toast.error(error.message)
-        })
+            })
+            .catch((error) => {
+                toast.error(error.message)
+            })
     }
 
     onMounted(() => {

@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import { PropType } from 'vue'
-import { Button } from '@/components/ui/button'
 import { Book, BookApiResult } from '@/types/book'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 defineProps({
@@ -15,55 +13,70 @@ defineProps({
     }
 })
 
+const emit = defineEmits(['updated', 'added', 'removed'])
+
 const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, addingBooks, addBookToUser, removeBookFromUser } =
     useUserBookStatus()
 
-function selectNewStatus (book: BookApiResult | Book, status: UserBookStatus) {
+function selectNewStatus (book: BookApiResult | Book, status: UserBookStatus | 'REMOVE') {
+    if (status === 'REMOVE') {
+        removeBookFromUser(book, () => {
+            emit('removed', book)
+        })
+        return
+    }
+
     if (book?.identifier) {
         if (addedBookIdentifiers.value.has(book.identifier)) {
-            updateStatus(book, status)
+            updateStatus(book, status, () => {
+                emit('updated', book, status)
+            })
         } else {
-            addBookToUser(book.identifier, status)
+            addBookToUser(book.identifier, status, () => {
+                emit('added', book, status)
+            })
         }
     }
 }
 </script>
 
 <template>
-    <div class="flex w-full items-center justify-end gap-2 flex-1">
+    <div class="relative flex w-full flex-1 items-center justify-end gap-2">
         <div
             v-if="addingBooks.includes(book.identifier)"
-            class="w-9 shrink-0 aspect-square">
-            <div
-                class="animate-spin rounded-full bg-muted size-full flex items-center justify-center text-muted-foreground">
+            class="absolute top-1/2 left-2 aspect-square w-6 shrink-0 -translate-y-1/2">
+            <div class="flex size-full animate-spin items-center justify-center rounded-full bg-muted text-muted-foreground">
                 <Icon
                     name="LoaderCircle"
-                    class="size-5" />
+                    class="size-4" />
             </div>
         </div>
 
-        <TooltipProvider v-if="addedBookIdentifiers.has(book.identifier)">
-            <Tooltip>
-                <TooltipTrigger>
-                    <Button
-                        variant="secondary"
-                        size="icon"
-                        @click="removeBookFromUser(book)"
-                    >
-                        <Icon
-                            name="Trash"
-                            class="w-4" />
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent> Remove from library </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
+        <!--        <TooltipProvider v-if="addedBookIdentifiers.has(book.identifier)">-->
+        <!--            <Tooltip>-->
+        <!--                <TooltipTrigger>-->
+        <!--                    <Button-->
+        <!--                        variant="secondary"-->
+        <!--                        size="icon"-->
+        <!--                        @click="removeBookFromUser(book, () => {-->
+        <!--                            emit('removed', book)-->
+        <!--                        })">-->
+        <!--                        <Icon-->
+        <!--                            name="Trash"-->
+        <!--                            class="w-4" />-->
+        <!--                    </Button>-->
+        <!--                </TooltipTrigger>-->
+        <!--                <TooltipContent> Remove from library </TooltipContent>-->
+        <!--            </Tooltip>-->
+        <!--        </TooltipProvider>-->
 
         <div class="w-full md:w-full">
             <Select
                 v-model="selectedStatuses[book.identifier]"
                 @update:model-value="(value) => selectNewStatus(book, value as UserBookStatus)">
-                <SelectTrigger class="w-full">
+                <SelectTrigger
+                    class="w-full"
+                    :class="addingBooks.includes(book.identifier) ? 'pl-9' : ''">
                     <SelectValue placeholder="Add to library" />
                 </SelectTrigger>
                 <SelectContent>
@@ -73,6 +86,15 @@ function selectNewStatus (book: BookApiResult | Book, status: UserBookStatus) {
                             :key="status.value"
                             :value="status.value">
                             {{ status.label }}
+                        </SelectItem>
+
+                        <SelectItem
+                            v-if="addedBookIdentifiers.has(book.identifier)"
+                            icon="Trash"
+                            class="text-destructive justify-between w-full flex focus:bg-destructive/15 focus:text-destructive"
+                            value="REMOVE"
+                        >
+                            Remove
                         </SelectItem>
                     </SelectGroup>
                 </SelectContent>

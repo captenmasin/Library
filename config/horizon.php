@@ -85,6 +85,8 @@ return [
 
     'waits' => [
         'redis:default' => 60,
+        'redis:imports' => 120,
+        'redis:media' => 180,
     ],
 
     /*
@@ -166,7 +168,7 @@ return [
     |
     */
 
-    'memory_limit' => 64,
+    'memory_limit' => 256,
 
     /*
     |--------------------------------------------------------------------------
@@ -183,9 +185,9 @@ return [
         'supervisor-1' => [
             'connection' => 'redis',
             'queue' => ['default'],
-            'balance' => 'auto',
-            'autoScalingStrategy' => 'time',
-            'maxProcesses' => 1,
+            'balance' => 'simple',
+            'autoScalingStrategy' => 'simple',
+            'maxProcesses' => 5,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 128,
@@ -197,12 +199,126 @@ return [
 
     'environments' => [
         'production' => [
+            'supervisor-default' => [
+                'connection' => 'redis',
+                'queue' => ['default'],
+                'balance' => 'simple',
+                'maxProcesses' => 5,
+                'maxTime' => 3600,
+                'maxJobs' => 500,
+                'memory' => 256,
+                'tries' => 2,
+                'timeout' => 90,
+                'nice' => 0,
+            ],
 
+            'supervisor-imports' => [
+                'connection' => 'redis',
+                'queue' => ['imports'], // ✅ FIXED
+                'balance' => 'simple',
+                'maxProcesses' => 8,
+                'maxTime' => 3600,
+                'maxJobs' => 1000,
+                'memory' => 256,
+                'tries' => 2,
+                'timeout' => 120,
+                'nice' => 0,
+            ],
+
+            'supervisor-media' => [
+                'connection' => 'redis',
+                'queue' => ['media'],
+                'balance' => 'simple',
+                'maxProcesses' => 2,
+                'maxTime' => 1800,
+                'maxJobs' => 500,
+                'memory' => 256,
+                'tries' => 2,
+                'timeout' => 120,
+                'nice' => 0,
+            ],
         ],
+
         'development' => [
+            'supervisor-default' => [
+                'connection' => 'redis',
+                'queue' => ['default'],
+                'balance' => 'simple',
+                'maxProcesses' => 2,
+                'maxTime' => 0,
+                'maxJobs' => 0,
+                'memory' => 128,
+                'tries' => 1,
+                'timeout' => 60,
+                'nice' => 0,
+            ],
 
+            'supervisor-imports' => [
+                'connection' => 'redis',
+                'queue' => ['imports'], // ✅ FIXED
+                'balance' => 'simple',
+                'maxProcesses' => 4,
+                'maxTime' => 1800,
+                'maxJobs' => 500,
+                'memory' => 256,
+                'tries' => 2,
+                'timeout' => 120,
+                'nice' => 0,
+            ],
+
+            'supervisor-media' => [
+                'connection' => 'redis',
+                'queue' => ['media'],
+                'balance' => 'simple',
+                'maxProcesses' => 2,
+                'maxTime' => 1800,
+                'maxJobs' => 500,
+                'memory' => 256,
+                'tries' => 2,
+                'timeout' => 120,
+                'nice' => 0,
+            ],
         ],
+
         'local' => [
+            'supervisor-local' => [
+                'connection' => 'redis',
+                'queue' => ['default'],
+                'balance' => 'simple',
+                'maxProcesses' => 2,
+                'maxTime' => 0,
+                'maxJobs' => 0,
+                'memory' => 128,
+                'tries' => 1,
+                'timeout' => 60,
+                'nice' => 0,
+            ],
+
+            'supervisor-imports' => [
+                'connection' => 'redis',
+                'queue' => ['imports'], // ✅ FIXED
+                'balance' => 'simple',
+                'maxProcesses' => 2,
+                'maxTime' => 1800,
+                'maxJobs' => 200,
+                'memory' => 256,
+                'tries' => 1,
+                'timeout' => 90,
+                'nice' => 0,
+            ],
+
+            'supervisor-media' => [
+                'connection' => 'redis',
+                'queue' => ['media'],
+                'balance' => 'simple',
+                'maxProcesses' => 1,
+                'maxTime' => 1800,
+                'maxJobs' => 100,
+                'memory' => 256,
+                'tries' => 1,
+                'timeout' => 90,
+                'nice' => 0,
+            ],
         ],
     ],
 ];

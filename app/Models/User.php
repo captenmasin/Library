@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Models\Contracts\FilamentUser;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -126,9 +127,14 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasPasskey
         return $this->hasMany(Note::class);
     }
 
-    public function reviews()
+    public function reviews(): Builder|HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function ratings(): Builder|HasMany
+    {
+        return $this->hasMany(Rating::class);
     }
 
     public function registerMediaCollections(): void

@@ -11,6 +11,10 @@ defineProps({
     book: {
         type: Object as PropType<Book>,
         required: true
+    },
+    hover: {
+        type: Boolean,
+        default: true
     }
 })
 
@@ -39,6 +43,7 @@ const { changeColourOpacity } = useColours()
                         :width="200"
                         class="h-full w-full object-cover" />
                     <div
+                        v-if="hover"
                         class="absolute bottom-0 left-0 flex w-full items-end p-4 opacity-0 transition-all duration-300 h-11/12 group-hover:opacity-100"
                         :style="{backgroundImage: `linear-gradient(to top, ${changeColourOpacity(book.colour, 1)}, rgba(0, 0, 0, 0))`}">
                         <div class="flex w-full translate-y-4 flex-col opacity-0 gap-1 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">

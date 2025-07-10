@@ -17,7 +17,6 @@ class ReviewFactory extends Factory
             'user_id' => \App\Models\User::factory(),
             'book_id' => \App\Models\Book::factory(),
             'content' => $this->faker->paragraphs(3, true),
-            'rating' => $this->faker->numberBetween(1, 5),
             'created_at' => now(),
             'updated_at' => now(),
         ];

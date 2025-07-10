@@ -4,9 +4,12 @@ namespace App\Actions\Books;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Bus;
 use App\Transformers\BookTransformer;
+use App\Jobs\ImportBooksFromApiSearch;
 use Lorisleiva\Actions\Concerns\AsAction;
 use App\Contracts\BookApiServiceInterface;
+use App\Jobs\ImportAdditionalBooksFromApiSearch;
 
 class SearchBooksFromApi
 {
@@ -25,8 +28,13 @@ class SearchBooksFromApi
         $total = $results['total'] ?? 0;
         $books = collect($results['items'] ?? [])->map(fn ($book) => BookTransformer::fromIsbn($book));
 
+        ImportBooksFromApiSearch::dispatchSync($books);
+
         if (count($books) > 0) {
-            ImportBooksFromApiSearchJob::dispatch($books);
+            Bus::chain([
+                new ImportBooksFromApiSearch($books),
+                new ImportAdditionalBooksFromApiSearch(query: $query, author: $author),
+            ])->onQueue('imports')->dispatch();
         }
 
         return [

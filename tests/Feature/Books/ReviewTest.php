@@ -9,7 +9,6 @@ test('user can create book review', function () {
     $book = Book::factory()->create();
 
     $reviewData = [
-        'rating' => 4,
         'content' => 'This is a great book that I highly recommend.',
         'title' => 'Great Read',
     ];
@@ -22,7 +21,6 @@ test('user can create book review', function () {
     $this->assertDatabaseHas('reviews', [
         'user_id' => $user->id,
         'book_id' => $book->id,
-        'rating' => 4,
         'content' => 'This is a great book that I highly recommend.',
         'title' => 'Great Read',
     ]);
@@ -36,7 +34,6 @@ test('user can review same book again but it will just update', function () {
     Review::factory()->create([
         'user_id' => $user->id,
         'book_id' => $book->id,
-        'rating' => 5,
         'content' => 'Initial review',
         'title' => 'First Review',
     ]);
@@ -44,7 +41,6 @@ test('user can review same book again but it will just update', function () {
     // Try to create another review
     $this->actingAs($user)
         ->post(route('reviews.store', $book), [
-            'rating' => 3,
             'content' => 'Second attempt at reviewing',
             'title' => 'Second Review',
         ]);
@@ -56,7 +52,6 @@ test('user can review same book again but it will just update', function () {
     $this->assertDatabaseHas('reviews', [
         'user_id' => $user->id,
         'book_id' => $book->id,
-        'rating' => 3,
         'content' => 'Second attempt at reviewing',
         'title' => 'Second Review',
     ]);
@@ -99,7 +94,6 @@ test('reviews require authentication', function () {
     $book = Book::factory()->create();
 
     $response = $this->post(route('reviews.store', $book), [
-        'rating' => 4,
         'content' => 'Test review',
         'title' => 'Test',
     ]);

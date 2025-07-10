@@ -14,7 +14,6 @@ class ReviewController extends Controller
     public function store(Request $request, Book $book)
     {
         $validated = $request->validate([
-            'rating' => 'required|integer|min:0|max:5',
             'title' => 'nullable|string|max:256',
             'content' => 'nullable|string|max:2000',
         ]);
@@ -26,7 +25,6 @@ class ReviewController extends Controller
         $review = Review::updateOrCreate(
             ['book_id' => $book->id, 'user_id' => Auth::id()],
             [
-                'rating' => $validated['rating'],
                 'content' => $validated['content'],
                 'title' => $validated['title'],
             ]
@@ -36,7 +34,6 @@ class ReviewController extends Controller
             $existing ? ActivityType::BookReviewUpdated : ActivityType::BookReviewAdded,
             $review,
             [
-                'rating' => $review->rating,
                 'title' => $review->title,
                 'book_identifier' => $book->identifier,
                 'book_title' => $book->title,

@@ -29,6 +29,10 @@ class BookResource extends JsonResource
             'publisher' => $this->whenLoaded('publisher', fn () => $this->getPublisher()),
             'notes' => $this->whenLoaded('notes', fn () => $this->getNote($user)),
             'user_review' => $this->whenLoaded('reviews', fn () => $this->getUserReview($user)),
+            'user_rating' => $this->whenLoaded('ratings', fn () => $this->getUserRating($user)),
+
+            'average_rating' => $this->whenLoaded('ratings', fn () => $this->ratings->avg('value')),
+            'ratings_count' => $this->whenLoaded('ratings', fn () => $this->ratings->count()),
 
             'in_library' => $user && $this->isInLibrary($user),
             'user_status' => $user ? $this->getUserStatus($user) : null,
@@ -107,6 +111,17 @@ class BookResource extends JsonResource
         $review = $this->reviews->firstWhere('user_id', $user?->id);
 
         return $review ? new ReviewResource($review) : null;
+    }
+
+    protected function getUserRating(?User $user = null): ?RatingResource
+    {
+        if (! $user) {
+            return null;
+        }
+
+        $rating = $this->ratings->firstWhere('user_id', $user?->id);
+
+        return $rating ? new RatingResource($rating) : null;
     }
 
     protected function getNote(?User $user = null): ?NoteResource

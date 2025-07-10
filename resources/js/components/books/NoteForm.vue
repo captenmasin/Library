@@ -39,13 +39,15 @@ function openNoteForm () {
 </script>
 
 <template>
-    <div class="mt-1">
-        <div v-if="book.notes && !displayNoteForm">
+    <div>
+        <div
+            v-if="book.notes && !displayNoteForm"
+            class="bg-secondary p-2 rounded-md border-secondary border">
             <div
                 class="text-sm prose prose-sm max-w-none"
                 v-html="useMarkdown(book.notes.content)" />
 
-            <div class="mt-4 flex items-center gap-4">
+            <div class="mt-4 flex justify-end items-center gap-2.5 pb-1 pr-1">
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger as-child>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import { cn } from '@/lib/utils'
 import { Check } from 'lucide-vue-next'
 import type { HTMLAttributes } from 'vue'
@@ -11,7 +12,10 @@ import {
     useForwardProps
 } from 'reka-ui'
 
-const props = defineProps<SelectItemProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<SelectItemProps & {
+    class?: HTMLAttributes['class']
+    icon?: string
+}>()
 
 const delegatedProps = reactiveOmit(props, 'class')
 
@@ -30,7 +34,11 @@ const forwardedProps = useForwardProps(delegatedProps)
         "
     >
         <span class="absolute right-2 flex items-center justify-center size-3.5">
-            <SelectItemIndicator>
+            <Icon
+                v-if="icon"
+                class="text-inherit"
+                :name="icon" />
+            <SelectItemIndicator v-else>
                 <Check class="size-4" />
             </SelectItemIndicator>
         </span>

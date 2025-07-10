@@ -7,6 +7,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NoteController;
 use App\Contracts\BookApiServiceInterface;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserBookController;
 use App\Http\Controllers\BookCoverController;
@@ -52,6 +53,10 @@ Route::prefix('{book}')->middleware('auth')->group(function () {
 
     Route::post('reviews', [ReviewController::class, 'store'])->name('reviews.store');
     Route::delete('reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    Route::post('ratings', [RatingController::class, 'store'])->name('ratings.store');
+    Route::put('ratings/{rating}', [RatingController::class, 'update'])->name('ratings.update');
+    Route::delete('ratings/{rating}', [RatingController::class, 'destroy'])->name('ratings.destroy');
 
     Route::post('cover', [BookCoverController::class, 'update'])->name('cover.update');
     Route::delete('cover', [BookCoverController::class, 'destroy'])->name('cover.destroy');

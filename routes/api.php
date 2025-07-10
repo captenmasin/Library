@@ -22,7 +22,6 @@ Route::name('api.')->group(function () {
             $book = (new BookTransformer)::fromIsbn($booksApi::get($identifier));
 
             ImportBookFromData::dispatch(
-                $book['identifier'],
                 $book
             );
 

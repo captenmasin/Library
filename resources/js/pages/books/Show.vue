@@ -1,24 +1,18 @@
 <script setup lang="ts">
-import Icon from '@/components/Icon.vue'
 import Image from '@/components/Image.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
-import TagForm from '@/components/books/TagForm.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
+import RatingForm from '@/components/books/RatingForm.vue'
 import BookActions from '@/components/books/BookActions.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
-import PlaceholderPattern from '@/components/PlaceholderPattern.vue'
 import { Review } from '@/types/review'
 import type { Book } from '@/types/book'
-import { Button } from '@/components/ui/button'
-import { type PropType, ref, watch } from 'vue'
-import { useRoute } from '@/composables/useRoute'
+import { type PropType, ref } from 'vue'
+import { router } from '@inertiajs/vue3'
+import { usePlural } from '@/composables/usePlural'
 import { useMarkdown } from '@/composables/useMarkdown'
-import { Link, router, useForm } from '@inertiajs/vue3'
-import { useUserBookStatus } from '@/composables/useUserBookStatus'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const props = defineProps({
     book: { type: Object as PropType<Book>, required: true },
@@ -44,6 +38,18 @@ const data = [
     }
 ]
 
+const tagsLimit = ref(5)
+
+const refreshKey = ref(1)
+
+function refresh () {
+    router.reload({
+        onSuccess: () => {
+            refreshKey.value += 1
+        }
+    })
+}
+
 defineOptions({
     layout: AppLayout
 })
@@ -51,7 +57,7 @@ defineOptions({
 
 <template>
     <div>
-        <div class="flex gap-8">
+        <div class="flex gap-10">
             <div class="flex w-1/5 flex-col">
                 <UpdateBookCover :book>
                     <div class="aspect-book rounded-md overflow-hidden">
@@ -61,13 +67,23 @@ defineOptions({
                             :src="book.cover" />
                     </div>
                 </UpdateBookCover>
-
-                <div class="mt-4">
-                    <BookActions :book="book" />
+                <div
+                    v-if="book.in_library"
+                    class="mt-4 flex flex-col items-center">
+                    <h3 class="text-lg font-semibold hidden">
+                        Your rating
+                    </h3>
+                    <RatingForm
+                        :key="refreshKey"
+                        class="mt-1"
+                        :book="book"
+                        @deleted="refresh"
+                        @added="refresh"
+                        @updated="refresh" />
                 </div>
             </div>
             <div class="flex w-3/5 flex-col">
-                <h2 class="mt-2 font-serif text-3xl font-semibold">
+                <h2 class="font-serif text-3xl font-semibold">
                     {{ book.title }}
                 </h2>
                 <p
@@ -79,20 +95,15 @@ defineOptions({
                     class="mt-4 max-w-none font-serif prose"
                     v-html="useMarkdown(book.description)" />
 
-                <div class="bg-red-200">
-                    <div class="flex w-full">
-                        <div
-                            v-for="relatedBook in related"
-                            :key="relatedBook.identifier"
-                            class="w-full">
-                            <BookCard :book="relatedBook" />
-                        </div>
-                    </div>
-                </div>
-
                 <div class="mt-8">
-                    <!--                    <TagForm :book="book" />-->
-
+                    <div v-if="book.in_library">
+                        <h3 class="mt-6 text-lg font-semibold">
+                            Your notes
+                        </h3>
+                        <NoteForm
+                            class="mt-1"
+                            :book="book" />
+                    </div>
                     <ReviewForm
                         :book="book"
                         :existing-review="book.user_review" />
@@ -100,6 +111,14 @@ defineOptions({
                 <hr class="mt-12">
                 <div class="mt-12">
                     Reviwssssss:
+
+                    <div
+                        v-if="book.average_rating && book.ratings_count"
+                        class="text-sm/6 mt-2 flex items-center text-center">
+                        Average: {{ book.average_rating }}<br> stars
+                        {{ book.ratings_count }} {{ usePlural('rating', book.ratings_count) }}
+                    </div>
+
                     <ul>
                         <li
                             v-for="review in reviews"
@@ -113,7 +132,14 @@ defineOptions({
                 </div>
             </div>
             <div class="flex w-1/5 flex-col">
-                <h3 class="text-lg font-semibold">
+                <div>
+                    <BookActions
+                        :book="book"
+                        @removed="refresh"
+                        @added="refresh"
+                        @updated="refresh" />
+                </div>
+                <h3 class="text-lg mt-4 font-semibold">
                     Details
                 </h3>
                 <dl>
@@ -129,6 +155,7 @@ defineOptions({
                         </dd>
                     </div>
                 </dl>
+
                 <div
                     v-if="book.tags && book.tags.length > 0"
                     class="mt-1">
@@ -137,20 +164,40 @@ defineOptions({
                     </p>
                     <ul class="space-y-1 space-x-1">
                         <li
-                            v-for="tag in book.tags"
+                            v-for="tag in book.tags.slice(0, tagsLimit)"
                             :key="tag"
                             class="inline-block rounded-full px-2 text-xs bg-muted py-0.5 text-muted-foreground"
                         >
                             {{ tag }}
                         </li>
+                        <li
+                            v-if="book.tags.length > tagsLimit"
+                            class="inline-block">
+                            <button
+                                class="rounded-full px-2 text-xs bg-primary/10 hover:bg-primary/20 text-primary cursor-pointer py-0.5"
+                                @click="tagsLimit = 999">
+                                +{{ book.tags.length - tagsLimit }} more
+                            </button>
+                        </li>
                     </ul>
                 </div>
-                <div v-if="book.in_library">
-                    <h3 class="mt-8 text-lg font-semibold">
-                        Your notes
-                    </h3>
-                    <NoteForm
-                        :book="book" />
+
+                <div
+                    v-if="related && related.length > 0"
+                    class="mt-4">
+                    <p class="font-medium text-sm/6">
+                        Related
+                    </p>
+                    <div class="flex -mx-2 flex-wrap">
+                        <div
+                            v-for="relatedBook in related"
+                            :key="relatedBook.identifier"
+                            class="w-1/2 p-2">
+                            <BookCard
+                                :hover="false"
+                                :book="relatedBook" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

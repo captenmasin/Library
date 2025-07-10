@@ -55,11 +55,13 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book->load(['authors', 'reviews', 'notes', 'covers', 'publisher', 'tags',
+        $book->load(['authors', 'reviews', 'publisher', 'tags', 'covers',
             'users' => fn ($query) => $query->where('user_id', Auth::id()),
+            'notes' => fn ($query) => $query->where('user_id', Auth::id()),
+            'ratings' => fn ($query) => $query->where('user_id', Auth::id()),
         ]);
 
-        $relatedBooks = $book->relatedBooksByAuthorsAndTags();
+        $relatedBooks = $book->relatedBooksByAuthorsAndTags(4);
         $relatedBooks->map(fn ($related) => $related->load(['authors', 'covers']));
 
         return Inertia::render('books/Show', [

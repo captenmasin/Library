@@ -46,6 +46,8 @@ class BookTransformer
             'description_clean' => strip_tags($description ?? ''),
             'authors' => $authors,
             'edition' => $data['edition'] ?? null,
+            'binding' => $data['binding'] ?? null,
+            'language' => $data['language'] ?? null,
             'published_date' => $data['date_published'] ?? null,
             'cover' => $data['image'] ?? null,
             'cover_large' => $data['image_original'] ?? null,
