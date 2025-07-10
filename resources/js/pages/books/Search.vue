@@ -44,6 +44,8 @@ const query = ref(props.initialQuery)
 const author = ref(props.initialAuthor)
 const loadingMore = ref(false)
 
+const showAuthorField = ref(author.value !== '' && author.value !== null)
+
 function searchBooks () {
     router.get(useRoute('books.search'), {
         q: query.value,
@@ -116,7 +118,23 @@ defineOptions({
                                 placeholder="e.g. Dune, horror, science fiction" />
                         </div>
 
-                        <div class="grid gap-2">
+                        <div
+                            v-if="!showAuthorField"
+                            class="flex -mt-2 mb-4">
+                            <button
+                                type="button"
+                                class="text-xs text-primary cursor-pointer flex items-center hover:underline font-medium"
+                                size="sm"
+                                @click="showAuthorField = true">
+                                <Icon
+                                    name="Plus"
+                                    class="size-3.5" />
+                                Author
+                            </button>
+                        </div>
+                        <div
+                            v-if="showAuthorField"
+                            class="grid gap-2">
                             <Label for="author">Author</Label>
                             <Input
                                 id="author"
@@ -235,7 +253,7 @@ defineOptions({
                             <BookCardHorizontal
                                 v-for="book in hasSearch ? results.books : []"
                                 :key="book.identifier"
-                                class="py-2"
+                                class="py-4"
                                 :book="book" />
                         </ul>
 

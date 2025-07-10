@@ -47,7 +47,7 @@ const url = computed(() => {
 
 <template>
     <div
-        class="flex flex-col items-center gap-2 w-full"
+        class="flex flex-col md:items-center gap-2 w-full"
         :class="narrow ? '' : 'md:flex-row md:gap-8'">
         <div class="flex gap-4 w-full">
             <component
@@ -55,7 +55,7 @@ const url = computed(() => {
                 :href="url"
                 :target="target"
                 prefetch>
-                <div class="aspect-book w-18 shrink-0 overflow-hidden rounded-sm shadow-sm md:w-22">
+                <div class="aspect-book w-20 shrink-0 overflow-hidden rounded-sm shadow-sm md:w-22">
                     <img
                         :src="book.cover ?? DefaultCover"
                         :alt="`Book cover image for ${book.title}`"
@@ -71,12 +71,12 @@ const url = computed(() => {
                         prefetch>
                         <h3
                             :class="isLink ? 'hover:text-primary' : ''"
-                            class="line-clamp-2 font-serif transition-colors text-base/5 md:line-clamp-4 md:text-lg/6">
+                            class="line-clamp-1 md:line-clamp-2 font-serif transition-colors text-base/5 md:text-lg/6">
                             {{ book.title }}
                         </h3>
                     </component>
                 </div>
-                <p class="mt-0.5 text-xs text-muted-foreground md:text-sm">
+                <p class="mt-0.5 line-clamp-1 text-xs text-muted-foreground/65 md:text-sm">
                     By {{ book.authors?.map((a) => a.name).join(', ') }}
                 </p>
                 <p
@@ -88,7 +88,7 @@ const url = computed(() => {
         </div>
         <div
             v-if="includeActions"
-            class="ml-auto shrink-0 w-56">
+            class="md:ml-auto max-w-64 md:max-w-none -mt-11 pl-24 md:pl-0 shrink-0 w-full md:w-40">
             <BookActions :book="book" />
         </div>
     </div>
