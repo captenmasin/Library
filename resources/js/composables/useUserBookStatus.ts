@@ -2,7 +2,7 @@ import { useRequest } from '@/composables/useRequest'
 import { useRoute } from '@/composables/useRoute'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { Book, BookApiResult } from '@/types/book'
-import { usePage } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
 import { computed, onMounted, ref } from 'vue'
 import { toast } from 'vue-sonner'
 
@@ -36,6 +36,7 @@ export function useUserBookStatus () {
         })
             .then((response) => {
                 if (response.message) {
+                    router.flushAll()
                     toast.success(response.message)
                     if (successCallback) {
                         successCallback()
@@ -64,6 +65,7 @@ export function useUserBookStatus () {
                 })
                     .then((response) => {
                         if (response.success) {
+                            router.flushAll()
                             toast.success(response.message)
                             addedBooks.value[book.identifier] = status
                             addingBooks.value = addingBooks.value.filter((id) => id !== identifier)
@@ -99,6 +101,7 @@ export function useUserBookStatus () {
         useRequest(useRoute('api.user.books.destroy', book.identifier), 'DELETE')
             .then((response) => {
                 if (response.success) {
+                    router.flushAll()
                     toast.success(response.message)
                     delete addedBooks.value[book.identifier]
                     delete selectedStatuses.value[book.identifier]

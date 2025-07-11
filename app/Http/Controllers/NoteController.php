@@ -12,25 +12,18 @@ class NoteController extends Controller
 {
     public function store(StoreNoteRequest $request, Book $book)
     {
-        $note = Note::where('book_id', $book->id)
-            ->where('user_id', $request->user()->id)
-            ->first();
-
-        $updatedNote = Note::updateOrCreate(
-            [
-                'book_id' => $book->id,
-                'user_id' => $request->user()->id,
-            ],
-            [
-                'content' => $request->validated('content'),
-            ]
-        );
+        $note = $book->notes()->create([
+            'user_id' => $request->user()->id,
+            'book_status' => $book->getUserStatus($request->user()),
+            'content' => $request->validated('content'),
+        ]);
 
         logActivity(
-            $note ? ActivityType::BookNoteUpdated : ActivityType::BookNoteAdded,
-            $updatedNote,
+            //            $note ? ActivityType::BookNoteUpdated : ActivityType::BookNoteAdded,
+            ActivityType::BookNoteAdded,
+            $note,
             [
-                'note' => $updatedNote->content,
+                'note' => $note->content,
                 'book_identifier' => $book->identifier,
                 'book_title' => $book->title,
             ]

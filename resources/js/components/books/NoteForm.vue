@@ -19,7 +19,7 @@ const props = defineProps({
 })
 
 const noteForm = useForm({
-    content: props.book.notes?.content || ''
+    content: ''
 })
 
 const displayNoteForm = ref(false)
@@ -33,66 +33,21 @@ const submit = () => {
     })
 }
 
+const noteInput = ref<HTMLInputElement | null>(null)
+
 function openNoteForm () {
     displayNoteForm.value = true
+    nextTick(() => {
+        if (noteInput.value) {
+            noteInput.value.focus()
+        }
+    })
 }
 </script>
 
 <template>
     <div>
-        <div
-            v-if="book.notes && !displayNoteForm"
-            class="bg-secondary p-2 rounded-md border-secondary border">
-            <div
-                class="text-sm prose prose-sm max-w-none"
-                v-html="useMarkdown(book.notes.content)" />
-
-            <div class="mt-4 flex justify-end items-center gap-2.5 pb-1 pr-1">
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger as-child>
-                            <Link
-                                :href="
-                                    useRoute('notes.destroy', {
-                                        book: book,
-                                        note: book.notes,
-                                    })
-                                "
-                                :on-success="
-                                    () => {
-                                        noteForm.content = '';
-                                    }
-                                "
-                                class="cursor-pointer text-destructive/75 hover:text-destructive"
-                                preserve-scroll
-                                method="delete"
-                            >
-                                <Icon
-                                    name="Trash"
-                                    class="w-4" />
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent> Delete note </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger as-child>
-                            <button
-                                class="cursor-pointer text-gray-600 hover:text-gray-900"
-                                @click="displayNoteForm = true">
-                                <Icon
-                                    name="Pencil"
-                                    class="w-4" />
-                            </button>
-                        </TooltipTrigger>
-                        <TooltipContent> Edit note </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </div>
-        </div>
-        <div v-if="!book.notes && !displayNoteForm">
+        <div v-if="!displayNoteForm">
             <div class="relative z-10 flex">
                 <Button
                     variant="link"
@@ -108,14 +63,15 @@ function openNoteForm () {
             v-if="displayNoteForm"
             @submit.prevent="submit">
             <Textarea
+                ref="noteInput"
                 v-model="noteForm.content"
-                autofocus
                 class="min-h-28"
-                placeholder="Add notes about this book..." />
+                placeholder="Your note..." />
             <InputError :message="noteForm.errors.content" />
             <div class="flex items-center justify-end">
                 <Button
                     variant="link"
+                    type="button"
                     @click="displayNoteForm = false; noteForm.clearErrors()">
                     Cancel
                 </Button>

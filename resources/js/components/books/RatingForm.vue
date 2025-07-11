@@ -2,11 +2,8 @@
 import Icon from '@/components/Icon.vue'
 import { Book } from '@/types/book'
 import { PropType, ref } from 'vue'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { router, useForm } from '@inertiajs/vue3'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const props = defineProps({
     book: {

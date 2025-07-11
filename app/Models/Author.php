@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Author extends Model
 {
-    /** @use HasFactory<\Database\Factories\AuthorFactory> */
-    use HasUuid;
+    use HasFactory, HasUuid;
 
     protected static $unguarded = true;
 

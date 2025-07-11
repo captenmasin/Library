@@ -4,9 +4,14 @@ use App\Models\Tag;
 use App\Models\Book;
 use App\Models\User;
 use App\Models\Cover;
+use App\Models\Author;
+use App\Models\Rating;
+use App\Models\Review;
 use App\Models\Activity;
 use App\Models\Publisher;
+use App\Enums\UserBookStatus;
 use Illuminate\Support\Facades\DB;
+use App\Actions\Books\AddBookToUser;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use App\Console\Commands\ConfigureRelatedBooks;
@@ -43,11 +48,88 @@ Artisan::command('reset', function () {
     Book::all()->each(fn ($book) => $book->delete());
     Cover::all()->each(fn ($cover) => $cover->delete());
     Tag::all()->each(fn ($tag) => $tag->delete());
-    //    Activity::all()->each(fn ($activity) => $activity->delete());
+    Activity::all()->each(fn ($activity) => $activity->delete());
     Publisher::all()->each(fn ($publisher) => $publisher->delete());
     Media::where('model_type', Cover::class)->get()->each(fn ($book) => $book->delete());
     DB::table('book_user')->truncate();
     DB::table('author_book')->truncate();
     DB::table('authors')->truncate();
     DB::table('book_tag')->truncate();
+
+    $admins = User::role('admin')->pluck('id');
+
+    User::whereNotIn('id', $admins)->get()->each(function ($user) {
+        $user->books()->detach();
+        $user->ratings()->delete();
+        $user->notes()->delete();
+        $user->reviews()->delete();
+        $user->delete();
+    });
+});
+
+Artisan::command('flood', function () {
+    User::factory(300)->create();
+    $users = User::all();
+
+    $books = Book::factory(1000)->create();
+    $tags = Tag::factory(2000)->create();
+    $publishers = Publisher::factory(300)->create();
+
+    $authors = Author::factory(200)->create();
+
+    $books->each(function ($book) use ($tags, $authors, $publishers) {
+        $book->tags()->sync($tags->random(rand(1, 10))->pluck('id'));
+        $book->authors()->sync($authors->random(rand(1, 3))->pluck('id'));
+
+        $book->publisher()->associate($publishers->random());
+        $book->save();
+    });
+
+    $users->each(function ($user) use ($books) {
+        $count = min(rand(1, 30), $books->count());
+        foreach ($books->random($count) as $book) {
+            $status = collect(UserBookStatus::cases())->random();
+            AddBookToUser::run($book, $user, $status);
+        }
+    });
+
+    $users->each(function ($user) {
+        $user->load('books');
+        $user->books->each(function ($book) use ($user) {
+            foreach (range(1, rand(10, 25)) as $i) {
+                if ($i > 20 && rand(0, 1) === 0) {
+                    continue; // Skip some iterations to reduce load
+                }
+
+                $book->notes()->create([
+                    'user_id' => $user->id,
+                    'content' => fake()->paragraph(),
+                    'book_status' => collect(UserBookStatus::cases())->random()->value,
+                ]);
+            }
+
+            if (rand(0, 1) === 1) {
+                Rating::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'book_id' => $book->id,
+                    ],
+                    ['value' => rand(1, 5)]
+                );
+            }
+
+            if (rand(0, 1) === 1) {
+                Review::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'book_id' => $book->id,
+                    ],
+                    [
+                        'title' => fake()->sentence(),
+                        'content' => implode("\n\n", fake()->paragraphs(3)),
+                    ]
+                );
+            }
+        });
+    });
 });

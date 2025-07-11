@@ -14,9 +14,13 @@ class HomeController extends Controller
     {
         return Inertia::render('Home', [
             'stats' => [
-                'booksInLibrary' => 0,
-                'completedBooks' => 0,
-                'planToRead' => 0,
+                'booksInLibrary' => $request->user()->books()->count(),
+                'completedBooks' => $request->user()->books()
+                    ->wherePivot('status', UserBookStatus::Completed)
+                    ->count(),
+                'planToRead' => $request->user()->books()
+                    ->wherePivot('status', UserBookStatus::PlanToRead)
+                    ->count(),
             ],
             'currentlyReading' => BookResource::collection(
                 $request->user()->books()

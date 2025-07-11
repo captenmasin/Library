@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Inertia\Inertia;
+use App\Models\Author;
 use App\Enums\ActivityType;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class UserBookController extends Controller
         $bookQuery = Auth::user()->books()->with([
             'authors',
             'reviews',
+            'ratings',
             'tags',
             'covers',
             'users' => fn ($q) => $q->where('user_id', auth()->id()),
@@ -66,8 +68,8 @@ class UserBookController extends Controller
                 return strtolower(implode($book->authors->pluck('name')->toArray()));
             }, SORT_NATURAL | SORT_FLAG_CASE, $desc);
         } elseif ($sort === 'rating') {
-            $books = $books->sortBy(function ($book) {
-                return $book->reviews->avg('rating') ?? 0;
+            $books = $books->sortBy(function ($book) use ($request) {
+                return optional($book->ratings->firstWhere('user_id', $request->user()->id))->value ?? 0;
             }, SORT_REGULAR, $desc);
         } elseif ($sort === 'published_date') {
             $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
@@ -111,8 +113,13 @@ class UserBookController extends Controller
             'selectedOrder' => $request->get('order', 'desc'),
             'searchQuery' => $request->get('search', ''),
 
-            'authors' => Inertia::defer(fn () => $books->flatMap(fn ($book) => $book->authors)->unique('uuid')->values()),
-            'tags' => Inertia::defer(fn () => $books->flatMap(fn ($book) => $book->tags)->unique('name')->values()),
+            'authors' => Inertia::defer(function () {
+                return Author::whereHas('books', function ($query) {
+                    $query->whereHas('users', function ($q) {
+                        $q->where('user_id', auth()->id());
+                    });
+                })->orderBy('name')->get(['uuid', 'name']);
+            }),
         ])->withMeta([
             'title' => 'Books',
         ]);

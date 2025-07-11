@@ -2,6 +2,7 @@ import { Author } from '@/types/author'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { Review } from '@/types/review'
 import { Publisher } from '@/types/publisher'
+import { Note } from '@/types/note'
 
 export type Book = {
     path: string,
@@ -25,13 +26,7 @@ export type Book = {
     average_rating?: number,
     ratings_count?: number,
     page_count: number,
-    notes?: {
-        id: number,
-        content: string,
-        content_html: string,
-        created_at: string,
-        updated_at: string,
-    },
+    user_notes?: Note[],
     user_tags: string[],
     colour: string,
     imported?: boolean,

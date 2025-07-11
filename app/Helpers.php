@@ -87,12 +87,17 @@ if (! function_exists('rgbToHue')) {
 if (! function_exists('logActivity')) {
     function logActivity(ActivityType $type, ?Model $subject = null, array $properties = []): void
     {
-        Activity::create([
-            'user_id' => auth()->id(),
-            'type' => $type,
-            'subject_type' => $subject?->getMorphClass(),
-            'subject_id' => $subject?->getKey(),
-            'properties' => $properties,
-        ]);
+        // TODO: Move this to the user model
+        try {
+            Activity::create([
+                'user_id' => auth()->id(),
+                'type' => $type,
+                'subject_type' => $subject?->getMorphClass(),
+                'subject_id' => $subject?->getKey(),
+                'properties' => $properties,
+            ]);
+        } catch (\Exception $e) {
+
+        }
     }
 }

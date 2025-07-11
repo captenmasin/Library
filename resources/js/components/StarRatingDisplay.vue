@@ -1,0 +1,48 @@
+<script setup lang="ts">
+import Icon from '@/components/Icon.vue'
+import { computed } from 'vue'
+
+const props = withDefaults(
+    defineProps<{
+        rating: number,
+        starWidth?: number
+    }>(),
+    {
+        starWidth: 20
+    }
+)
+
+const gap = computed(() => props.starWidth / 10)
+const totalWidth = computed(() => 5 * props.starWidth + 4 * gap.value)
+</script>
+
+<template>
+    <div
+        :key="starWidth"
+        class="relative flex">
+        <!-- Background: empty stars -->
+        <div
+            :style="{ gap: `${gap}px`, width: `${totalWidth}px` }"
+            class="flex text-primary/20">
+            <Icon
+                v-for="i in 5"
+                :key="`bg-${i}`"
+                name="star"
+                :style="{width: `${starWidth}px`, height: `${starWidth}px`}" />
+        </div>
+
+        <!-- Foreground: filled stars, clipped to rating percentage -->
+        <div
+            class="absolute top-0 left-0 flex text-yellow-400 overflow-hidden"
+            :style="{ gap: `${gap}px`, width: `${(rating / 5) * totalWidth}px` }"
+        >
+            <Icon
+                v-for="i in 5"
+                :key="`fg-${i}`"
+                name="star"
+                :style="{width: `${starWidth}px`, height: `${starWidth}px`}"
+                class="fill-yellow-400 shrink-0"
+            />
+        </div>
+    </div>
+</template>

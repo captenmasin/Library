@@ -6,6 +6,7 @@ import BookCard from '@/components/books/BookCard.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
 import RatingForm from '@/components/books/RatingForm.vue'
 import BookActions from '@/components/books/BookActions.vue'
+import StarRatingDisplay from '@/components/StarRatingDisplay.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
 import { Review } from '@/types/review'
 import type { Book } from '@/types/book'
@@ -16,6 +17,7 @@ import { useMarkdown } from '@/composables/useMarkdown'
 
 const props = defineProps({
     book: { type: Object as PropType<Book>, required: true },
+    averageRating: { type: String, default: '0' },
     related: { type: Array as PropType<Book[]> },
     reviews: {
         type: Array as PropType<Review[]>,
@@ -60,7 +62,7 @@ defineOptions({
         <div class="flex gap-10">
             <div class="flex w-1/5 flex-col">
                 <UpdateBookCover :book>
-                    <div class="aspect-book rounded-md overflow-hidden">
+                    <div class="aspect-book overflow-hidden rounded-md">
                         <Image
                             width="250"
                             class="size-full object-cover"
@@ -70,7 +72,7 @@ defineOptions({
                 <div
                     v-if="book.in_library"
                     class="mt-4 flex flex-col items-center">
-                    <h3 class="text-lg font-semibold hidden">
+                    <h3 class="text-xs font-semibold text-muted-foreground">
                         Your rating
                     </h3>
                     <RatingForm
@@ -88,35 +90,58 @@ defineOptions({
                 </h2>
                 <p
                     v-if="book.authors"
-                    class="mt-1 text-sm text-muted-foreground">
+                    class="mt-2 text-sm text-muted-foreground">
                     By {{ book.authors.map((a) => a.name).join(', ') }}
                 </p>
+
                 <div
-                    class="mt-4 max-w-none font-serif prose"
+                    v-if="book.ratings_count"
+                    class="mt-1 flex items-center gap-2">
+                    <StarRatingDisplay :rating="parseFloat(averageRating)" />
+                    <div class="mt-px text-xs text-muted-foreground">
+                        {{ averageRating }} &mdash; {{ book.ratings_count }} {{ usePlural('rating', book.ratings_count) }}
+                    </div>
+                </div>
+
+                <div
+                    class="prose mt-4 max-w-none font-serif"
                     v-html="useMarkdown(book.description)" />
 
                 <div class="mt-8">
-                    <div v-if="book.in_library">
-                        <h3 class="mt-6 text-lg font-semibold">
-                            Your notes
-                        </h3>
-                        <NoteForm
-                            class="mt-1"
-                            :book="book" />
+                    <div
+                        v-if="book.in_library"
+                        class="flex flex-col gap-8">
+                        <div>
+                            <h3 class="text-xl border-b border-b-muted pb-2 font-semibold">
+                                Your notes
+                            </h3>
+                            <NoteForm
+                                class="mt-1"
+                                :book="book" />
+
+                            Notesssssssss
+                            <hr>
+                            {{ book.user_notes }}
+                        </div>
+                        <div>
+                            <h3 class="text-xl border-b border-b-muted pb-2 font-semibold">
+                                Your review
+                            </h3>
+                            <ReviewForm
+                                :book="book"
+                                :existing-review="book.user_review" />
+                        </div>
                     </div>
-                    <ReviewForm
-                        :book="book"
-                        :existing-review="book.user_review" />
                 </div>
                 <hr class="mt-12">
                 <div class="mt-12">
                     Reviwssssss:
 
                     <div
-                        v-if="book.average_rating && book.ratings_count"
-                        class="text-sm/6 mt-2 flex items-center text-center">
-                        Average: {{ book.average_rating }}<br> stars
-                        {{ book.ratings_count }} {{ usePlural('rating', book.ratings_count) }}
+                        v-if="averageRating && book.ratings_count"
+                        class="mt-2 flex items-center text-center text-sm/6">
+                        Average: {{ averageRating }}<br>
+                        stars {{ book.ratings_count }} {{ usePlural('rating', book.ratings_count) }}
                     </div>
 
                     <ul>
@@ -139,7 +164,7 @@ defineOptions({
                         @added="refresh"
                         @updated="refresh" />
                 </div>
-                <h3 class="text-lg mt-4 font-semibold">
+                <h3 class="mt-4 text-lg font-semibold">
                     Details
                 </h3>
                 <dl>
@@ -147,7 +172,7 @@ defineOptions({
                         v-for="item in data"
                         :key="item.title"
                         class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt class="font-medium text-sm/6">
+                        <dt class="text-sm/6 font-medium">
                             {{ item.title }}
                         </dt>
                         <dd class="text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
@@ -159,14 +184,14 @@ defineOptions({
                 <div
                     v-if="book.tags && book.tags.length > 0"
                     class="mt-1">
-                    <p class="font-medium text-sm/6">
+                    <p class="text-sm/6 font-medium">
                         Tags
                     </p>
                     <ul class="space-y-1 space-x-1">
                         <li
                             v-for="tag in book.tags.slice(0, tagsLimit)"
                             :key="tag"
-                            class="inline-block rounded-full px-2 text-xs bg-muted py-0.5 text-muted-foreground"
+                            class="inline-block rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
                         >
                             {{ tag }}
                         </li>
@@ -174,8 +199,9 @@ defineOptions({
                             v-if="book.tags.length > tagsLimit"
                             class="inline-block">
                             <button
-                                class="rounded-full px-2 text-xs bg-primary/10 hover:bg-primary/20 text-primary cursor-pointer py-0.5"
-                                @click="tagsLimit = 999">
+                                class="cursor-pointer rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary hover:bg-primary/20"
+                                @click="tagsLimit = 999"
+                            >
                                 +{{ book.tags.length - tagsLimit }} more
                             </button>
                         </li>
@@ -185,10 +211,10 @@ defineOptions({
                 <div
                     v-if="related && related.length > 0"
                     class="mt-4">
-                    <p class="font-medium text-sm/6">
+                    <p class="text-sm/6 font-medium">
                         Related
                     </p>
-                    <div class="flex -mx-2 flex-wrap">
+                    <div class="-mx-2 flex flex-wrap">
                         <div
                             v-for="relatedBook in related"
                             :key="relatedBook.identifier"

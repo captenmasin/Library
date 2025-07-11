@@ -13,12 +13,15 @@ class BookResource extends JsonResource
     {
         $user = $request->user();
 
+        $description = $this->description ?? '';
+        $description = str_replace('\n', "\n", $description);
+
         return [
             'path' => $this->path,
             'identifier' => $this->identifier,
             'title' => html_entity_decode($this->title),
-            'description' => $this->description,
-            'description_clean' => strip_tags($this->description),
+            'description' => $description,
+            'description_clean' => strip_tags($description),
             'published_date' => $this->published_date,
             'tags' => $this->whenLoaded('tags', fn () => $this->tags->pluck('name')->toArray()),
             'page_count' => $this->page_count,
@@ -27,7 +30,8 @@ class BookResource extends JsonResource
             'cover' => $this->whenLoaded('covers', fn () => $this->getCover($user)),
             'authors' => $this->whenLoaded('authors', fn () => $this->getAuthors()),
             'publisher' => $this->whenLoaded('publisher', fn () => $this->getPublisher()),
-            'notes' => $this->whenLoaded('notes', fn () => $this->getNote($user)),
+
+            'user_notes' => $this->whenLoaded('notes', fn () => $this->getUserNotes($user)),
             'user_review' => $this->whenLoaded('reviews', fn () => $this->getUserReview($user)),
             'user_rating' => $this->whenLoaded('ratings', fn () => $this->getUserRating($user)),
 
@@ -124,14 +128,14 @@ class BookResource extends JsonResource
         return $rating ? new RatingResource($rating) : null;
     }
 
-    protected function getNote(?User $user = null): ?NoteResource
+    protected function getUserNotes(?User $user = null): ?AnonymousResourceCollection
     {
         if (! $user) {
             return null;
         }
 
-        $note = $this->notes->firstWhere('user_id', $user?->id);
+        $notes = $this->notes->where('user_id', $user?->id);
 
-        return $note ? new NoteResource($note) : null;
+        return $notes ? NoteResource::collection($notes) : null;
     }
 }

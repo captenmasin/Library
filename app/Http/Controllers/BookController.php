@@ -55,10 +55,9 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book->load(['authors', 'reviews', 'publisher', 'tags', 'covers',
+        $book->load(['authors', 'reviews', 'ratings', 'publisher', 'tags', 'covers',
             'users' => fn ($query) => $query->where('user_id', Auth::id()),
             'notes' => fn ($query) => $query->where('user_id', Auth::id()),
-            'ratings' => fn ($query) => $query->where('user_id', Auth::id()),
         ]);
 
         $relatedBooks = $book->relatedBooksByAuthorsAndTags(4);
@@ -67,7 +66,7 @@ class BookController extends Controller
         return Inertia::render('books/Show', [
             'book' => new BookResource($book),
             'related' => BookResource::collection($relatedBooks),
-            'averageRating' => round($book->reviews->avg('rating') ?? 0, 1),
+            'averageRating' => number_format($book->ratings->avg('value') ?? 0, 1),
             'reviews' => Inertia::defer(fn () => ReviewResource::collection(
                 $book->reviews()->where('user_id', '!=', Auth::id())->get()
             )),

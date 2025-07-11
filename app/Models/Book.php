@@ -62,6 +62,13 @@ class Book extends Model implements HasMedia
         });
     }
 
+    public function getUserStatus(User $user)
+    {
+        return $this->users()
+            ->where('user_id', $user->id)
+            ->first()?->pivot?->status ?? null;
+    }
+
     public function primaryCover()
     {
         return $this->covers->where('is_primary', true)->first();

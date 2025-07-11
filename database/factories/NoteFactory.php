@@ -12,7 +12,7 @@ class NoteFactory extends Factory
     public function definition(): array
     {
         return [
-            'registerMediaConversionsUsingModelInstance' => $this->faker->boolean(),
+            'content' => $this->faker->paragraph(),
         ];
     }
 }
