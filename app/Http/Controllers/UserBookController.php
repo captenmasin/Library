@@ -35,35 +35,28 @@ class UserBookController extends Controller
             }
         }
 
-        $books = $bookQuery->get();
-
-        $books = $books->sortByDesc('id');
-
         if ($request->filled('search')) {
-            $search = $request->get('search');
-            $books = $books->filter(function ($book) use ($search) {
-                return str_contains(strtolower($book->title), strtolower($search)) ||
-                    str_contains(strtolower($book->description), strtolower($search)) ||
-                    str_contains(strtolower(implode(', ', $book->authors->pluck('name')->toArray())), strtolower($search)) ||
-                    str_contains(strtolower($book->identifier), strtolower($search));
+            $search = strtolower($request->get('search'));
+            $bookQuery->where(function ($query) use ($search) {
+                $query
+                    ->whereRaw('LOWER(title) LIKE ?', ["%{$search}%"])
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"])
+                    ->orWhereHas('authors', fn ($q) => $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"]))
+                    ->orWhereRaw('LOWER(identifier) LIKE ?', ["%{$search}%"]);
             });
         }
 
-        $sort = $request->get('sort', null);
-        if (! in_array($sort, ['title', 'rating', 'published_date', 'added', 'author', 'colour'])) {
-            $sort = null;
-        }
+        $sort = in_array($request->get('sort'), ['title', 'rating', 'published_date', 'added', 'author', 'colour'])
+            ? $request->get('sort')
+            : null;
 
+        $books = $bookQuery->get();
         $direction = $request->get('order', 'desc');
-
         $desc = $direction === 'desc';
 
         if ($sort === 'title') {
-            $books = $books->sortBy(function ($book) {
-                return strtolower($book->title);
-            }, SORT_NATURAL | SORT_FLAG_CASE, $desc);
-        }
-        if ($sort === 'author') {
+            $books = $bookQuery->orderBy('title', $desc ? 'desc' : 'asc')->get();
+        } elseif ($sort === 'author') {
             $books = $books->sortBy(function ($book) {
                 return strtolower(implode($book->authors->pluck('name')->toArray()));
             }, SORT_NATURAL | SORT_FLAG_CASE, $desc);
@@ -72,7 +65,7 @@ class UserBookController extends Controller
                 return optional($book->ratings->firstWhere('user_id', $request->user()->id))->value ?? 0;
             }, SORT_REGULAR, $desc);
         } elseif ($sort === 'published_date') {
-            $books = $books->sortBy('published_date', SORT_REGULAR, $desc);
+            $books = $bookQuery->orderBy('published_date', $desc ? 'desc' : 'asc')->get();
         } elseif ($sort === 'added' || is_null($sort)) {
             $books = $books->sortBy(function ($book) {
                 return $book->pivot->created_at;
@@ -105,8 +98,8 @@ class UserBookController extends Controller
         $selectedStatuses = $request->get('status', []);
 
         return Inertia::render('books/Index', [
-            'totalBooks' => $request->user()->loadCount('books')->books_count,
-            'books' => BookResource::collection($books->values()),
+            'totalBooks' => $request->user()->books->count(),
+            'books' => BookResource::collection($books),
             'selectedStatuses' => $selectedStatuses,
             'selectedAuthor' => $request->get('author'),
             'selectedSort' => $sort,
@@ -151,7 +144,7 @@ class UserBookController extends Controller
             return redirect()->back()->with('message', 'Book not found in your collection.');
         }
 
-        logActivity(
+        $request->user()->logActivity(
             ActivityType::BookRemoved,
             $book
         );

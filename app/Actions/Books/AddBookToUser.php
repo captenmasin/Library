@@ -25,7 +25,7 @@ class AddBookToUser
             'status' => $status->value ?? UserBookStatus::PlanToRead,
         ]);
 
-        logActivity(ActivityType::BookAdded, $book, [
+        $user->logActivity(ActivityType::BookAdded, $book, [
             'book_identifier' => $book->identifier,
             'book_title' => $book->title,
             'status' => $status->value ?? UserBookStatus::PlanToRead->value,

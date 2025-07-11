@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Filament\Panel;
 use App\Traits\HasAvatar;
+use App\Enums\ActivityType;
 use App\Enums\UserPermission;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Models\Contracts\FilamentUser;
@@ -108,6 +110,16 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasPasskey
     public function activities(): HasMany
     {
         return $this->hasMany(Activity::class);
+    }
+
+    public function logActivity(ActivityType $type, ?Model $subject = null, array $properties = []): void
+    {
+        $this->activities()->create([
+            'type' => $type,
+            'subject_type' => $subject?->getMorphClass(),
+            'subject_id' => $subject?->getKey(),
+            'properties' => $properties,
+        ]);
     }
 
     public function book_covers(): HasMany

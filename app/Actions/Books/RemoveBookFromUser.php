@@ -24,7 +24,7 @@ class RemoveBookFromUser
             $cover->delete();
         });
 
-        logActivity(
+        $user->logActivity(
             ActivityType::BookRemoved,
             $book, [
                 'book_identifier' => $book->identifier,

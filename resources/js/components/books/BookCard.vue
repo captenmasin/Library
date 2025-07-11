@@ -3,7 +3,6 @@ import Image from '@/components/Image.vue'
 import type { PropType } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import type { Book } from '@/types/book'
-import { useRoute } from '@/composables/useRoute'
 import { useColours } from '@/composables/useColours'
 import { useContrast } from '@/composables/useContrast'
 

@@ -18,7 +18,7 @@ class NoteController extends Controller
             'content' => $request->validated('content'),
         ]);
 
-        logActivity(
+        $request->user()->logActivity(
             //            $note ? ActivityType::BookNoteUpdated : ActivityType::BookNoteAdded,
             ActivityType::BookNoteAdded,
             $note,
@@ -36,7 +36,7 @@ class NoteController extends Controller
     {
         $note->delete();
 
-        logActivity(ActivityType::BookNoteRemoved, $book, [
+        $request->user()->logActivity(ActivityType::BookNoteRemoved, $book, [
             'book_identifier' => $book->identifier,
             'book_title' => $book->title,
         ]);

@@ -23,7 +23,7 @@ class BookCoverController extends Controller
 
             $newCover->addMedia($request->file('cover'))->toMediaCollection('image');
 
-            logActivity(
+            $request->user()->logActivity(
                 ActivityType::BookCoverUpdated,
                 $newCover,
                 [
@@ -38,7 +38,7 @@ class BookCoverController extends Controller
 
     public function destroy(Request $request, Book $book)
     {
-        logActivity(
+        $request->user()->logActivity(
             ActivityType::BookCoverRemoved,
             null,
             [

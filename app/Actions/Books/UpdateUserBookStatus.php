@@ -26,7 +26,7 @@ class UpdateUserBookStatus
             throw new ModelNotFoundException('Book not found in your library.');
         }
 
-        logActivity(ActivityType::BookStatusUpdated, $book, [
+        $user->logActivity(ActivityType::BookStatusUpdated, $book, [
             'book_identifier' => $book->identifier,
             'book_title' => $book->title,
             'status' => $status,

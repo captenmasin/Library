@@ -2,12 +2,12 @@
 import Image from '@/components/Image.vue'
 import { PropType } from 'vue'
 import { Book } from '@/types/book'
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
 import { useColours } from '@/composables/useColours'
 import { useContrast } from '@/composables/useContrast'
 import { useUserSettings } from '@/composables/useUserSettings'
 
-const props = defineProps({
+defineProps({
     books: {
         type: Array as PropType<Book[]>,
         required: true

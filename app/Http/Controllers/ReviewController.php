@@ -6,7 +6,6 @@ use App\Models\Book;
 use App\Models\Review;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\DestroyReviewRequest;
 
 class ReviewController extends Controller
@@ -19,18 +18,18 @@ class ReviewController extends Controller
         ]);
 
         $existing = Review::where('book_id', $book->id)
-            ->where('user_id', Auth::id())
+            ->where('user_id', $request->user()->id)
             ->first();
 
         $review = Review::updateOrCreate(
-            ['book_id' => $book->id, 'user_id' => Auth::id()],
+            ['book_id' => $book->id, 'user_id' => $request->user()->id],
             [
                 'content' => $validated['content'],
                 'title' => $validated['title'],
             ]
         );
 
-        logActivity(
+        $request->user()->logActivity(
             $existing ? ActivityType::BookReviewUpdated : ActivityType::BookReviewAdded,
             $review,
             [
@@ -47,7 +46,7 @@ class ReviewController extends Controller
     {
         $review->delete();
 
-        logActivity(
+        $request->user()->logActivity(
             ActivityType::BookReviewRemoved,
             null,
             [
