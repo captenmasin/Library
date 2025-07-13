@@ -5,10 +5,14 @@ import { computed } from 'vue'
 const props = withDefaults(
     defineProps<{
         rating: number,
-        starWidth?: number
+        starWidth?: number,
+        textClass?: string,
+        strokeClass?: string,
     }>(),
     {
-        starWidth: 20
+        starWidth: 20,
+        textClass: 'text-primary/20',
+        strokeClass: 'text-yellow-400'
     }
 )
 
@@ -23,7 +27,8 @@ const totalWidth = computed(() => 5 * props.starWidth + 4 * gap.value)
         <!-- Background: empty stars -->
         <div
             :style="{ gap: `${gap}px`, width: `${totalWidth}px` }"
-            class="flex text-primary/20">
+            :class="textClass"
+            class="flex">
             <Icon
                 v-for="i in 5"
                 :key="`bg-${i}`"
@@ -41,6 +46,7 @@ const totalWidth = computed(() => 5 * props.starWidth + 4 * gap.value)
                 :key="`fg-${i}`"
                 name="star"
                 :style="{width: `${starWidth}px`, height: `${starWidth}px`}"
+                :class="strokeClass"
                 class="shrink-0 fill-yellow-400"
             />
         </div>

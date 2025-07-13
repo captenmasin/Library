@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import DefaultCover from '~/images/default-cover.svg'
 import BookActions from '@/components/books/BookActions.vue'
+import StarRatingDisplay from '@/components/StarRatingDisplay.vue'
 import { Link } from '@inertiajs/vue3'
 import { computed, PropType } from 'vue'
+import { useBook } from '@/composables/useBook'
 import { Book, BookApiResult } from '@/types/book'
 
 const props = defineProps({
@@ -43,6 +45,8 @@ const linkTag = computed(() => {
 const url = computed(() => {
     return props.book.links?.show ?? null
 })
+
+const { userRating } = useBook(props.book)
 </script>
 
 <template>
@@ -55,11 +59,11 @@ const url = computed(() => {
                 :href="url"
                 :target="target"
                 prefetch>
-                <div class="w-20 shrink-0 overflow-hidden rounded-sm shadow-sm aspect-book md:w-22">
+                <div class="aspect-book w-20 shrink-0 overflow-hidden rounded-sm shadow-sm md:w-22">
                     <img
                         :src="book.cover ?? DefaultCover"
                         :alt="`Book cover image for ${book.title}`"
-                        class="bg-gray-200 object-cover size-full">
+                        class="size-full bg-gray-200 object-cover">
                 </div>
             </component>
             <div class="flex w-full min-w-0 flex-col">
@@ -71,24 +75,30 @@ const url = computed(() => {
                         prefetch>
                         <h3
                             :class="isLink ? 'hover:text-primary' : ''"
-                            class="font-serif transition-colors line-clamp-1 text-base/5 md:line-clamp-2 md:text-lg/6">
+                            class="line-clamp-1 font-serif text-lg transition-colors md:line-clamp-2 md:text-lg/6"
+                        >
                             {{ book.title }}
                         </h3>
                     </component>
                 </div>
-                <p class="text-xs mt-0.5 line-clamp-1 text-muted-foreground/65 md:text-sm">
+                <p class="mt-0.5 line-clamp-1 text-xs text-muted-foreground/65 md:text-sm">
                     By {{ book.authors?.map((a) => a.name).join(', ') }}
                 </p>
                 <p
                     v-if="book.description"
-                    class="mt-1 text-xs line-clamp-2 text-muted-foreground">
+                    class="mt-2 md:mt-1 hidden md:line-clamp-2 text-xs text-muted-foreground">
                     {{ book.description_clean }}
                 </p>
+                <StarRatingDisplay
+                    v-if="userRating"
+                    class="mt-1"
+                    :rating="userRating.value"
+                    :star-width="15" />
             </div>
         </div>
         <div
             v-if="includeActions"
-            class="-mt-11 w-full shrink-0 pl-24 max-w-64 md:ml-auto md:w-40 md:max-w-none md:pl-0">
+            class="-mt-11 w-full max-w-64 shrink-0 pl-24 md:ml-auto md:w-40 md:max-w-none md:pl-0">
             <BookActions :book="book" />
         </div>
     </div>

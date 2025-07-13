@@ -52,24 +52,6 @@ function selectNewStatus (book: BookApiResult | Book, status: UserBookStatus | '
             </div>
         </div>
 
-        <!--        <TooltipProvider v-if="addedBookIdentifiers.has(book.identifier)">-->
-        <!--            <Tooltip>-->
-        <!--                <TooltipTrigger>-->
-        <!--                    <Button-->
-        <!--                        variant="secondary"-->
-        <!--                        size="icon"-->
-        <!--                        @click="removeBookFromUser(book, () => {-->
-        <!--                            emit('removed', book)-->
-        <!--                        })">-->
-        <!--                        <Icon-->
-        <!--                            name="Trash"-->
-        <!--                            class="w-4" />-->
-        <!--                    </Button>-->
-        <!--                </TooltipTrigger>-->
-        <!--                <TooltipContent> Remove from library </TooltipContent>-->
-        <!--            </Tooltip>-->
-        <!--        </TooltipProvider>-->
-
         <div class="w-full md:w-full">
             <Select
                 v-model="selectedStatuses[book.identifier]"

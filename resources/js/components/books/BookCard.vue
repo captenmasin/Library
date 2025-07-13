@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import Image from '@/components/Image.vue'
+import StarRatingDisplay from '@/components/StarRatingDisplay.vue'
 import type { PropType } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import type { Book } from '@/types/book'
+import { useBook } from '@/composables/useBook'
 import { useColours } from '@/composables/useColours'
 import { useContrast } from '@/composables/useContrast'
 
-defineProps({
+const props = defineProps({
     book: {
         type: Object as PropType<Book>,
         required: true
@@ -18,6 +20,7 @@ defineProps({
 })
 
 const { changeColourOpacity } = useColours()
+const { userRating } = useBook(props.book)
 </script>
 
 <template>
@@ -43,17 +46,23 @@ const { changeColourOpacity } = useColours()
                         class="h-full w-full object-cover" />
                     <div
                         v-if="hover"
-                        class="absolute bottom-0 left-0 flex w-full items-end p-4 opacity-0 transition-all duration-300 h-11/12 group-hover:opacity-100"
+                        class="absolute bottom-0 left-0 flex w-full items-end p-4 opacity-0 transition-all duration-300 h-full group-hover:opacity-100"
                         :style="{backgroundImage: `linear-gradient(to top, ${changeColourOpacity(book.colour, 1)}, rgba(0, 0, 0, 0))`}">
-                        <div class="flex w-full translate-y-4 flex-col gap-1 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                            <h2 class="font-serif font-semibold text-lg/5 line-clamp-5">
+                        <div class="flex w-full translate-y-4 flex-col gap-1.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                            <h2 class="font-serif font-semibold text-base line-clamp-4 leading-5">
                                 {{ book.title }}
                             </h2>
                             <p
                                 v-if="book.authors"
-                                class="text-xs">
+                                class="text-xs line-clamp-2">
                                 {{ book.authors.map(a => a.name).join(', ') }}
                             </p>
+                            <StarRatingDisplay
+                                v-if="userRating"
+                                class="mt-1"
+                                text-class="text-inherit"
+                                :rating="userRating.value"
+                                :star-width="15" />
                         </div>
                     </div>
                 </div>
