@@ -22,6 +22,10 @@ const props = defineProps({
         type: Object as PropType<{ total: number, books: BookApiResult[] }>,
         default: () => ({ total: 0, books: [] })
     },
+    scan: {
+        type: Boolean,
+        default: false
+    },
     perPage: {
         type: Number,
         default: 10
@@ -168,7 +172,7 @@ defineOptions({
                         <span class="flex px-4 text-sm text-muted-foreground">or</span>
                         <Separator class="flex flex-1" />
                     </div>
-                    <Dialog>
+                    <Dialog :default-open="scan">
                         <DialogTrigger as-child>
                             <Button
                                 class="cursor-pointer w-full"

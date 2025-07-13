@@ -6,7 +6,7 @@ test('guests are redirected to the login page', function () {
 });
 
 test('authenticated users can view their homepage', function () {
-    $user = User::factory()->create();
+    $user = \App\Models\User::factory()->create();
     $this->actingAs($user);
 
     $response = $this->get('/');

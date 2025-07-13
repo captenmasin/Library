@@ -23,6 +23,7 @@ class BookController extends Controller
         return Inertia::render('books/Search', [
             'initialQuery' => $request->get('q'),
             'initialAuthor' => $request->get('author'),
+            'scan' => $request->get('scan', false),
             'page' => $page,
             'perPage' => $perPage,
             'results' => Inertia::defer(
