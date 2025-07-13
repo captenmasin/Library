@@ -1,4 +1,5 @@
 export type Author = {
-    uuid: number,
+    uuid: string,
+    slug: number,
     name: string,
 }

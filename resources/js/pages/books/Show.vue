@@ -61,10 +61,10 @@ defineOptions({
         <div class="flex gap-10">
             <div class="flex w-1/5 flex-col">
                 <UpdateBookCover :book>
-                    <div class="aspect-book overflow-hidden rounded-md">
+                    <div class="overflow-hidden rounded-md aspect-book">
                         <Image
                             width="250"
-                            class="size-full object-cover"
+                            class="object-cover size-full"
                             :src="book.cover" />
                     </div>
                 </UpdateBookCover>
@@ -103,7 +103,7 @@ defineOptions({
                 </div>
 
                 <div
-                    class="prose mt-4 max-w-none font-serif"
+                    class="mt-4 max-w-none font-serif prose"
                     v-html="useMarkdown(book.description)" />
 
                 <div class="mt-8">
@@ -111,7 +111,7 @@ defineOptions({
                         v-if="book.in_library"
                         class="flex flex-col gap-8">
                         <div>
-                            <h3 class="text-xl border-b border-b-muted pb-2 font-semibold">
+                            <h3 class="border-b pb-2 text-xl font-semibold border-b-muted">
                                 Your notes
                             </h3>
                             <NoteForm
@@ -123,7 +123,7 @@ defineOptions({
                             {{ book.user_notes }}
                         </div>
                         <div>
-                            <h3 class="text-xl border-b border-b-muted pb-2 font-semibold">
+                            <h3 class="border-b pb-2 text-xl font-semibold border-b-muted">
                                 Your review
                             </h3>
                             <ReviewForm
@@ -171,7 +171,7 @@ defineOptions({
                         v-for="item in data"
                         :key="item.title"
                         class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt class="text-sm/6 font-medium">
+                        <dt class="font-medium text-sm/6">
                             {{ item.title }}
                         </dt>
                         <dd class="text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
@@ -183,7 +183,7 @@ defineOptions({
                 <div
                     v-if="book.tags && book.tags.length > 0"
                     class="mt-1">
-                    <p class="text-sm/6 font-medium">
+                    <p class="font-medium text-sm/6">
                         Tags
                     </p>
                     <TagCloud :tags="book.tags" />
@@ -192,7 +192,7 @@ defineOptions({
                 <div
                     v-if="related && related.length > 0"
                     class="mt-4">
-                    <p class="text-sm/6 font-medium">
+                    <p class="font-medium text-sm/6">
                         Related
                     </p>
                     <div class="-mx-2 flex flex-wrap">

@@ -76,7 +76,8 @@ const stats = [
     },
     {
         name: 'Pages read this year',
-        value: props.statValues.pagesRead,
+        // value: props.statValues.pagesRead,
+        value: '//TODO',
         link: useRoute('user.books.index'),
         icon: 'Hash',
         color: 'text-blue-500'
@@ -92,16 +93,16 @@ defineOptions({ layout: AppLayout })
 
 <template>
     <div class="container">
-        <header class="mt-6 mb-4 w-full flex justify-between items-center">
+        <header class="mt-6 mb-4 flex w-full items-center justify-between">
             <div class="flex flex-col">
-                <h1 class="font-serif text-3xl font-bold text-foreground">
+                <h1 class="font-serif text-2xl font-bold text-foreground md:text-3xl">
                     Welcome back, Mason
                 </h1>
                 <p class="text-sm text-accent-foreground">
                     Here's a quick look at your library
                 </p>
             </div>
-            <ul class="NOflex gap-4 hidden">
+            <ul class="NOflex hidden gap-4">
                 <li
                     v-for="action in actions"
                     :key="action.name">
@@ -123,32 +124,32 @@ defineOptions({ layout: AppLayout })
             <!--            <h2 class="mb-4 text-xl font-semibold text-accent-foreground">-->
             <!--                Your reading summary-->
             <!--            </h2>-->
-            <div class="grid grid-cols-2 gap-2 md:gap-4 md:grid-cols-4">
+            <div class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4">
                 <Link
                     v-for="stat in stats"
                     :key="stat.name"
                     :href="stat.link"
                     prefetch
-                    class="flex items-center justify-between rounded-xl bg-white px-3 py-2 md:p-4 shadow">
+                    class="relative flex items-center justify-between rounded-md border-0 border-accent bg-secondary px-3 py-2 transition-all hover:bg-primary/20 md:p-4"
+                >
                     <div>
                         <p class="text-sm text-current/60">
                             {{ stat.name }}
                         </p>
-                        <p class="text-xl md:text-2xl font-bold">
+                        <p class="text-xl font-bold md:text-2xl">
                             {{ stat.value }}
                         </p>
                     </div>
                     <Icon
                         v-if="stat.icon"
                         :name="stat.icon"
-                        :class="stat.color"
-                        class="size-4 md:size-6" />
+                        class="absolute top-4 right-4 size-4 text-primary md:size-4" />
                 </Link>
             </div>
         </section>
 
         <div class="mt-2 flex flex-col items-start gap-8 md:mt-8 md:flex-row">
-            <div class="mt-4 flex w-full md:w-auto md:flex-1 flex-col md:mt-0">
+            <div class="mt-4 flex w-full flex-col md:mt-0 md:w-auto md:flex-1">
                 <section>
                     <h2
                         v-if="currentlyReading && currentlyReading.length"
@@ -158,20 +159,18 @@ defineOptions({ layout: AppLayout })
 
                     <div
                         v-if="currentlyReading && currentlyReading.length"
-                        class="-mx-4 px-4 overflow-x-auto snap-x snap-mandatory md:mx-0 md:px-0"
-                    >
-                        <ul class="flex flex-row gap-4 w-max md:grid md:w-full md:gap-4 md:grid-cols-5">
+                        class="-mx-4 snap-x snap-mandatory overflow-x-auto px-4 md:mx-0 md:px-0">
+                        <ul class="flex w-max flex-row gap-4 md:grid md:w-full md:grid-cols-5 md:gap-4">
                             <li
                                 v-for="book in currentlyReading"
                                 :key="book.identifier"
-                                class="w-40 md:w-auto snap-center"
-                            >
+                                class="w-40 snap-center md:w-auto">
                                 <BookCard :book="book" />
                             </li>
-                            <li class="w-40 md:w-auto snap-center">
+                            <li class="w-40 snap-center md:w-auto">
                                 <Link
                                     :href="useRoute('books.search')"
-                                    class="flex aspect-book size-full items-center justify-center rounded-md border-3 border-dashed border-primary/20 bg-primary/5 p-4 text-center text-sm text-primary/50 hover:bg-primary/10"
+                                    class="flex aspect-book size-full items-center justify-center rounded-md border-3 border-dashed border-primary/20 bg-secondary p-4 text-center text-sm text-primary/50 transition-all hover:bg-primary/20"
                                 >
                                     Find more books
                                 </Link>
@@ -181,16 +180,15 @@ defineOptions({ layout: AppLayout })
 
                     <div
                         v-else
-                        class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-12 text-center text-sm text-muted-foreground">
+                        class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-12 text-center text-sm text-muted-foreground"
+                    >
                         <Icon
                             name="BookOpen"
                             class="size-8" />
-                        <h3 class="font-semibold text-2xl font-serif">
+                        <h3 class="font-serif text-2xl font-semibold">
                             Currently reading
                         </h3>
-                        <p>
-                            You aren't reading anything right now
-                        </p>
+                        <p>You aren't reading anything right now</p>
                         <Button
                             class="mt-2"
                             as-child>
@@ -204,7 +202,7 @@ defineOptions({ layout: AppLayout })
                 <section
                     v-if="activities && activities.length"
                     class="mt-8">
-                    <div class="mb-2 flex items-center justify-between">
+                    <div class="mb-1 flex items-center justify-between">
                         <h2 class="font-serif text-xl font-semibold text-accent-foreground">
                             Recent activity
                         </h2>
@@ -266,14 +264,16 @@ defineOptions({ layout: AppLayout })
                     </h2>
                     <ul
                         v-if="authors && authors.length"
-                        class="mt-2 divide-y divide-muted rounded-xl bg-white p-4 shadow">
+                        class="mt-2 divide-y divide-muted p-0">
                         <li
                             v-for="author in authors"
                             :key="author.uuid"
                             class="flex items-center gap-2 py-2">
-                            <span class="text-sm text-accent-foreground">
+                            <Link
+                                class="text-sm text-accent-foreground hover:text-primary"
+                                :href="useRoute('user.books.index', { author: author.slug })">
                                 {{ author.name }}
-                            </span>
+                            </Link>
                         </li>
                     </ul>
                     <div v-else>

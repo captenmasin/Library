@@ -9,6 +9,7 @@ use App\Models\Rating;
 use App\Models\Review;
 use App\Models\Activity;
 use App\Models\Publisher;
+use Illuminate\Support\Str;
 use App\Enums\UserBookStatus;
 use Illuminate\Support\Facades\DB;
 use App\Actions\Books\AddBookToUser;
@@ -64,6 +65,28 @@ Artisan::command('reset', function () {
         $user->notes()->delete();
         $user->reviews()->delete();
         $user->delete();
+    });
+});
+
+Artisan::command('slug', function () {
+    Tag::all()->each(function ($tag) {
+        if (Tag::where('slug', $tag->slug)->exists()) {
+            $slug = Str::slug($tag->name).'-'.Str::random(5);
+        } else {
+            $slug = Str::slug($tag->name);
+        }
+
+        $tag->update(['slug' => $slug]);
+    });
+
+    Author::all()->each(function ($author) {
+        if (Author::where('slug', $author->slug)->exists()) {
+            $slug = Str::slug($author->name).'-'.Str::random(5);
+        } else {
+            $slug = Str::slug($author->name);
+        }
+
+        $author->update(['slug' => $slug]);
     });
 });
 

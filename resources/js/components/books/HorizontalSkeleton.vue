@@ -10,19 +10,19 @@ defineProps({
 </script>
 
 <template>
-    <div class="flex flex-col md:flex-row w-full md:items-center gap-2 md:gap-4 py-2">
+    <div class="flex w-full flex-col gap-2 py-2 md:flex-row md:items-center md:gap-4">
         <div class="flex gap-4">
-            <Skeleton class="shrink-0 overflow-hidden rounded-sm aspect-book w-20 md:w-22" />
-            <div class="flex flex-col gap-1 w-full">
-                <Skeleton class="h-5 w-full md:w-48 rounded" />
-                <Skeleton class="md:mt-1 h-3 w-36 rounded" />
-                <Skeleton class="mt-1 md:mt-2 h-3 w-full md:w-80 rounded" />
-                <Skeleton class="h-3 w-full md:w-56 rounded" />
+            <Skeleton class="w-20 shrink-0 overflow-hidden rounded-sm aspect-book md:w-22" />
+            <div class="flex w-full flex-col gap-1">
+                <Skeleton class="h-5 w-full rounded md:w-48" />
+                <Skeleton class="h-3 w-36 rounded md:mt-1" />
+                <Skeleton class="mt-1 h-3 w-full rounded md:mt-2 md:w-80" />
+                <Skeleton class="h-3 w-full rounded md:w-56" />
             </div>
         </div>
         <div
             v-if="withActions"
-            class="md:ml-auto -mt-11 pl-24 md:pl-0 max-w-64 md:max-w-none shrink-0 w-full md:w-40 flex">
+            class="-mt-11 flex w-full shrink-0 pl-24 max-w-64 md:ml-auto md:w-40 md:max-w-none md:pl-0">
             <Skeleton class="h-8 w-full" />
         </div>
     </div>

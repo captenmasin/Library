@@ -1,7 +1,5 @@
 import type { LucideIcon } from 'lucide-vue-next'
-import type { Config } from 'ziggy-js'
 import { User } from '@/types/user'
-import { UserBookStatus } from '@/enums/UserBookStatus'
 
 export interface Auth {
     check: boolean;
@@ -21,11 +19,24 @@ export interface NavItem {
 }
 
 export type AppPageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
-    name: string;
-    quote: { message: string; author: string };
-    auth: Auth;
-    ziggy: Config & { location: string };
-    sidebarOpen: boolean;
+    name: string
+    auth: {
+        user: User | null
+        check: boolean
+    }
+    app: {
+        name: string
+        url: string
+        route: string
+        storage_url: string
+    }
+    currentUrl: string
+    currentPath: string
+    flash: {
+        success?: string
+        error?: string
+    }
+    sidebarOpen: boolean
 };
 
 export type BreadcrumbItemType = BreadcrumbItem;

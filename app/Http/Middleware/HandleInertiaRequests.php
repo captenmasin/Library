@@ -47,6 +47,7 @@ class HandleInertiaRequests extends Middleware
             'app' => [
                 'name' => config('app.name'),
                 'url' => config('app.url'),
+                'route' => $request->route()->getName(),
                 'storage_url' => config('filesystems.disks.public.url'),
             ],
             'currentUrl' => url()->full(),

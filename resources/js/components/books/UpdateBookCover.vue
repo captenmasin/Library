@@ -124,7 +124,7 @@ const reset = () => {
                         v-if="coverPreview"
                         variant="ghost"
                         size="sm"
-                        class="flex-1 cursor-pointer rounded-full bg-green-200/75 hover:bg-green-200 hover:text-green-800 text-xs text-green-700 backdrop-blur-lg"
+                        class="flex-1 cursor-pointer rounded-full bg-green-200/75 text-xs text-green-700 backdrop-blur-lg hover:bg-green-200 hover:text-green-800"
                         @click="updateBookInformation"
                     >
                         <Icon
@@ -186,7 +186,7 @@ const reset = () => {
                         <img
                             :src="coverPreview"
                             alt="Cover Preview"
-                            class="rounded-md size-full object-cover">
+                            class="rounded-md object-cover size-full">
                     </div>
                 </div>
             </form>

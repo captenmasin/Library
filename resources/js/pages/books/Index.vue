@@ -7,9 +7,11 @@ import CheckboxList from '@/components/CheckboxList.vue'
 import ShelfView from '@/components/books/ShelfView.vue'
 import BookViewTabs from '@/components/books/BookViewTabs.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
+import { Tag } from '@/types/tag'
 import type { Book } from '@/types/book'
 import type { Author } from '@/types/author'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useUrlSearchParams } from '@vueuse/core'
 import { useRoute } from '@/composables/useRoute'
@@ -28,9 +30,11 @@ const props = defineProps({
     totalBooks: { type: Number, default: 0 },
     selectedStatuses: { type: Array as PropType<string[]>, default: () => [] },
     selectedAuthor: { type: String as PropType<string | null>, default: null },
+    selectedTag: { type: String as PropType<string | null>, default: null },
     selectedSort: { type: String, default: null },
     selectedOrder: { type: String, default: 'desc' },
-    authors: { type: Array as PropType<Author[]>, default: () => [] }
+    authors: { type: Array as PropType<Author[]>, default: () => [] },
+    tags: { type: Array as PropType<Tag[]>, default: () => [] }
 })
 
 const params = useUrlSearchParams('history')
@@ -45,6 +49,7 @@ const displayFilters = ref(search.value !== '' || props.selectedStatuses.length 
 /** Filters -------------------------------------------------------------- */
 const status = ref<string[]>(props.selectedStatuses)
 const author = ref<string | null>(props.selectedAuthor)
+const tag = ref<string | null>(props.selectedTag)
 const sort = ref(props.selectedSort)
 const order = ref<'asc' | 'desc'>(props.selectedOrder as 'asc' | 'desc')
 
@@ -67,10 +72,11 @@ const sortOptions = [
  * Watchers
  * -------------------------------------------------------------------------- */
 watch(
-    [author, status, sort, order],
+    [author, tag, status, sort, order],
     () => {
         Object.assign(params, {
             author: author.value,
+            tag: tag.value,
             status: status.value,
             sort: sort.value,
             order: order.value
@@ -88,7 +94,7 @@ watch(view, (newView) => updateSingleSetting('library.view', newView))
 const filteredBooks = computed(() => props.books ?? [])
 
 const hasFiltered = computed(
-    () => !!currentSearch.value || !!author.value || sort.value !== null || status.value.length > 0 || order.value !== 'desc'
+    () => !!currentSearch.value || !!author.value || !!tag.value || sort.value !== null || status.value.length > 0 || order.value !== 'desc'
 )
 
 /* --------------------------------------------------------------------------
@@ -106,6 +112,7 @@ function submitForm () {
         {
             search: search.value,
             author: author.value,
+            tag: tag.value,
             status: status.value,
             sort: sort.value,
             order: order.value
@@ -132,7 +139,7 @@ defineOptions({ layout: AppLayout })
                 </PageTitle>
                 <BookViewTabs
                     v-model="view"
-                    class="flex w-32 max-w-32 flex-1 shrink-0 md:hidden" />
+                    class="flex w-32 flex-1 shrink-0 max-w-32 md:hidden" />
             </div>
 
             <!-- View & Sort Controls ---------------------------------------- -->
@@ -191,7 +198,7 @@ defineOptions({ layout: AppLayout })
                     >
                         <div
                             v-if="hasFiltered"
-                            class="absolute top-1.5 right-1.5 size-2 rounded-full bg-primary ring-2 ring-primary/20" />
+                            class="absolute rounded-full ring-2 top-1.5 right-1.5 size-2 bg-primary ring-primary/20" />
                         <Icon
                             name="Filter"
                             class="w-4" />
@@ -209,47 +216,79 @@ defineOptions({ layout: AppLayout })
                 <!-- Search ---------------------------------------------------- -->
                 <div class="mt-4 flex flex-col gap-2 md:mt-0">
                     <form
-                        class="flex w-full"
+                        class="flex flex-col gap-2 w-full"
                         @submit.prevent="submitForm">
-                        <div class="relative flex w-full">
-                            <Input
-                                ref="searchInput"
-                                v-model="search"
-                                class="pr-10"
-                                placeholder="Search" />
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-1">
-                                <Button
-                                    type="submit"
-                                    variant="link"
-                                    class="cursor-pointer"
-                                    size="icon">
-                                    <Icon name="Search" />
-                                </Button>
+                        <div class="grid gap-2 w-full">
+                            <!--                            <Label for="query">Search</Label>-->
+                            <div class="relative flex w-full">
+                                <Input
+                                    id="query"
+                                    ref="searchInput"
+                                    v-model="search"
+                                    class="pr-10"
+                                    placeholder="Title or keywords..." />
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-1">
+                                    <Button
+                                        type="submit"
+                                        variant="link"
+                                        class="cursor-pointer"
+                                        size="icon">
+                                        <Icon name="Search" />
+                                    </Button>
+                                </div>
                             </div>
                         </div>
-                    </form>
 
-                    <!-- Author filter -------------------------------------------- -->
-                    <Select v-model="author">
-                        <SelectTrigger class="w-full">
-                            <SelectValue placeholder="Filter by author" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectItem :value="null">
-                                    All Authors
-                                </SelectItem>
-                                <template v-if="authors.length">
-                                    <SelectItem
-                                        v-for="a in authors"
-                                        :key="a.uuid"
-                                        :value="a.uuid">
-                                        {{ a.name }}
-                                    </SelectItem>
-                                </template>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                        <!-- Author filter -------------------------------------------- -->
+                        <div class="grid gap-2 w-full">
+                            <!--                            <Label for="query">Author</Label>-->
+                            <Select v-model="author">
+                                <SelectTrigger class="w-full">
+                                    <SelectValue placeholder="Filter by author" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem :value="null">
+                                            All Authors
+                                        </SelectItem>
+                                        <template v-if="authors.length">
+                                            <SelectItem
+                                                v-for="a in authors"
+                                                :key="a.slug"
+                                                :value="a.slug">
+                                                {{ a.name }}
+                                            </SelectItem>
+                                        </template>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <!-- Author filter -------------------------------------------- -->
+                        <div class="grid gap-2 w-full">
+                            <!--                            <Label for="query">Tag</Label>-->
+                            <Select v-model="tag">
+                                <SelectTrigger class="w-full">
+                                    <SelectValue placeholder="Filter by tag" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectItem :value="null">
+                                            All Tags
+                                        </SelectItem>
+                                        <template v-if="tags.length">
+                                            <SelectItem
+                                                v-for="t in tags"
+                                                :key="t.slug"
+                                                :value="t.slug">
+                                                {{ t.name }}
+                                            </SelectItem>
+                                        </template>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </form>
                 </div>
 
                 <!-- Status filter -------------------------------------------- -->
@@ -280,7 +319,7 @@ defineOptions({ layout: AppLayout })
             <section class="mt-4 flex flex-1 flex-col md:mt-0">
                 <div
                     v-if="!filteredBooks.length"
-                    class="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-16 text-center text-sm text-muted-foreground">
+                    class="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-16 text-center text-sm border-primary/10 text-muted-foreground">
                     <Icon
                         name="BookDashed"
                         class="size-8" />
@@ -291,7 +330,7 @@ defineOptions({ layout: AppLayout })
                         v-if="totalBooks === 0"
                         class="flex flex-col">
                         <p>You haven't added any books yet.</p>
-                        <div class="flex mx-auto">
+                        <div class="mx-auto flex">
                             <Button
                                 class="mt-4"
                                 as-child>

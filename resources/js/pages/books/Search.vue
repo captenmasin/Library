@@ -107,8 +107,8 @@ defineOptions({
             </PageTitle>
         </div>
 
-        <div class="mt-4 md:mt-8 flex flex-col md:flex-row items-start gap-8">
-            <aside class="md:sticky top-4 left-0 w-full md:w-64">
+        <div class="mt-4 flex flex-col items-start gap-8 md:mt-8 md:flex-row">
+            <aside class="top-4 left-0 w-full md:sticky md:w-64">
                 <form
                     class="flex flex-col gap-2"
                     @submit.prevent="searchBooks">
@@ -124,10 +124,10 @@ defineOptions({
 
                         <div
                             v-if="!showAuthorField"
-                            class="flex -mt-2 mb-4">
+                            class="-mt-2 mb-4 flex">
                             <button
                                 type="button"
-                                class="text-xs text-primary cursor-pointer flex items-center hover:underline font-medium"
+                                class="flex cursor-pointer items-center text-xs font-medium text-primary hover:underline"
                                 size="sm"
                                 @click="showAuthorField = true">
                                 <Icon
@@ -148,7 +148,7 @@ defineOptions({
                                 placeholder="e.g Peter Benchley" />
                         </div>
                     </div>
-                    <div class="flex items-center justify-center gap-2 w-full">
+                    <div class="flex w-full items-center justify-center gap-2">
                         <Button
                             v-if="hasSearch"
                             as-child
@@ -167,7 +167,7 @@ defineOptions({
                 </form>
 
                 <div>
-                    <div class="flex items-center my-3 md:my-6">
+                    <div class="my-3 flex items-center md:my-6">
                         <Separator class="flex flex-1" />
                         <span class="flex px-4 text-sm text-muted-foreground">or</span>
                         <Separator class="flex flex-1" />
@@ -175,7 +175,7 @@ defineOptions({
                     <Dialog :default-open="scan">
                         <DialogTrigger as-child>
                             <Button
-                                class="cursor-pointer w-full"
+                                class="w-full cursor-pointer"
                                 variant="secondary">
                                 <Icon
                                     name="ScanBarcode"
@@ -184,7 +184,7 @@ defineOptions({
                         </DialogTrigger>
                         <DialogContent class="sm:max-w-lg">
                             <DialogTitle>Add via barcode</DialogTitle>
-                            <div class="max-h-[80dvh] mt-2 overflow-auto">
+                            <div class="mt-2 overflow-auto max-h-[80dvh]">
                                 <BarcodeScanner />
                             </div>
                         </DialogContent>
@@ -194,7 +194,7 @@ defineOptions({
             <section class="flex flex-1 flex-col">
                 <div
                     v-if="hasSearch && results && results.total > 0"
-                    class="flex justify-between mb-4 text-sm text-muted-foreground">
+                    class="mb-4 flex justify-between text-sm text-muted-foreground">
                     <p class="hidden md:flex">
                         Found {{ formatNumber(results.total) }} books
                     </p>
@@ -208,11 +208,11 @@ defineOptions({
 
                 <div
                     v-if="!hasSearch"
-                    class="mb-4 flex items-center justify-center rounded-lg border-2 border-dashed py-16 px-4 gap-2 flex-col text-sm text-center text-muted-foreground border-primary/10">
+                    class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-16 text-center text-sm text-muted-foreground border-primary/10">
                     <Icon
                         name="Search"
                         class="size-8" />
-                    <h3 class="font-semibold text-2xl font-serif">
+                    <h3 class="font-serif text-2xl font-semibold">
                         Start searching
                     </h3>
                     <p>
@@ -225,7 +225,7 @@ defineOptions({
                     data="results">
                     <template #fallback>
                         <div>
-                            <div class="flex mt-1 mb-4 items-center justify-between">
+                            <div class="mt-1 mb-4 flex items-center justify-between">
                                 <Skeleton class="h-4 w-32" />
                                 <Skeleton class="h-4 w-36" />
                             </div>
@@ -286,11 +286,11 @@ defineOptions({
                     </div>
                     <div
                         v-else
-                        class="mb-4 flex items-center justify-center rounded-lg border-2 border-dashed py-16 px-4 gap-2 flex-col text-sm text-center text-muted-foreground border-primary/10">
+                        class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-16 text-center text-sm text-muted-foreground border-primary/10">
                         <Icon
                             name="BookDashed"
                             class="size-8" />
-                        <h3 class="font-semibold text-2xl font-serif">
+                        <h3 class="font-serif text-2xl font-semibold">
                             No books found
                         </h3>
                         <p>

@@ -21,11 +21,11 @@ defineOptions({
 
 <template>
     <div
-        class="mt-12 flex items-center justify-center rounded-lg border-2 border-dashed py-16 px-4 gap-2 flex-col text-sm text-center text-muted-foreground border-primary/10">
+        class="mt-12 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-16 text-center text-sm text-muted-foreground border-primary/10">
         <Icon
             name="BookDown"
-            class="size-8 animate-bounce" />
-        <h3 class="font-semibold text-2xl font-serif">
+            class="animate-bounce size-8" />
+        <h3 class="font-serif text-2xl font-semibold">
             Importing...
         </h3>
         <p>

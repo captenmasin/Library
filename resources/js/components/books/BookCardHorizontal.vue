@@ -47,22 +47,22 @@ const url = computed(() => {
 
 <template>
     <div
-        class="flex flex-col md:items-center gap-2 w-full"
+        class="flex w-full flex-col gap-2 md:items-center"
         :class="narrow ? '' : 'md:flex-row md:gap-8'">
-        <div class="flex gap-4 w-full">
+        <div class="flex w-full gap-4">
             <component
                 :is="linkTag"
                 :href="url"
                 :target="target"
                 prefetch>
-                <div class="aspect-book w-20 shrink-0 overflow-hidden rounded-sm shadow-sm md:w-22">
+                <div class="w-20 shrink-0 overflow-hidden rounded-sm shadow-sm aspect-book md:w-22">
                     <img
                         :src="book.cover ?? DefaultCover"
                         :alt="`Book cover image for ${book.title}`"
-                        class="size-full bg-gray-200 object-cover">
+                        class="bg-gray-200 object-cover size-full">
                 </div>
             </component>
-            <div class="flex flex-col min-w-0 w-full">
+            <div class="flex w-full min-w-0 flex-col">
                 <div class="flex">
                     <component
                         :is="linkTag"
@@ -71,24 +71,24 @@ const url = computed(() => {
                         prefetch>
                         <h3
                             :class="isLink ? 'hover:text-primary' : ''"
-                            class="line-clamp-1 md:line-clamp-2 font-serif transition-colors text-base/5 md:text-lg/6">
+                            class="font-serif transition-colors line-clamp-1 text-base/5 md:line-clamp-2 md:text-lg/6">
                             {{ book.title }}
                         </h3>
                     </component>
                 </div>
-                <p class="mt-0.5 line-clamp-1 text-xs text-muted-foreground/65 md:text-sm">
+                <p class="text-xs mt-0.5 line-clamp-1 text-muted-foreground/65 md:text-sm">
                     By {{ book.authors?.map((a) => a.name).join(', ') }}
                 </p>
                 <p
                     v-if="book.description"
-                    class="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                    class="mt-1 text-xs line-clamp-2 text-muted-foreground">
                     {{ book.description_clean }}
                 </p>
             </div>
         </div>
         <div
             v-if="includeActions"
-            class="md:ml-auto max-w-64 md:max-w-none -mt-11 pl-24 md:pl-0 shrink-0 w-full md:w-40">
+            class="-mt-11 w-full shrink-0 pl-24 max-w-64 md:ml-auto md:w-40 md:max-w-none md:pl-0">
             <BookActions :book="book" />
         </div>
     </div>

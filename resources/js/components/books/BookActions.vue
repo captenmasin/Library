@@ -45,7 +45,7 @@ function selectNewStatus (book: BookApiResult | Book, status: UserBookStatus | '
         <div
             v-if="addingBooks.includes(book.identifier)"
             class="absolute top-1/2 left-2 aspect-square w-6 shrink-0 -translate-y-1/2">
-            <div class="flex size-full animate-spin items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <div class="flex animate-spin items-center justify-center rounded-full size-full bg-muted text-muted-foreground">
                 <Icon
                     name="LoaderCircle"
                     class="size-4" />
@@ -91,7 +91,7 @@ function selectNewStatus (book: BookApiResult | Book, status: UserBookStatus | '
                         <SelectItem
                             v-if="addedBookIdentifiers.has(book.identifier)"
                             icon="Trash"
-                            class="text-destructive justify-between w-full flex focus:bg-destructive/15 focus:text-destructive"
+                            class="flex w-full justify-between text-destructive focus:bg-destructive/15 focus:text-destructive"
                             value="REMOVE"
                         >
                             Remove

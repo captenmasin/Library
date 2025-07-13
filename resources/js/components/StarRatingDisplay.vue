@@ -33,7 +33,7 @@ const totalWidth = computed(() => 5 * props.starWidth + 4 * gap.value)
 
         <!-- Foreground: filled stars, clipped to rating percentage -->
         <div
-            class="absolute top-0 left-0 flex text-yellow-400 overflow-hidden"
+            class="absolute top-0 left-0 flex overflow-hidden text-yellow-400"
             :style="{ gap: `${gap}px`, width: `${(rating / 5) * totalWidth}px` }"
         >
             <Icon
@@ -41,7 +41,7 @@ const totalWidth = computed(() => 5 * props.starWidth + 4 * gap.value)
                 :key="`fg-${i}`"
                 name="star"
                 :style="{width: `${starWidth}px`, height: `${starWidth}px`}"
-                class="fill-yellow-400 shrink-0"
+                class="shrink-0 fill-yellow-400"
             />
         </div>
     </div>

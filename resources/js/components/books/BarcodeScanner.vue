@@ -115,12 +115,12 @@ onMounted(() => {
             class="relative">
             <video
                 ref="video"
-                class="rounded shadow w-full mx-auto"
+                class="mx-auto w-full rounded shadow"
                 autoplay
                 playsinline
                 muted
             />
-            <div class="w-full h-[2px] bg-red-500 opacity-75 shadow-xl shadow-red-500 absolute top-1/2 left-0 animate-scan" />
+            <div class="absolute top-1/2 left-0 w-full bg-red-500 opacity-75 shadow-xl shadow-red-500 h-[2px] animate-scan" />
         </div>
 
         <div
@@ -138,7 +138,7 @@ onMounted(() => {
 
         <div
             v-if="result"
-            class="mt-2 text-sm bg-muted border-primary/10 text-primary rounded p-2 border-2 font-mono">
+            class="mt-2 rounded border-2 p-2 font-mono text-sm bg-muted border-primary/10 text-primary">
             Barcode scanned: <strong>{{ result }}</strong>
         </div>
 

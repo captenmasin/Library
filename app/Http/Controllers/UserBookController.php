@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Inertia\Inertia;
-use App\Models\Author;
 use App\Enums\ActivityType;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Enums\UserBookStatus;
+use App\Http\Resources\TagResource;
 use App\Http\Resources\BookResource;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\AuthorResource;
 use App\Http\Requests\Books\DestroyBookUserRequest;
 
 class UserBookController extends Controller
@@ -33,6 +34,13 @@ class UserBookController extends Controller
             if (! empty($statuses)) {
                 $bookQuery->wherePivotIn('status', $statuses);
             }
+        }
+
+        if ($request->filled('tag')) {
+            $tagSlug = $request->get('tag');
+            $bookQuery->whereHas('tags', function ($query) use ($tagSlug) {
+                $query->where('slug', $tagSlug);
+            });
         }
 
         if ($request->filled('search')) {
@@ -89,30 +97,35 @@ class UserBookController extends Controller
         }
 
         if ($request->filled('author')) {
-            $authorUuid = $request->get('author');
-            $books = $books->filter(function ($book) use ($authorUuid) {
-                return $book->authors->contains('uuid', $authorUuid);
+            $authorSlug = $request->get('author');
+            $books = $books->filter(function ($book) use ($authorSlug) {
+                return $book->authors->contains('slug', $authorSlug);
             });
         }
 
         $selectedStatuses = $request->get('status', []);
+
+        $tags = $request->user()->books->load('tags')->flatMap(function ($book) {
+            return $book->tags;
+        })->unique('slug')->all();
+
+        $authors = $request->user()->books->load('authors')->flatMap(function ($book) {
+            return $book->authors;
+        })->sortBy('name')->all();
 
         return Inertia::render('books/Index', [
             'totalBooks' => $request->user()->books->count(),
             'books' => BookResource::collection($books),
             'selectedStatuses' => $selectedStatuses,
             'selectedAuthor' => $request->get('author'),
+            'selectedTag' => $request->get('tag'),
             'selectedSort' => $sort,
             'selectedOrder' => $request->get('order', 'desc'),
             'searchQuery' => $request->get('search', ''),
 
-            'authors' => Inertia::defer(function () {
-                return Author::whereHas('books', function ($query) {
-                    $query->whereHas('users', function ($q) {
-                        $q->where('user_id', auth()->id());
-                    });
-                })->orderBy('name')->get(['uuid', 'name']);
-            }),
+            'authors' => Inertia::defer(fn () => AuthorResource::collection($authors)),
+
+            'tags' => Inertia::defer(fn () => TagResource::collection($tags)),
         ])->withMeta([
             'title' => 'Books',
         ]);
