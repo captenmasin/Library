@@ -101,6 +101,7 @@ router.on('navigate', (event) => {
                                     <Link
                                         v-for="item in mainNavItems"
                                         :key="item.title"
+                                        prefetch
                                         :href="item.href"
                                         class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent"
                                         :class="activeItemStyles(item.href)"
@@ -135,6 +136,7 @@ router.on('navigate', (event) => {
 
                 <Link
                     :href="useRoute('home')"
+                    prefetch
                     class="flex items-center gap-x-2">
                     <div class="flex aspect-square size-8 items-center justify-center">
                         <AppLogoIcon class="size-full rounded-lg fill-current text-white dark:text-black" />
@@ -150,6 +152,7 @@ router.on('navigate', (event) => {
                                 :key="index"
                                 class="relative flex h-full items-center">
                                 <Link
+                                    prefetch
                                     :class="[navigationMenuTriggerStyle(), activeItemStyles(item.href), 'h-9 cursor-pointer px-3']"
                                     :href="item.href"
                                 >

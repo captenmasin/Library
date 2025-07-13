@@ -3,6 +3,7 @@ import { UserBookStatus } from '@/enums/UserBookStatus'
 import { Review } from '@/types/review'
 import { Publisher } from '@/types/publisher'
 import { Note } from '@/types/note'
+import { Tag } from '@/types/tag'
 
 export type Book = {
     path: string,
@@ -14,7 +15,7 @@ export type Book = {
     cover: string,
     description: string,
     description_clean: string,
-    tags?: string[],
+    tags?: Tag[],
     authors?: Author[],
     publisher?: Publisher,
     user_status: UserBookStatus | null,

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Image from '@/components/Image.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
+import TagCloud from '@/components/TagCloud.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
@@ -39,8 +40,6 @@ const data = [
         value: props.book.published_date || 'N/A'
     }
 ]
-
-const tagsLimit = ref(5)
 
 const refreshKey = ref(1)
 
@@ -187,25 +186,7 @@ defineOptions({
                     <p class="text-sm/6 font-medium">
                         Tags
                     </p>
-                    <ul class="space-y-1 space-x-1">
-                        <li
-                            v-for="tag in book.tags.slice(0, tagsLimit)"
-                            :key="tag"
-                            class="inline-block rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground"
-                        >
-                            {{ tag }}
-                        </li>
-                        <li
-                            v-if="book.tags.length > tagsLimit"
-                            class="inline-block">
-                            <button
-                                class="cursor-pointer rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary hover:bg-primary/20"
-                                @click="tagsLimit = 999"
-                            >
-                                +{{ book.tags.length - tagsLimit }} more
-                            </button>
-                        </li>
-                    </ul>
+                    <TagCloud :tags="book.tags" />
                 </div>
 
                 <div

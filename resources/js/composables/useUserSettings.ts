@@ -1,7 +1,6 @@
 import { useRequest } from '@/composables/useRequest'
 import { useRoute } from '@/composables/useRoute'
 import { usePage } from '@inertiajs/vue3'
-import { ref } from 'vue'
 
 export function useUserSettings () {
     const props = usePage().props

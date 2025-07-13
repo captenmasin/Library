@@ -23,7 +23,7 @@ class BookResource extends JsonResource
             'description' => $description,
             'description_clean' => strip_tags($description),
             'published_date' => $this->published_date,
-            'tags' => $this->whenLoaded('tags', fn () => $this->tags->pluck('name')->toArray()),
+            'tags' => $this->whenLoaded('tags', fn () => TagResource::collection($this->tags)),
             'page_count' => $this->page_count,
 
             'has_custom_cover' => $user ? $this->hasCustomCover($user) : false,
@@ -86,9 +86,7 @@ class BookResource extends JsonResource
             return $this->users->firstWhere('id', $user->id)?->pivot;
         }
 
-        return $this->users()
-            ->where('user_id', $user->id)
-            ->first()?->pivot;
+        return once(fn () => $this->users()->where('user_id', $user->id)->first()?->pivot);
     }
 
     protected function isInLibrary(User $user): bool
