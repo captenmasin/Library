@@ -24,7 +24,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $email = fake()->unique()->safeEmail();
-        $email = str_replace('@', ('-'.Str::random(5).'@'), $email);
+        $email = strtolower(str_replace('@', ('-'.Str::random(5).'@'), $email));
 
         return [
             'name' => fake()->name(),
