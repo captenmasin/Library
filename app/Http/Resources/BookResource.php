@@ -110,7 +110,7 @@ class BookResource extends JsonResource
             return null;
         }
 
-        $review = $this->reviews->firstWhere('user_id', $user?->id);
+        $review = $this->reviews->firstWhere('user_id', $user?->id)->load('user');
 
         return $review ? new ReviewResource($review) : null;
     }
@@ -132,7 +132,7 @@ class BookResource extends JsonResource
             return null;
         }
 
-        $notes = $this->notes->where('user_id', $user?->id);
+        $notes = $this->notes->where('user_id', $user?->id)->sortByDesc('created_at');
 
         return $notes ? NoteResource::collection($notes) : null;
     }

@@ -4,6 +4,7 @@ import InputError from '@/components/InputError.vue'
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue'
 import { Book } from '@/types/book'
 import { nextTick, PropType, ref } from 'vue'
+import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Link, useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
@@ -22,7 +23,7 @@ const noteForm = useForm({
     content: ''
 })
 
-const displayNoteForm = ref(false)
+const displayNoteForm = ref(true)
 
 const submit = () => {
     noteForm.post(useRoute('notes.store', props.book), {
@@ -47,37 +48,40 @@ function openNoteForm () {
 
 <template>
     <div>
-        <div v-if="!displayNoteForm">
-            <div class="relative z-10 flex">
-                <Button
-                    variant="link"
-                    @click="openNoteForm">
-                    <Icon
-                        name="Pencil"
-                        class="w-4" />
-                    Add a note
-                </Button>
-            </div>
-        </div>
         <form
             v-if="displayNoteForm"
             @submit.prevent="submit">
             <Textarea
+                id="noteInput"
                 ref="noteInput"
                 v-model="noteForm.content"
-                class="min-h-28"
-                placeholder="Your note..." />
+                class="min-h-18"
+                placeholder="Add a private note about this book..." />
             <InputError :message="noteForm.errors.content" />
-            <div class="flex items-center justify-end">
-                <Button
-                    variant="link"
-                    type="button"
-                    @click="displayNoteForm = false; noteForm.clearErrors()">
-                    Cancel
-                </Button>
-                <Button variant="link">
-                    Save
-                </Button>
+            <div class="flex mt-2 justify-between">
+                <div>
+                    <a
+                        href="https://www.markdownguide.org/"
+                        class="text-secondary-foreground text-sm hover:underline"
+                        target="_blank"
+                        rel="nofollow ">
+                        Markdown syntax is supported.
+                    </a>
+                </div>
+                <div class="flex items-center gap-4 ">
+                    <Button
+                        v-if="noteForm.isDirty"
+                        variant="secondary"
+                        type="button"
+                        @click="noteForm.reset()">
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="default"
+                        type="submit">
+                        Save
+                    </Button>
+                </div>
             </div>
         </form>
     </div>

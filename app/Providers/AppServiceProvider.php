@@ -5,6 +5,7 @@ namespace App\Providers;
 use Inertia\Response;
 use Laravel\Dusk\Browser;
 use App\Services\ISBNdbService;
+use Filament\Support\Colors\Color;
 use App\Services\GoogleBooksService;
 use Illuminate\Support\Facades\Vite;
 use Artesaos\SEOTools\Facades\JsonLd;
@@ -13,6 +14,7 @@ use Artesaos\SEOTools\Facades\SEOTools;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use App\Contracts\BookApiServiceInterface;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
@@ -36,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
         Model::preventLazyLoading();
 
         Vite::prefetch(6);
+
+        FilamentColor::register([
+            'primary' => Color::Amber,
+        ]);
 
         Response::macro('withBreadcrumbs', function ($breadcrumbs) {
             $breadcrumbs = collect($breadcrumbs)->map(function ($url, $name) {

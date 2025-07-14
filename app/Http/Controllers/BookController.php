@@ -61,15 +61,18 @@ class BookController extends Controller
             'notes' => fn ($query) => $query->where('user_id', Auth::id()),
         ]);
 
-        $relatedBooks = $book->relatedBooksByAuthorsAndTags(4);
-        $relatedBooks->map(fn ($related) => $related->load(['authors', 'covers']));
-
         return Inertia::render('books/Show', [
             'book' => new BookResource($book),
-            'related' => BookResource::collection($relatedBooks),
+            'related' => Inertia::defer(function () use ($book) {
+                $relatedBooks = $book->relatedBooksByAuthorsAndTags(4);
+                $relatedBooks->map(fn ($related) => $related->load(['authors', 'covers']));
+
+                return BookResource::collection($relatedBooks);
+            }),
             'averageRating' => number_format($book->ratings->avg('value') ?? 0, 1),
             'reviews' => Inertia::defer(fn () => ReviewResource::collection(
-                $book->reviews()->where('user_id', '!=', Auth::id())->get()
+                $book->reviews->load('user', 'book')
+                    ->reject(fn ($review) => $review->user_id === Auth::id())
             )),
         ])->withMeta([
             'title' => $book->title,

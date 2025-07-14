@@ -18,6 +18,7 @@ class NoteResource extends JsonResource
             'id' => $this->id,
             'content' => $this->content,
             'status' => $this->book_status,
+            'created_at' => $this->created_at,
         ];
     }
 }

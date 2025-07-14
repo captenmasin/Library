@@ -6,6 +6,7 @@ use BackedEnum;
 use App\Models\Activity;
 use Filament\Tables\Table;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Number;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use App\Filament\Resources\Activities\Pages\EditActivity;
@@ -19,6 +20,11 @@ class ActivityResource extends Resource
     protected static ?string $model = Activity::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Number::format(static::$model::query()->count());
+    }
 
     public static function form(Schema $schema): Schema
     {

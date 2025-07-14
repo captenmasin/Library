@@ -22,6 +22,7 @@ class ReviewResource extends JsonResource
             'updated_at' => $this->updated_at,
             'user' => new UserResource($this->whenLoaded('user')),
             'book' => new BookResource($this->whenLoaded('book')),
+            'rating' => new RatingResource($this->rating),
         ];
     }
 }

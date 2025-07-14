@@ -6,6 +6,7 @@ use BackedEnum;
 use App\Models\Note;
 use Filament\Tables\Table;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Number;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use App\Filament\Resources\Notes\Pages\EditNote;
@@ -21,6 +22,11 @@ class NoteResource extends Resource
     protected static ?string $model = Note::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Number::format(static::$model::query()->count());
+    }
 
     public static function form(Schema $schema): Schema
     {

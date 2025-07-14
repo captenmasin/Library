@@ -1,20 +1,31 @@
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import Image from '@/components/Image.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import TagCloud from '@/components/TagCloud.vue'
+import SingleNote from '@/components/SingleNote.vue'
 import NoteForm from '@/components/books/NoteForm.vue'
 import BookCard from '@/components/books/BookCard.vue'
+import HeadingSmall from '@/components/HeadingSmall.vue'
 import ReviewForm from '@/components/books/ReviewForm.vue'
 import RatingForm from '@/components/books/RatingForm.vue'
 import BookActions from '@/components/books/BookActions.vue'
+import NotesSection from '@/components/books/NotesSection.vue'
 import StarRatingDisplay from '@/components/StarRatingDisplay.vue'
+import ReviewsSection from '@/components/books/ReviewsSection.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
 import { Review } from '@/types/review'
 import type { Book } from '@/types/book'
-import { type PropType, ref } from 'vue'
-import { router } from '@inertiajs/vue3'
+import { useDateFormat } from '@vueuse/core'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { useRoute } from '@/composables/useRoute'
+import { computed, type PropType, ref } from 'vue'
 import { usePlural } from '@/composables/usePlural'
+import { Separator } from '@/components/ui/separator'
 import { useMarkdown } from '@/composables/useMarkdown'
+import { Deferred, Link, router } from '@inertiajs/vue3'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const props = defineProps({
     book: { type: Object as PropType<Book>, required: true },
@@ -41,6 +52,12 @@ const data = [
     }
 ]
 
+const displayTypes = [
+    { value: 'notes', label: 'Notes' },
+    { value: 'reviews', label: 'Reviews' }
+]
+const displayType = ref('reviews')
+
 const refreshKey = ref(1)
 
 function refresh () {
@@ -57,14 +74,14 @@ defineOptions({
 </script>
 
 <template>
-    <div>
+    <div class="mt-4">
         <div class="flex gap-10">
             <div class="flex w-1/5 flex-col">
                 <UpdateBookCover :book>
-                    <div class="overflow-hidden rounded-md aspect-book">
+                    <div class="aspect-book overflow-hidden rounded-md">
                         <Image
                             width="250"
-                            class="object-cover size-full"
+                            class="size-full object-cover"
                             :src="book.cover" />
                     </div>
                 </UpdateBookCover>
@@ -103,56 +120,45 @@ defineOptions({
                 </div>
 
                 <div
-                    class="mt-4 max-w-none font-serif prose"
+                    class="prose mt-4 max-w-none font-serif"
                     v-html="useMarkdown(book.description)" />
 
                 <div class="mt-8">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-2xl font-semibold">
+                                {{ displayTypes.find((item) => item.value === displayType)?.label || 'Notes' }}
+                            </h3>
+                        </div>
+                        <div class="flex">
+                            <Tabs
+                                v-model="displayType"
+                                class="flex w-full flex-1"
+                                :default-value="displayType">
+                                <TabsList class="w-full">
+                                    <TabsTrigger
+                                        v-for="item in displayTypes"
+                                        :key="item.value"
+                                        :value="item.value"
+                                        class="px-0 md:px-4">
+                                        {{ item.label }}
+                                    </TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                        </div>
+                    </div>
+
                     <div
                         v-if="book.in_library"
-                        class="flex flex-col gap-8">
-                        <div>
-                            <h3 class="border-b pb-2 text-xl font-semibold border-b-muted">
-                                Your notes
-                            </h3>
-                            <NoteForm
-                                class="mt-1"
-                                :book="book" />
-
-                            Notesssssssss
-                            <hr>
-                            {{ book.user_notes }}
-                        </div>
-                        <div>
-                            <h3 class="border-b pb-2 text-xl font-semibold border-b-muted">
-                                Your review
-                            </h3>
-                            <ReviewForm
-                                :book="book"
-                                :existing-review="book.user_review" />
-                        </div>
+                        class="mt-4">
+                        <NotesSection
+                            v-if="displayType === 'notes'"
+                            :book="book" />
+                        <ReviewsSection
+                            v-if="displayType === 'reviews'"
+                            :book="book"
+                            :reviews="reviews" />
                     </div>
-                </div>
-                <hr class="mt-12">
-                <div class="mt-12">
-                    Reviwssssss:
-
-                    <div
-                        v-if="averageRating && book.ratings_count"
-                        class="mt-2 flex items-center text-center text-sm/6">
-                        Average: {{ averageRating }}<br>
-                        stars {{ book.ratings_count }} {{ usePlural('rating', book.ratings_count) }}
-                    </div>
-
-                    <ul>
-                        <li
-                            v-for="review in reviews"
-                            :key="review.uuid"
-                            class="mt-4">
-                            <div
-                                class="prose"
-                                v-html="useMarkdown(review.content)" />
-                        </li>
-                    </ul>
                 </div>
             </div>
             <div class="flex w-1/5 flex-col">
@@ -171,7 +177,7 @@ defineOptions({
                         v-for="item in data"
                         :key="item.title"
                         class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt class="font-medium text-sm/6">
+                        <dt class="text-sm/6 font-medium">
                             {{ item.title }}
                         </dt>
                         <dd class="text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
@@ -183,23 +189,22 @@ defineOptions({
                 <div
                     v-if="book.tags && book.tags.length > 0"
                     class="mt-1">
-                    <p class="font-medium text-sm/6">
+                    <p class="text-sm/6 font-medium">
                         Tags
                     </p>
                     <TagCloud :tags="book.tags" />
                 </div>
-
                 <div
                     v-if="related && related.length > 0"
                     class="mt-4">
-                    <p class="font-medium text-sm/6">
+                    <p class="text-sm/6 font-medium">
                         Related
                     </p>
-                    <div class="-mx-2 flex flex-wrap">
+                    <div class="-mx-1 flex flex-wrap">
                         <div
                             v-for="relatedBook in related"
                             :key="relatedBook.identifier"
-                            class="w-1/2 p-2">
+                            class="w-1/2 p-1">
                             <BookCard
                                 :hover="false"
                                 :book="relatedBook" />

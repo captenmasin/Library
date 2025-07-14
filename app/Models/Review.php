@@ -13,6 +13,8 @@ class Review extends Model
 
     protected static $unguarded = true;
 
+    protected $appends = ['rating'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -21,5 +23,12 @@ class Review extends Model
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
+    }
+
+    public function getRatingAttribute()
+    {
+        return Rating::where('book_id', $this->book_id)
+            ->where('user_id', $this->user_id)
+            ->first();
     }
 }

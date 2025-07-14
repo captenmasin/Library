@@ -7,11 +7,13 @@ import CheckboxList from '@/components/CheckboxList.vue'
 import ShelfView from '@/components/books/ShelfView.vue'
 import BookViewTabs from '@/components/books/BookViewTabs.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
+import { cn } from '@/lib/utils'
 import { Tag } from '@/types/tag'
 import type { Book } from '@/types/book'
 import type { Author } from '@/types/author'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useUrlSearchParams } from '@vueuse/core'
 import { useRoute } from '@/composables/useRoute'
@@ -21,6 +23,7 @@ import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { computed, ref, watch, type PropType, nextTick } from 'vue'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox'
 
 /* --------------------------------------------------------------------------
  * Props & Refs
@@ -129,12 +132,17 @@ defineOptions({ layout: AppLayout })
         <!-- Header --------------------------------------------------------- -->
         <div class="flex flex-col gap-2.5 md:flex-row md:items-center md:gap-4">
             <div class="flex items-center justify-between gap-8">
-                <PageTitle class="flex-1">
+                <PageTitle class="flex gap-2.5">
                     <template v-if="currentSearch">
                         Search results for "{{ currentSearch }}"
                     </template>
                     <template v-else>
-                        All Books ({{ filteredBooks.length }})
+                        All Books
+                        <Badge
+                            class="mt-1 font-sans text-xs"
+                            variant="secondary">
+                            {{ filteredBooks.length }}
+                        </Badge>
                     </template>
                 </PageTitle>
                 <BookViewTabs
@@ -351,8 +359,8 @@ defineOptions({ layout: AppLayout })
 
                 <ul
                     v-else
-                    :class="view === 'list' ? 'grid-cols-1 gap-8 md:gap-4' : 'grid-cols-2 gap-6 md:grid-cols-5'"
-                    class="grid md:gap-4">
+                    :class="view === 'list' ? 'grid-cols-1 gap-8 md:gap-4' : 'grid-cols-2 sm:grid-cols-3 gap-2.5 md:gap-2 xl:gap-4 md:grid-cols-5'"
+                    class="grid">
                     <li
                         v-for="book in filteredBooks"
                         :key="book.identifier"

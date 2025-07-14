@@ -6,6 +6,7 @@ use BackedEnum;
 use App\Models\Book;
 use Filament\Tables\Table;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Number;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use App\Filament\Resources\Books\Pages\EditBook;
@@ -24,6 +25,11 @@ class BookResource extends Resource
     protected static ?string $model = Book::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) Number::format(static::$model::query()->count());
+    }
 
     public static function getRecordTitle($record): string
     {
