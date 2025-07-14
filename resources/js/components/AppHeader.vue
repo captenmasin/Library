@@ -221,7 +221,7 @@ router.on('navigate', (event) => {
                                         :src="getImageUrl(authedUser.avatar, { width: 32, height: 32, crop: 'center' })"
                                         :alt="authedUser.name"
                                     />
-                                    <AvatarFallback class="rounded-lg bg-neutral-200 font-semibold text-black dark:bg-neutral-700 dark:text-white">
+                                    <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
                                         {{ getInitials(authedUser?.name) }}
                                     </AvatarFallback>
                                 </Avatar>

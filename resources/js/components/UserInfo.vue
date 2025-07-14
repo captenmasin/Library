@@ -25,7 +25,7 @@ const showAvatar = computed(() => props.user.avatar && props.user.avatar !== '')
             v-if="showAvatar"
             :src="user.avatar!"
             :alt="user.name" />
-        <AvatarFallback class="rounded-lg text-black dark:text-white">
+        <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
             {{ getInitials(user.name) }}
         </AvatarFallback>
     </Avatar>

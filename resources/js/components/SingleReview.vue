@@ -62,7 +62,7 @@ function formatDate (date) {
                         :src="getImageUrl(review.user?.avatar, { width: 28, height: 28, crop: 'center' })"
                         :alt="review.user?.name"
                     />
-                    <AvatarFallback class="rounded-lg bg-secondary font-semibold text-secondary-foreground">
+                    <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
                         {{ getInitials(review.user?.name) }}
                     </AvatarFallback>
                 </Avatar>

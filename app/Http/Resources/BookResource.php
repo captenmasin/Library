@@ -110,7 +110,7 @@ class BookResource extends JsonResource
             return null;
         }
 
-        $review = $this->reviews->firstWhere('user_id', $user?->id)->load('user');
+        $review = $this->reviews->firstWhere('user_id', $user?->id)?->load('user');
 
         return $review ? new ReviewResource($review) : null;
     }

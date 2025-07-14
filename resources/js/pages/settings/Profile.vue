@@ -123,12 +123,12 @@ defineOptions({
                             <label for="avatar">
                                 <Avatar
                                     :key="fileInputKey"
-                                    class="flex overflow-hidden rounded-md border size-10 border-input-border">
+                                    class="flex overflow-hidden rounded-full border size-10 border-input-border">
                                     <AvatarImage
                                         v-if="previewUrl"
                                         :src="previewUrl"
                                         :alt="user.name" />
-                                    <AvatarFallback>
+                                    <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
                                         {{ getInitials(user.name) }}
                                     </AvatarFallback>
                                 </Avatar>

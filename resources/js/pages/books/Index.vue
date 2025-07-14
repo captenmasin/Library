@@ -324,7 +324,7 @@ defineOptions({ layout: AppLayout })
             </aside>
 
             <!-- Books list -------------------------------------------------- -->
-            <section class="mt-4 flex flex-1 flex-col md:mt-0">
+            <section class="mt-4 flex w-full md:w-auto flex-1 flex-col md:mt-0">
                 <div
                     v-if="!filteredBooks.length"
                     class="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-16 text-center text-sm border-primary/10 text-muted-foreground">
