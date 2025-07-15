@@ -72,7 +72,7 @@ class BookController extends Controller
             'averageRating' => number_format($book->ratings->avg('value') ?? 0, 1),
             'reviews' => Inertia::defer(fn () => ReviewResource::collection(
                 $book->reviews->load('user', 'book')
-                    ->reject(fn ($review) => $review->user_id === Auth::id())
+                    ->reject(fn ($review) => Auth::check() ? $review->user_id === Auth::id() : false)
             )),
         ])->withMeta([
             'title' => $book->title,

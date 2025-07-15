@@ -18,9 +18,15 @@ export function useUserSettings () {
         })
     }
 
-    function getSingleSetting (settingName: string): any {
-        const settings = props.auth.user.settings || {}
-        return settingName.split('.').reduce((obj, part) => obj?.[part], settings)
+    function getSingleSetting (settingName: string, defaultValue: any): any {
+        const settings = props.auth?.user?.settings || {}
+        const settingValue = settingName.split('.').reduce((obj, part) => obj?.[part], settings)
+
+        if (settingValue === undefined) {
+            return defaultValue
+        }
+
+        return settingValue
     }
 
     return {

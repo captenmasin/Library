@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UserAvatar from '@/components/UserAvatar.vue'
 import { computed } from 'vue'
 import type { User } from '@/types'
 import { useInitials } from '@/composables/useInitials'
@@ -20,15 +21,10 @@ const showAvatar = computed(() => props.user.avatar && props.user.avatar !== '')
 </script>
 
 <template>
-    <Avatar class="h-8 w-8 overflow-hidden rounded-lg">
-        <AvatarImage
-            v-if="showAvatar"
-            :src="user.avatar!"
-            :alt="user.name" />
-        <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
-            {{ getInitials(user.name) }}
-        </AvatarFallback>
-    </Avatar>
+    <UserAvatar
+        v-if="showAvatar"
+        :user="user"
+        class="size-8" />
 
     <div class="grid flex-1 text-left text-sm leading-tight">
         <span class="truncate font-medium">{{ user.name }}</span>

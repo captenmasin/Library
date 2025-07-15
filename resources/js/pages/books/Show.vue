@@ -20,11 +20,13 @@ import { useDateFormat } from '@vueuse/core'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
-import { computed, type PropType, ref } from 'vue'
 import { usePlural } from '@/composables/usePlural'
 import { Separator } from '@/components/ui/separator'
 import { useMarkdown } from '@/composables/useMarkdown'
 import { Deferred, Link, router } from '@inertiajs/vue3'
+import { computed, type PropType, ref, watch } from 'vue'
+import { useAuthedUser } from '@/composables/useAuthedUser'
+import { useUserSettings } from '@/composables/useUserSettings'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const props = defineProps({
@@ -36,6 +38,9 @@ const props = defineProps({
         default: () => []
     }
 })
+
+const { updateSingleSetting, getSingleSetting } = useUserSettings()
+const { authed } = useAuthedUser()
 
 const data = [
     {
@@ -56,9 +61,15 @@ const displayTypes = [
     { value: 'notes', label: 'Notes' },
     { value: 'reviews', label: 'Reviews' }
 ]
-const displayType = ref('reviews')
+const displayType = ref(getSingleSetting('single_book.default_section', 'reviews'))
 
 const refreshKey = ref(1)
+
+watch(displayType, (newType) => {
+    if (authed.value) {
+        updateSingleSetting('single_book.default_section', newType)
+    }
+})
 
 function refresh () {
     router.reload({
@@ -75,16 +86,30 @@ defineOptions({
 
 <template>
     <div class="mt-4">
-        <div class="flex gap-10">
-            <div class="flex w-1/5 flex-col">
-                <UpdateBookCover :book>
-                    <div class="aspect-book overflow-hidden rounded-md">
-                        <Image
-                            width="250"
-                            class="size-full object-cover"
-                            :src="book.cover" />
+        <div class="flex flex-col md:flex-row gap-10">
+            <div class="flex w-full order-1 md:w-1/5 flex-col">
+                <div class="flex gap-4">
+                    <div class="w-32 md:w-full">
+                        <UpdateBookCover :book>
+                            <div class="aspect-book overflow-hidden rounded-md">
+                                <Image
+                                    width="250"
+                                    class="size-full object-cover"
+                                    :src="book.cover" />
+                            </div>
+                        </UpdateBookCover>
                     </div>
-                </UpdateBookCover>
+                    <div class="flex flex-col gap-1 flex-1 md:hidden">
+                        <h2 class="font-serif text-xl font-semibold">
+                            {{ book.title }}
+                        </h2>
+                        <p
+                            v-if="book.authors"
+                            class="text-sm text-muted-foreground">
+                            By {{ book.authors.map((a) => a.name).join(', ') }}
+                        </p>
+                    </div>
+                </div>
                 <div
                     v-if="book.in_library"
                     class="mt-4 flex flex-col items-center">
@@ -100,7 +125,7 @@ defineOptions({
                         @updated="refresh" />
                 </div>
             </div>
-            <div class="flex w-3/5 flex-col">
+            <div class="flex w-full order-3 md:order-2 md:w-3/5 flex-col">
                 <h2 class="font-serif text-3xl font-semibold">
                     {{ book.title }}
                 </h2>
@@ -123,14 +148,9 @@ defineOptions({
                     class="prose mt-4 max-w-none font-serif"
                     v-html="useMarkdown(book.description)" />
 
-                <div class="mt-8">
+                <div class="mt-8 border-t border-secondary pt-8">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-2xl font-semibold">
-                                {{ displayTypes.find((item) => item.value === displayType)?.label || 'Notes' }}
-                            </h3>
-                        </div>
-                        <div class="flex">
+                        <div class="flex mb-4">
                             <Tabs
                                 v-model="displayType"
                                 class="flex w-full flex-1"
@@ -148,9 +168,7 @@ defineOptions({
                         </div>
                     </div>
 
-                    <div
-                        v-if="book.in_library"
-                        class="mt-4">
+                    <div>
                         <NotesSection
                             v-if="displayType === 'notes'"
                             :book="book" />
@@ -161,7 +179,7 @@ defineOptions({
                     </div>
                 </div>
             </div>
-            <div class="flex w-1/5 flex-col">
+            <div class="flex w-full order-2 md:order-3 md:w-1/5 flex-col">
                 <div>
                     <BookActions
                         :book="book"

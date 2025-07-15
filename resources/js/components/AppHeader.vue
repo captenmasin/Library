@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UserAvatar from '@/components/UserAvatar.vue'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import UserMenuContent from '@/components/UserMenuContent.vue'
@@ -8,14 +9,13 @@ import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { getInitials } from '@/composables/useInitials'
 import { Link, router, usePage } from '@inertiajs/vue3'
-import { UserPermission } from '@/enums/UserPermission'
-import { useAuthedUser } from '@/composables/useAuthedUser.ts'
+import { useAuthedUser } from '@/composables/useAuthedUser'
 import { useImageTransform } from '@/composables/useImageTransform'
+import { Home, LibraryBig, Menu, SearchIcon } from 'lucide-vue-next'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Home, LayoutGrid, LibraryBig, Menu, NotebookTabsIcon, Plus, SearchIcon } from 'lucide-vue-next'
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu'
 
 interface Props {
@@ -208,23 +208,14 @@ router.on('navigate', (event) => {
                         </div>
                     </div>
 
-                    <DropdownMenu v-if="authed">
+                    <DropdownMenu v-if="authed && authedUser">
                         <DropdownMenuTrigger :as-child="true">
                             <Button
                                 variant="ghost"
                                 size="icon"
                                 class="relative w-auto rounded-full p-1 size-10 focus-within:ring-primary focus-within:ring-2"
                             >
-                                <Avatar class="overflow-hidden rounded-full size-8">
-                                    <AvatarImage
-                                        v-if="authedUser.avatar"
-                                        :src="getImageUrl(authedUser.avatar, { width: 32, height: 32, crop: 'center' })"
-                                        :alt="authedUser.name"
-                                    />
-                                    <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
-                                        {{ getInitials(authedUser?.name) }}
-                                    </AvatarFallback>
-                                </Avatar>
+                                <UserAvatar :user="authedUser" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent

@@ -38,6 +38,7 @@ class ProfileController extends Controller
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
+            $request->user()->sendEmailVerificationNotification();
         }
 
         if ($request->file('avatar')) {
@@ -45,9 +46,21 @@ class ProfileController extends Controller
                 ->toMediaCollection('avatar');
         }
 
+        if ($request->filled('profile_colour')) {
+            $request->user()->settings()->update('profile.colour', $request->input('profile_colour'));
+        }
+
         $request->user()->save();
 
         return to_route('user.settings.profile.edit');
+    }
+
+    public function destroyAvatar(Request $request)
+    {
+        $request->user()->clearMediaCollection('avatar');
+
+        return redirect()->back()
+            ->with('success', 'Your avatar has been deleted.');
     }
 
     /**

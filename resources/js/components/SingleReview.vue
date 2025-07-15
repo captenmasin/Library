@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UserAvatar from '@/components/UserAvatar.vue'
 import StarRatingDisplay from '@/components/StarRatingDisplay.vue'
 import { PropType } from 'vue'
 import { cn } from '@/lib/utils'
@@ -47,25 +48,19 @@ function formatDate (date) {
         <StarRatingDisplay
             v-if="review.rating?.value"
             :rating="review.rating.value"
-            class="mt-px" />
+            class="mt-px mb-2" />
         <div
-            class="prose prose-sm mt-2 max-w-none"
+            class="prose prose-sm max-w-none"
             v-html="useMarkdown(review.content)" />
 
         <div
             v-if="review.user"
             class="flex items-center gap-2.5 mt-4">
             <div>
-                <Avatar class="overflow-hidden rounded-full size-10">
-                    <AvatarImage
-                        v-if="review.user?.avatar"
-                        :src="getImageUrl(review.user?.avatar, { width: 28, height: 28, crop: 'center' })"
-                        :alt="review.user?.name"
-                    />
-                    <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
-                        {{ getInitials(review.user?.name) }}
-                    </AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                    :user="review.user"
+                    :size="28"
+                    class="size-10" />
             </div>
             <div class="flex flex-col gap-px">
                 <Label>

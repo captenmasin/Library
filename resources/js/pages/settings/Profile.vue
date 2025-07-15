@@ -1,18 +1,21 @@
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import useEmitter from '@/composables/useEmitter'
 import InputError from '@/components/InputError.vue'
+import ColorPicker from '@/components/ColorPicker.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'
-import { type User } from '@/types'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { getInitials } from '@/composables/useInitials'
-import { Link, useForm, usePage } from '@inertiajs/vue3'
+import { Link, router, useForm } from '@inertiajs/vue3'
+import { useAuthedUser } from '@/composables/useAuthedUser'
+import { useUserSettings } from '@/composables/useUserSettings'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface Props {
@@ -22,19 +25,21 @@ interface Props {
 
 defineProps<Props>()
 
-const page = usePage()
-const user = page.props.auth.user as User
+const { authedUser } = useAuthedUser()
+
+const { getSingleSetting } = useUserSettings()
 
 const form = useForm({
-    name: user.name,
-    username: user.username,
-    email: user.email,
-    avatar: user.avatar
+    name: authedUser.value?.name,
+    username: authedUser.value?.username,
+    email: authedUser.value?.email,
+    avatar: authedUser.value?.avatar,
+    profile_colour: getSingleSetting('profile.colour', '#000000')
 })
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const fileInputKey = ref(0)
-const previewUrl = ref<string | null>(user.avatar)
+const previewUrl = ref<string | null>(authedUser.value?.avatar || null)
 
 const handleFileChange = (event: Event) => {
     const target = event.target as HTMLInputElement
@@ -50,10 +55,24 @@ const resetForm = () => {
     form.reset()
     form.clearErrors()
     fileInputKey.value++
-    previewUrl.value = user.avatar
+    previewUrl.value = authedUser.value?.avatar || null
     if (fileInput.value) {
         fileInput.value.value = ''
     }
+}
+
+function deleteAvatar () {
+    router.delete(useRoute('user.settings.profile.avatar.destroy'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            fileInputKey.value++
+            previewUrl.value = authedUser.value?.avatar || null
+            console.log(fileInputKey.value)
+        },
+        onError: () => {
+            toast.error('Failed to delete avatar')
+        }
+    })
 }
 
 const submit = () => {
@@ -65,7 +84,7 @@ const submit = () => {
         return data
     }).post(useRoute('user.settings.profile.update'), {
         preserveScroll: true,
-        onSuccess: params => {
+        onSuccess: () => {
             useEmitter.emit('avatar:updated')
             toast.success('Profile updated successfully')
         }
@@ -127,20 +146,30 @@ defineOptions({
                                     <AvatarImage
                                         v-if="previewUrl"
                                         :src="previewUrl"
-                                        :alt="user.name" />
+                                        :alt="authedUser?.name" />
                                     <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
-                                        {{ getInitials(user.name) }}
+                                        {{ getInitials(authedUser?.name) }}
                                     </AvatarFallback>
                                 </Avatar>
                             </label>
                             <div class="grid w-full">
-                                <Input
-                                    id="avatar"
-                                    ref="fileInput"
-                                    :key="fileInputKey"
-                                    type="file"
-                                    accept="image/*"
-                                    @input="handleFileChange" />
+                                <div class="flex gap-2">
+                                    <Input
+                                        id="avatar"
+                                        ref="fileInput"
+                                        :key="fileInputKey"
+                                        type="file"
+                                        accept="image/*"
+                                        @input="handleFileChange" />
+                                    <Button
+                                        v-if="authedUser?.avatar"
+                                        type="button"
+                                        variant="destructive-ghost"
+                                        size="icon"
+                                        @click="deleteAvatar">
+                                        <Icon name="Trash" />
+                                    </Button>
+                                </div>
 
                                 <progress
                                     :class="form.progress ? 'opacity-100' : 'opacity-0'"
@@ -155,6 +184,20 @@ defineOptions({
                         <InputError
                             class="ml-12"
                             :message="form.errors.avatar" />
+                    </div>
+
+                    <div class="grid">
+                        <Label for="profile_colour">
+                            Favourite colour
+                        </Label>
+
+                        <div class="size-12">
+                            <ColorPicker v-model="form.profile_colour" />
+                        </div>
+
+                        <InputError
+                            class="mt-2"
+                            :message="form.errors.email" />
                     </div>
 
                     <div class="grid">
@@ -173,7 +216,7 @@ defineOptions({
                             :message="form.errors.email" />
                     </div>
 
-                    <div v-if="mustVerifyEmail && !user.email_verified">
+                    <div v-if="mustVerifyEmail && !authedUser?.email_verified">
                         <p class="-mt-4 text-sm text-muted-foreground">
                             Your email address is unverified.
                             <Link

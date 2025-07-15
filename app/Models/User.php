@@ -77,6 +77,13 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasPasskey
             'view' => 'grid',
             'tilt_books' => true,
         ],
+        'single_book' => [
+            'default_section' => 'notes',
+        ],
+
+        'profile' => [
+            'colour' => '#f2ead9',
+        ],
     ];
 
     public function getSettingsRules(): array
@@ -85,6 +92,12 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasPasskey
             'library' => 'array',
             'library.view' => ['string', 'in:grid,list,shelf'],
             'library.tilt_books' => ['boolean'],
+
+            'single_book' => 'array',
+            'single_book.default_section' => ['string', 'in:notes,reviews'],
+
+            'profile' => 'array',
+            'profile.colour' => ['string', 'hex_color'],
         ];
     }
 

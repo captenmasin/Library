@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
+import UserAvatar from '@/components/UserAvatar.vue'
 import SingleReview from '@/components/SingleReview.vue'
 import { Book } from '@/types/book'
 import { Review } from '@/types/review'
-import { useForm } from '@inertiajs/vue3'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { computed, PropType, ref } from 'vue'
 import { Button } from '@/components/ui/button'
+import { Link, useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { Textarea } from '@/components/ui/textarea'
+import { getInitials } from '@/composables/useInitials'
+import { useAuthedUser } from '@/composables/useAuthedUser'
+import { useImageTransform } from '@/composables/useImageTransform'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 const props = defineProps({
     book: {
@@ -20,6 +25,9 @@ const props = defineProps({
 })
 
 const hasExistingReview = computed(() => !!props.existingReview)
+
+const { authed, authedUser } = useAuthedUser()
+const { getImageUrl } = useImageTransform()
 
 const form = useForm({
     title: props.existingReview?.title || '',
@@ -41,6 +49,28 @@ function submit () {
 
 <template>
     <div>
+        <div
+            v-if="authed && authedUser && !displayForm && !hasExistingReview"
+            class="py-8 items-center flex text-center gap-2 border-2 border-dashed border-primary/20 rounded flex-col justify-center">
+            <UserAvatar
+                :user="authedUser"
+                class="size-16"
+                :size="64"
+                font-size="text-xl" />
+
+            <h2 class="font-bold text-2xl font-serif">
+                Share your thoughts
+            </h2>
+
+            <Button
+                class="mt-3"
+                @click="displayForm = true">
+                <Icon
+                    name="Pencil" />
+                Write a review
+            </Button>
+        </div>
+
         <form
             v-if="displayForm"
             class="mb-4 flex flex-col gap-4"
@@ -82,6 +112,33 @@ function submit () {
             v-if="!displayForm && hasExistingReview && existingReview"
             :review="existingReview"
             :book="book"
-            class="mb-4 border border-accent rounded p-4" />
+            class="mb-4 border-2 border-dashed border-secondary rounded p-4" />
+
+        <div
+            v-if="!displayForm"
+            class="mb-4 flex w-full gap-4 justify-end items-end">
+            <Button
+                v-if="hasExistingReview && existingReview"
+                variant="link"
+                class="text-destructive"
+                as-child>
+                <Link
+                    :href="useRoute('reviews.destroy', { book: book, review: existingReview })"
+                    method="delete"
+                    preserve-scroll>
+                    Delete
+                </Link>
+            </Button>
+
+            <Button
+                v-if="hasExistingReview"
+                variant="secondary"
+                @click="displayForm = true">
+                <Icon
+                    name="pencil"
+                    class="mr-2" />
+                Edit review
+            </Button>
+        </div>
     </div>
 </template>

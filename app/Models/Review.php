@@ -15,6 +15,11 @@ class Review extends Model
 
     protected $appends = ['rating'];
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

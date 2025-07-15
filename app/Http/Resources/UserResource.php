@@ -19,6 +19,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'avatar' => $this->avatar,
             'email_verified' => $this->email_verified_at !== null,
+            'colour' => $this->settings()->get('profile.colour', '#000000'),
         ];
     }
 
