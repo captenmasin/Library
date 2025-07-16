@@ -75,18 +75,18 @@ const { userRating } = useBook(props.book)
                         prefetch>
                         <h3
                             :class="isLink ? 'hover:text-primary' : ''"
-                            class="line-clamp-1 font-serif text-lg transition-colors md:line-clamp-2 md:text-lg/6"
+                            class="line-clamp-1 font-serif text-lg transition-colors md:line-clamp-2 md:text-lg/6 text-pretty"
                         >
                             {{ book.title }}
                         </h3>
                     </component>
                 </div>
-                <p class="mt-0.5 line-clamp-1 text-xs text-muted-foreground/65 md:text-sm">
+                <p class="-mt-0.5 md:mt-0.5 line-clamp-1 text-xs text-muted-foreground/65 md:text-sm">
                     By {{ book.authors?.map((a) => a.name).join(', ') }}
                 </p>
                 <p
                     v-if="book.description"
-                    class="mt-2 md:mt-1 hidden md:line-clamp-2 text-xs text-muted-foreground">
+                    class="line-clamp-2 mt-0.5 md:mt-1 md:line-clamp-2 text-xs text-muted-foreground">
                     {{ book.description_clean }}
                 </p>
                 <StarRatingDisplay
@@ -98,7 +98,7 @@ const { userRating } = useBook(props.book)
         </div>
         <div
             v-if="includeActions"
-            class="-mt-11 w-full max-w-64 shrink-0 pl-24 md:ml-auto md:w-40 md:max-w-none md:pl-0">
+            class="-mt-11 w-full md:max-w-64 shrink-0 pl-24 md:ml-auto md:w-40 md:max-w-none md:pl-0">
             <BookActions :book="book" />
         </div>
     </div>

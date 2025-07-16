@@ -102,7 +102,7 @@ defineOptions({
                         </UpdateBookCover>
                     </div>
                     <div class="flex flex-col gap-1 flex-1 md:hidden">
-                        <h2 class="font-serif text-lg/5.5 font-semibold">
+                        <h2 class="font-serif text-lg/5.5 text-pretty font-semibold">
                             {{ book.title }}
                         </h2>
                         <p
@@ -140,7 +140,7 @@ defineOptions({
             </div>
             <div class="flex w-full order-3 md:order-2 md:w-3/5 flex-col">
                 <div class="hidden md:flex flex-col">
-                    <h2 class="font-serif text-3xl font-semibold">
+                    <h2 class="font-serif text-3xl font-semibold text-pretty">
                         {{ book.title }}
                     </h2>
                     <p
@@ -220,7 +220,8 @@ defineOptions({
                 </div>
 
                 <button
-                    class="text-left flex border-y mt-4 md:mt-0 md:border-0 -mx-4 py-2 px-4 md:mx-0 md:p-0 items-center justify-between"
+                    class="text-left flex md:bg-transparent bg-secondary border-muted border-y-0 mt-4 md:mt-0 md:border-0 py-2 px-4 md:p-0 items-center justify-between"
+                    :class="detailsOpen ? 'rounded-t-md' : 'rounded-md'"
                     @pointerdown="detailsOpen = !detailsOpen">
                     <h3 class="md:mt-4 md:text-lg font-semibold">
                         Details
@@ -230,45 +231,46 @@ defineOptions({
                         :class="detailsOpen ? 'rotate-180' : ''"
                         class="transition-transform md:hidden duration-200" />
                 </button>
-                <dl
-                    :class="detailsOpen ? 'block' : 'hidden'"
-                    class="md:block">
-                    <div
-                        v-for="item in data"
-                        :key="item.title"
-                        class="py-2 flex items-center justify-between">
-                        <dt class="text-sm/6 font-medium">
-                            {{ item.title }}
-                        </dt>
-                        <dd class="text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
-                            {{ item.value }}
-                        </dd>
-                    </div>
-                </dl>
-
                 <div
-                    v-if="book.tags && book.tags.length > 0"
-                    :class="detailsOpen ? 'block' : 'hidden'"
-                    class="mt-1 md:block">
-                    <p class="text-sm/6 font-medium">
-                        Tags
-                    </p>
-                    <TagCloud :tags="book.tags" />
-                </div>
-                <div
-                    v-if="related && related.length > 0"
-                    class="mt-4 hidden md:block">
-                    <p class="text-sm/6 font-medium">
-                        Related
-                    </p>
-                    <div class="-mx-1 flex flex-wrap">
+                    :class="detailsOpen ? 'flex' : 'hidden'"
+                    class="flex-col md:flex md:bg-transparent md:text-foreground bg-secondary text-secondary-foreground rounded-b-md">
+                    <dl class="py-2 md:py-0 px-4 md:px-0">
                         <div
-                            v-for="relatedBook in related"
-                            :key="relatedBook.identifier"
-                            class="w-1/2 p-1">
-                            <BookCard
-                                :hover="false"
-                                :book="relatedBook" />
+                            v-for="item in data"
+                            :key="item.title"
+                            class="py-2 flex items-center justify-between">
+                            <dt class="text-sm/6 font-medium">
+                                {{ item.title }}
+                            </dt>
+                            <dd class="text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
+                                {{ item.value }}
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <div
+                        v-if="book.tags && book.tags.length > 0"
+                        class="md:mt-2 pt-2 pb-4 md:py-0 px-4 md:px-0">
+                        <p class="text-sm/6 font-medium">
+                            Tags
+                        </p>
+                        <TagCloud :tags="book.tags" />
+                    </div>
+                    <div
+                        v-if="related && related.length > 0"
+                        class="mt-4 hidden md:block">
+                        <p class="text-sm/6 font-medium">
+                            Related
+                        </p>
+                        <div class="-mx-1 flex flex-wrap">
+                            <div
+                                v-for="relatedBook in related"
+                                :key="relatedBook.identifier"
+                                class="w-1/2 p-1">
+                                <BookCard
+                                    :hover="false"
+                                    :book="relatedBook" />
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -191,7 +191,7 @@ defineOptions({
                     </Dialog>
                 </div>
             </aside>
-            <section class="flex flex-1 flex-col">
+            <section class="flex flex-1 flex-col w-full md:w-auto">
                 <div
                     v-if="hasSearch && results && results.total > 0"
                     class="mb-4 flex justify-between text-sm text-muted-foreground">
@@ -208,7 +208,7 @@ defineOptions({
 
                 <div
                     v-if="!hasSearch"
-                    class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-16 text-center text-sm text-muted-foreground border-primary/10">
+                    class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-8 md:py-16 text-center text-sm text-muted-foreground border-primary/10">
                     <Icon
                         name="Search"
                         class="size-8" />
@@ -237,10 +237,10 @@ defineOptions({
                                         <HorizontalSkeleton />
                                     </li>
                                 </ul>
-                                <div class="absolute top-1/2 left-1/2 flex flex-col items-center gap-2 -translate-1/2">
+                                <div class="absolute top-24 md:top-1/2 left-1/2 flex flex-col items-center gap-2 -translate-1/2">
                                     <Loader
                                         color="#913608"
-                                        class="mx-auto w-18" />
+                                        class="mx-auto w-10 md:w-18" />
                                     <p>
                                         Searching&hellip;
                                     </p>
@@ -286,7 +286,7 @@ defineOptions({
                     </div>
                     <div
                         v-else
-                        class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-16 text-center text-sm text-muted-foreground border-primary/10">
+                        class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-8 md:py-16 text-center text-sm text-muted-foreground border-primary/10">
                         <Icon
                             name="BookDashed"
                             class="size-8" />

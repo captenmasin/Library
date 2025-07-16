@@ -23,6 +23,7 @@ class SearchBooksFromApi
         int $maxResults = 30,
         int $page = 1): array
     {
+        sleep(10);
         $results = $this->booksApi->search(query: $query, author: $author, maxResults: $maxResults, page: $page);
 
         $total = $results['total'] ?? 0;
