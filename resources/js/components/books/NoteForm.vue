@@ -55,10 +55,10 @@ function openNoteForm () {
                 id="noteInput"
                 ref="noteInput"
                 v-model="noteForm.content"
-                class="min-h-18"
+                class="min-h-24 md:min-h-18"
                 placeholder="Add a private note about this book..." />
             <InputError :message="noteForm.errors.content" />
-            <div class="flex mt-2 justify-between">
+            <div class="flex mt-2 items-center justify-between">
                 <div>
                     <a
                         href="https://www.markdownguide.org/"

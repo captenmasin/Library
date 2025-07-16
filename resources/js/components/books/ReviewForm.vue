@@ -54,16 +54,16 @@ function submit () {
             class="py-8 items-center flex text-center gap-2 border-2 border-dashed border-primary/20 rounded flex-col justify-center">
             <UserAvatar
                 :user="authedUser"
-                class="size-16"
+                class="size-10 md:size-16"
                 :size="64"
-                font-size="text-xl" />
+                font-size="text-lg md:text-xl" />
 
-            <h2 class="font-bold text-2xl font-serif">
+            <h2 class="font-bold text-lg md:text-2xl font-serif">
                 Share your thoughts
             </h2>
 
             <Button
-                class="mt-3"
+                class="md:mt-3"
                 @click="displayForm = true">
                 <Icon
                     name="Pencil" />

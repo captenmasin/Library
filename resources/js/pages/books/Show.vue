@@ -65,6 +65,8 @@ const displayType = ref(getSingleSetting('single_book.default_section', 'reviews
 
 const refreshKey = ref(1)
 
+const detailsOpen = ref(false)
+
 watch(displayType, (newType) => {
     if (authed.value) {
         updateSingleSetting('single_book.default_section', newType)
@@ -85,11 +87,11 @@ defineOptions({
 </script>
 
 <template>
-    <div class="mt-4">
-        <div class="flex flex-col md:flex-row gap-10">
+    <div class="md:mt-4">
+        <div class="flex flex-col md:flex-row gap-4 md:gap-10">
             <div class="flex w-full order-1 md:w-1/5 flex-col">
                 <div class="flex gap-4">
-                    <div class="w-32 md:w-full">
+                    <div class="w-24 sm:w-32 md:w-full">
                         <UpdateBookCover :book>
                             <div class="aspect-book overflow-hidden rounded-md">
                                 <Image
@@ -100,19 +102,30 @@ defineOptions({
                         </UpdateBookCover>
                     </div>
                     <div class="flex flex-col gap-1 flex-1 md:hidden">
-                        <h2 class="font-serif text-xl font-semibold">
+                        <h2 class="font-serif text-lg/5.5 font-semibold">
                             {{ book.title }}
                         </h2>
                         <p
                             v-if="book.authors"
-                            class="text-sm text-muted-foreground">
+                            class="text-xs text-muted-foreground">
                             By {{ book.authors.map((a) => a.name).join(', ') }}
                         </p>
+
+                        <div
+                            v-if="book.ratings_count"
+                            class="flex flex-wrap items-center gap-1">
+                            <StarRatingDisplay
+                                :star-width="12"
+                                :rating="parseFloat(averageRating)" />
+                            <div class="mt-px text-xs text-muted-foreground">
+                                {{ averageRating }}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div
                     v-if="book.in_library"
-                    class="mt-4 flex flex-col items-center">
+                    class="mt-4 hidden md:flex flex-col items-center">
                     <h3 class="text-xs font-semibold text-muted-foreground">
                         Your rating
                     </h3>
@@ -126,31 +139,33 @@ defineOptions({
                 </div>
             </div>
             <div class="flex w-full order-3 md:order-2 md:w-3/5 flex-col">
-                <h2 class="font-serif text-3xl font-semibold">
-                    {{ book.title }}
-                </h2>
-                <p
-                    v-if="book.authors"
-                    class="mt-2 text-sm text-muted-foreground">
-                    By {{ book.authors.map((a) => a.name).join(', ') }}
-                </p>
+                <div class="hidden md:flex flex-col">
+                    <h2 class="font-serif text-3xl font-semibold">
+                        {{ book.title }}
+                    </h2>
+                    <p
+                        v-if="book.authors"
+                        class="mt-2 text-sm text-muted-foreground">
+                        By {{ book.authors.map((a) => a.name).join(', ') }}
+                    </p>
 
-                <div
-                    v-if="book.ratings_count"
-                    class="mt-1 flex items-center gap-2">
-                    <StarRatingDisplay :rating="parseFloat(averageRating)" />
-                    <div class="mt-px text-xs text-muted-foreground">
-                        {{ averageRating }} &mdash; {{ book.ratings_count }} {{ usePlural('rating', book.ratings_count) }}
+                    <div
+                        v-if="book.ratings_count"
+                        class="mt-1 flex items-center gap-2">
+                        <StarRatingDisplay :rating="parseFloat(averageRating)" />
+                        <div class="mt-px text-xs text-muted-foreground">
+                            {{ averageRating }} &mdash; {{ book.ratings_count }} {{ usePlural('rating', book.ratings_count) }}
+                        </div>
                     </div>
                 </div>
 
                 <div
-                    class="prose mt-4 max-w-none font-serif"
+                    class="prose md:mt-4 prose-sm md:prose-base max-w-none font-serif"
                     v-html="useMarkdown(book.description)" />
 
                 <div class="mt-8 border-t border-secondary pt-8">
-                    <div class="flex items-center justify-between">
-                        <div class="flex mb-4">
+                    <div class="flex items-center w-full justify-between">
+                        <div class="flex mb-4 w-full md:w-auto">
                             <Tabs
                                 v-model="displayType"
                                 class="flex w-full flex-1"
@@ -187,14 +202,41 @@ defineOptions({
                         @added="refresh"
                         @updated="refresh" />
                 </div>
-                <h3 class="mt-4 text-lg font-semibold">
-                    Details
-                </h3>
-                <dl>
+
+                <div
+                    v-if="book.in_library"
+                    class="mt-2 flex md:hidden flex-col">
+                    <h3 class="text-xs font-semibold text-muted-foreground">
+                        Your rating
+                    </h3>
+                    <RatingForm
+                        :key="refreshKey"
+                        class="mt-1"
+                        star-size="size-5"
+                        :book="book"
+                        @deleted="refresh"
+                        @added="refresh"
+                        @updated="refresh" />
+                </div>
+
+                <button
+                    class="text-left flex border-y mt-4 md:mt-0 md:border-0 -mx-4 py-2 px-4 md:mx-0 md:p-0 items-center justify-between"
+                    @pointerdown="detailsOpen = !detailsOpen">
+                    <h3 class="md:mt-4 md:text-lg font-semibold">
+                        Details
+                    </h3>
+                    <Icon
+                        name="ChevronDown"
+                        :class="detailsOpen ? 'rotate-180' : ''"
+                        class="transition-transform md:hidden duration-200" />
+                </button>
+                <dl
+                    :class="detailsOpen ? 'block' : 'hidden'"
+                    class="md:block">
                     <div
                         v-for="item in data"
                         :key="item.title"
-                        class="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        class="py-2 flex items-center justify-between">
                         <dt class="text-sm/6 font-medium">
                             {{ item.title }}
                         </dt>
@@ -206,7 +248,8 @@ defineOptions({
 
                 <div
                     v-if="book.tags && book.tags.length > 0"
-                    class="mt-1">
+                    :class="detailsOpen ? 'block' : 'hidden'"
+                    class="mt-1 md:block">
                     <p class="text-sm/6 font-medium">
                         Tags
                     </p>
@@ -214,7 +257,7 @@ defineOptions({
                 </div>
                 <div
                     v-if="related && related.length > 0"
-                    class="mt-4">
+                    class="mt-4 hidden md:block">
                     <p class="text-sm/6 font-medium">
                         Related
                     </p>

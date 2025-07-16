@@ -13,6 +13,10 @@ const props = defineProps({
     initialRating: {
         type: Number,
         default: 0
+    },
+    starSize: {
+        type: String,
+        default: 'size-6'
     }
 })
 
@@ -114,10 +118,11 @@ function submit (rating: number | null) {
                     <Icon
                         name="Star"
                         :class="[
+                            starSize,
                             !currentlyHovering && star <= form.rating.value ? 'fill-yellow-400 text-yellow-400' : 'text-primary/20 hover:fill-yellow-400 hover:text-yellow-400',
                             star <= currentlyHovering ? 'fill-yellow-400 text-yellow-400' : ''
                         ]"
-                        class="size-6 stroke-[1.5px]"
+                        class="stroke-[1.5px]"
                     />
                 </span>
             </button>
