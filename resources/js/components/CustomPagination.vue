@@ -2,14 +2,22 @@
 import { PropType } from 'vue'
 import { cn } from '@/lib/utils'
 import { Link, router } from '@inertiajs/vue3'
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationFirst,
+    PaginationItem,
+    PaginationNext,
+    PaginationPrevious
+} from '@/components/ui/pagination'
 
 interface Meta {
-    current_page: number
-    last_page: number
-    path: string
-    per_page: number
-    total: number
+    current_page: number;
+    last_page: number;
+    path: string;
+    per_page: number;
+    total: number;
 }
 
 const props = defineProps({
@@ -31,17 +39,36 @@ function pageUrl (page: number) {
 }
 
 function previous () {
-    router.get(pageUrl(props.meta.current_page - 1), {}, {
-        preserveScroll: true,
-        preserveState: true
-    })
+    router.get(
+        pageUrl(props.meta.current_page - 1),
+        {},
+        {
+            // preserveScroll: true,
+            // preserveState: true
+        }
+    )
 }
 
 function next () {
-    router.get(pageUrl(props.meta.current_page + 1), {}, {
-        preserveScroll: true,
-        preserveState: true
-    })
+    router.get(
+        pageUrl(props.meta.current_page + 1),
+        {},
+        {
+            // preserveScroll: true,
+            // preserveState: true
+        }
+    )
+}
+
+function prefetch (page: number) {
+    if (page < 1 || page > props.meta.last_page) return
+    router.prefetch(
+        pageUrl(page),
+        {
+            method: 'get'
+        },
+        { cacheFor: '1m' }
+    )
 }
 </script>
 
@@ -52,7 +79,9 @@ function next () {
         :total="meta.total"
         :default-page="meta.current_page">
         <PaginationContent v-slot="{ items }">
-            <PaginationPrevious @click="previous" />
+            <PaginationPrevious
+                @mouseenter="prefetch(page - 1)"
+                @click="previous" />
 
             <template
                 v-for="(item, index) in items"
@@ -61,19 +90,17 @@ function next () {
                     v-if="item.type === 'page'"
                     :value="item.value"
                     as-child
-                    :is-active="item.value === page"
-                >
+                    :is-active="item.value === page">
                     <Link
-                        :href="pageUrl(item.value)"
-                        preserve-scroll
-                        preserve-state
-                    >
+                        prefetch
+                        :href="pageUrl(item.value)">
                         {{ item.value }}
                     </Link>
                 </PaginationItem>
             </template>
 
-            <PaginationEllipsis :index="4" />
+            <!--            <PaginationEllipsis-->
+            <!--                :index="5" />-->
 
             <PaginationNext @click="next" />
         </PaginationContent>

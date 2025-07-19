@@ -5,7 +5,7 @@ import { Link, router } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { UserPermission } from '@/enums/UserPermission'
 import { useAuthedUser } from '@/composables/useAuthedUser'
-import { LogOut, Settings, Shield, BriefcaseBusiness } from 'lucide-vue-next'
+import { LogOut, Settings, Shield, BriefcaseBusiness, NotebookPen, Star } from 'lucide-vue-next'
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 
 interface Props {
@@ -35,9 +35,28 @@ defineProps<Props>()
         <DropdownMenuItem :as-child="true">
             <Link
                 class="block w-full"
+                :href="useRoute('user.notes.index')"
+                prefetch>
+                <NotebookPen class="mr-2 h-4 w-4" />
+                Notes
+            </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem :as-child="true">
+            <Link
+                class="block w-full"
+                :href="useRoute('user.reviews.index')"
+                prefetch>
+                <Star class="mr-2 h-4 w-4" />
+                Reviews
+            </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem :as-child="true">
+            <Link
+                class="block w-full"
                 :href="useRoute('user.settings.profile.edit')"
-                prefetch
-                as="button">
+                prefetch>
                 <Settings class="mr-2 h-4 w-4" />
                 Settings
             </Link>
