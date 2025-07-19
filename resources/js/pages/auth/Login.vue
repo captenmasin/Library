@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import AuthBase from '@/layouts/AuthLayout.vue'
 import TextLink from '@/components/TextLink.vue'
 import InputError from '@/components/InputError.vue'
@@ -10,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useRequest } from '@/composables/useRequest'
+import { Separator } from '@/components/ui/separator'
 import { Head, router, useForm } from '@inertiajs/vue3'
 import { startRegistration } from '@simplewebauthn/browser/esm'
 
@@ -62,12 +64,6 @@ async function loginWithPassKey () {
             class="mb-4 text-center text-sm font-medium text-green-600">
             {{ status }}
         </div>
-
-        <Button
-            type="button"
-            @click="loginWithPassKey">
-            Login with Passkey
-        </Button>
 
         <form
             class="flex flex-col gap-6"
@@ -128,6 +124,22 @@ async function loginWithPassKey () {
                     Log in
                 </Button>
             </div>
+
+            <div class="my-0 flex items-center">
+                <Separator class="flex flex-1" />
+                <span class="flex px-4 text-sm text-muted-foreground">or</span>
+                <Separator class="flex flex-1" />
+            </div>
+
+            <Button
+                type="button"
+                variant="secondary"
+                @click="loginWithPassKey">
+                <Icon
+                    name="Fingerprint"
+                    class="size-4" />
+                Use Passkey
+            </Button>
 
             <div class="text-center text-sm text-muted-foreground">
                 Don't have an account?

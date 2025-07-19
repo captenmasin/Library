@@ -5,7 +5,6 @@ import { useRoute } from '@/composables/useRoute'
 
 const page = usePage()
 const name = page.props.name
-const quote = page.props.quote
 
 defineProps<{
     title?: string;
@@ -14,31 +13,20 @@ defineProps<{
 </script>
 
 <template>
-    <div class="relative grid flex-col items-center justify-center px-8 h-dvh sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
-        <div class="relative hidden h-full flex-col p-10 text-white bg-muted dark:border-r lg:flex">
-            <div class="absolute inset-0 bg-zinc-900" />
+    <div class="relative grid flex-col items-center bg-background justify-center px-8 h-dvh sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
+        <div class="relative hidden h-full flex-col p-10 text-white dark:border-r lg:flex">
+            <div class="absolute inset-4 bg-secondary text-secondary-foreground rounded-xl" />
             <Link
                 :href="useRoute('user.books.index')"
-                class="relative z-20 flex items-center text-lg font-medium">
-                <AppLogoIcon class="mr-2 fill-current text-white size-8" />
+                class="relative z-20 flex items-center text-xl font-serif text-foreground font-medium">
+                <AppLogoIcon class="mr-2 rounded-lg fill-current size-8" />
                 {{ name }}
             </Link>
-            <div
-                v-if="quote"
-                class="relative z-20 mt-auto">
-                <blockquote class="space-y-2">
-                    <p class="text-lg">
-                        &ldquo;{{ quote.message }}&rdquo;
-                    </p>
-                    <footer class="text-sm text-neutral-300">
-                        {{ quote.author }}
-                    </footer>
-                </blockquote>
-            </div>
         </div>
         <div class="lg:p-8">
-            <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-                <div class="flex flex-col text-center space-y-2">
+            <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-sm">
+                <AppLogoIcon class="rounded-lg fill-current size-10 mx-auto lg:hidden mb-2" />
+                <div class="flex flex-col text-center space-y-1">
                     <h1
                         v-if="title"
                         class="text-xl font-medium tracking-tight">

@@ -73,32 +73,34 @@ const submit = () => {
                     <InputError :message="form.errors.email" />
                 </div>
 
-                <div class="grid gap-2">
-                    <Label for="password">Password</Label>
-                    <Input
-                        id="password"
-                        v-model="form.password"
-                        type="password"
-                        required
-                        :tabindex="3"
-                        autocomplete="new-password"
-                        placeholder="Password"
-                    />
-                    <InputError :message="form.errors.password" />
-                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="grid gap-2">
+                        <Label for="password">Password</Label>
+                        <Input
+                            id="password"
+                            v-model="form.password"
+                            type="password"
+                            required
+                            :tabindex="3"
+                            autocomplete="new-password"
+                            placeholder="Password"
+                        />
+                        <InputError :message="form.errors.password" />
+                    </div>
 
-                <div class="grid gap-2">
-                    <Label for="password_confirmation">Confirm password</Label>
-                    <Input
-                        id="password_confirmation"
-                        v-model="form.password_confirmation"
-                        type="password"
-                        required
-                        :tabindex="4"
-                        autocomplete="new-password"
-                        placeholder="Confirm password"
-                    />
-                    <InputError :message="form.errors.password_confirmation" />
+                    <div class="grid gap-2">
+                        <Label for="password_confirmation">Confirm password</Label>
+                        <Input
+                            id="password_confirmation"
+                            v-model="form.password_confirmation"
+                            type="password"
+                            required
+                            :tabindex="4"
+                            autocomplete="new-password"
+                            placeholder="Confirm password"
+                        />
+                        <InputError :message="form.errors.password_confirmation" />
+                    </div>
                 </div>
 
                 <Button

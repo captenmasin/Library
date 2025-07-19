@@ -16,6 +16,7 @@ const { hasPermission } = useAuthedUser()
 
 const handleLogout = () => {
     router.flushAll()
+    window.location = useRoute('login')
 }
 
 defineProps<Props>()
