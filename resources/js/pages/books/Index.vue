@@ -216,7 +216,7 @@ defineOptions({ layout: AppLayout })
         </div>
 
         <!-- Main layout ----------------------------------------------------- -->
-        <div class="mt-2 flex flex-col items-start gap-8 md:mt-8 md:flex-row">
+        <div class="mt-0 flex flex-col items-start gap-0 md:mt-8 md:flex-row">
             <aside
                 :class="displayFilters ? 'h-[calc-size(auto,size)] overflow-auto border-secondary' : 'h-0 overflow-hidden border-background'"
                 class="relative -mx-4 w-[calc(100%+calc(var(--spacing)*8))] flex-col gap-2 border-y bg-muted px-4 transition-[height,border-color] duration-500 md:mx-0 md:flex md:h-auto md:w-72 md:overflow-visible md:border-0 md:bg-transparent md:px-0"

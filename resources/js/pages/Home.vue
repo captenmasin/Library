@@ -132,7 +132,7 @@ defineOptions({ layout: AppLayout })
                     class="relative flex items-center justify-between rounded-md border-0 border-accent bg-secondary px-3 py-2 transition-all hover:bg-primary/20 md:p-4"
                 >
                     <div>
-                        <p class="text-sm text-current/60">
+                        <p class="text-sm text-current/60 pr-5">
                             {{ stat.name }}
                         </p>
                         <p class="text-xl font-semibold md:text-2xl">
