@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
 use App\Models\Book;
 use App\Models\Note;
-use App\Http\Resources\NoteResource;
+use Inertia\Inertia;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
+use App\Http\Resources\NoteResource;
 use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\DestroyNoteRequest;
 
@@ -18,7 +18,7 @@ class NoteController extends Controller
         $notes = $request->user()->notes()
             ->with(['book.authors', 'book.covers', 'book.ratings'])
             ->orderByDesc('created_at')
-            ->get();
+            ->paginate();
 
         return Inertia::render('user/Notes', [
             'notes' => NoteResource::collection($notes),
