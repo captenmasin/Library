@@ -1,4 +1,5 @@
 import { User } from '@/types/user'
+import { Book } from '@/types/book'
 
 export type Review = {
     uuid: string,
@@ -10,5 +11,6 @@ export type Review = {
         id?: number,
         value?: number,
     },
-    user?: User
+    user?: User,
+    book?: Book
 }

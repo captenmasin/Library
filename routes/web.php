@@ -65,6 +65,7 @@ Route::prefix('{book}')->middleware('auth')->group(function () {
 // Authenticated user routes
 Route::middleware('auth')->name('user.')->group(function () {
     Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::get('notes', [NoteController::class, 'index'])->name('notes.index');
 
     Route::prefix('books')->name('books.')->controller(UserBookController::class)->group(function () {
         Route::get('/', 'index')->name('index');
