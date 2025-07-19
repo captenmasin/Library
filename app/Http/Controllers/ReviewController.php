@@ -8,6 +8,7 @@ use App\Models\Review;
 use App\Http\Resources\ReviewResource;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
+use App\Http\Resources\ReviewResource;
 use App\Http\Requests\DestroyReviewRequest;
 
 class ReviewController extends Controller

@@ -55,6 +55,7 @@ function loadMore () {
                 />
             </li>
         </ul>
+
         <div
             v-if="props.notes.links.next"
             class="mt-4 mb-36 flex items-center justify-center"
