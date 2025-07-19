@@ -3,10 +3,9 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import PageTitle from '@/components/PageTitle.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import SingleReview from '@/components/SingleReview.vue'
+import Pagination from '@/components/Pagination.vue'
 import Icon from '@/components/Icon.vue'
 import { PropType, ref } from 'vue'
-import { router } from '@inertiajs/vue3'
-import { Button } from '@/components/ui/button/index.js'
 import { Review } from '@/types/review'
 import { Paginated } from '@/types/pagination'
 
@@ -18,19 +17,6 @@ const props = defineProps({
         default: () => ({ data: [], links: {}, meta: {} })
     }
 })
-
-const loadingMore = ref(false)
-
-function loadMore () {
-    router.reload({
-        data: { page: props.reviews.meta.current_page + 1 },
-        only: ['reviews'],
-        preserveState: true,
-        preserveScroll: true,
-        onBefore: () => { loadingMore.value = true },
-        onFinish: () => { loadingMore.value = false }
-    })
-}
 </script>
 
 <template>
@@ -55,25 +41,6 @@ function loadMore () {
                 />
             </li>
         </ul>
-        <div
-            v-if="props.reviews.links.next"
-            class="mt-4 mb-36 flex items-center justify-center"
-        >
-            <Button
-                variant="secondary"
-                :disabled="loadingMore"
-                @click="loadMore"
-            >
-                <Icon
-                    v-if="!loadingMore"
-                    name="Plus"
-                    class="w-4" />
-                <Icon
-                    v-else
-                    name="LoaderCircle"
-                    class="w-4 animate-spin" />
-                Load more
-            </Button>
-        </div>
+        <Pagination :meta="props.reviews.meta" />
     </div>
 </template>
