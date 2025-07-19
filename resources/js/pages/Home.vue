@@ -214,7 +214,7 @@ defineOptions({ layout: AppLayout })
                             </Link>
                         </Button>
                     </div>
-                    <ul class="divide-y divide-muted rounded-xl bg-white shadow">
+                    <ul class="divide-y divide-muted rounded-xl dark:divide-zinc-950 bg-white dark:bg-zinc-900 shadow">
                         <li
                             v-for="activity in activities"
                             :key="activity.id"

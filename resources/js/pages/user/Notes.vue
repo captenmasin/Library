@@ -48,11 +48,11 @@ const props = defineProps({
 
         <ul
             v-else
-            class="divide-y divide-muted rounded-xl bg-white shadow">
+            class="divide-y divide-muted rounded-xl dark:divide-zinc-950 bg-white dark:bg-zinc-900 shadow">
             <li
                 v-for="note in props.notes.data"
                 :key="note.id"
-                class="p-4 md:p-6 flex items-start flex-col gap-4 md:flex-row"
+                class="p-4 md:p-6 flex items-start group flex-col gap-4 md:flex-row"
             >
                 <BookCardHorizontal
                     :book="note.book"

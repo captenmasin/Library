@@ -43,7 +43,7 @@ function deleteNote () {
             <div class="text-sm font-semibold text-secondary-foreground">
                 {{ formatDate(note.created_at) }}
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-0">
                 <div class="flex transition-all group-hover:opacity-100 md:opacity-0">
                     <ConfirmationModal
                         @confirmed="deleteNote()">
@@ -70,7 +70,7 @@ function deleteNote () {
             </div>
         </div>
         <div
-            class="prose prose-sm mt-2 max-w-none"
+            class="prose prose-sm mt-2 max-w-none dark:prose-invert"
             v-html="useMarkdown(note.content)" />
     </div>
 </template>

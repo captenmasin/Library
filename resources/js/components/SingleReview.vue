@@ -101,7 +101,7 @@ const isUserReview = computed(() => {
             :rating="review.rating.value"
             class="mt-px mb-2" />
         <div
-            class="prose prose-sm max-w-none"
+            class="prose prose-sm max-w-none dark:prose-invert"
             v-html="useMarkdown(review.content)" />
 
         <div

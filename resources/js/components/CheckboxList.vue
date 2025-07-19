@@ -42,7 +42,7 @@ function isChecked (index: number) {
                     proxyStatus?.includes(option.value) ? 'bg-accent' : '',
                     isChecked(index - 1) ? 'rounded-t-none' : '',
                     isChecked(index + 1) ? 'rounded-b-none' : '',
-                    !isChecked(index) ? 'text-secondary-foreground hover:text-gray-900' : 'text-gray-900'
+                    !isChecked(index) ? 'text-secondary-foreground hover:text-gray-900 dark:hover:text-white/80' : 'text-gray-900 dark:text-white'
                 ]"
                 class="flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all"
                 :for="`${idPrefix}-${option.value}`">

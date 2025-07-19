@@ -239,8 +239,11 @@ defineOptions({
                                 </ul>
                                 <div class="absolute top-24 md:top-1/2 left-1/2 flex flex-col items-center gap-2 -translate-1/2">
                                     <Loader
+                                        color="#FFFFFF"
+                                        class="mx-auto hidden dark:flex w-10 md:w-18" />
+                                    <Loader
                                         color="#913608"
-                                        class="mx-auto w-10 md:w-18" />
+                                        class="mx-auto flex dark:hidden w-10 md:w-18" />
                                     <p>
                                         Searching&hellip;
                                     </p>

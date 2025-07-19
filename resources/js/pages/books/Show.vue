@@ -160,7 +160,7 @@ defineOptions({
                 </div>
 
                 <div
-                    class="prose md:mt-4 prose-sm md:prose-base max-w-none font-serif"
+                    class="prose md:mt-4 dark:prose-invert prose-sm md:prose-base max-w-none font-serif"
                     v-html="useMarkdown(book.description)" />
 
                 <div class="mt-8 border-t border-secondary pt-8">

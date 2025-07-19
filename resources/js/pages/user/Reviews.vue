@@ -7,6 +7,7 @@ import CustomPagination from '@/components/CustomPagination.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import { PropType } from 'vue'
 import { Review } from '@/types/review'
+import { Card } from '@/components/ui/card'
 import { Paginated } from '@/types/pagination'
 
 defineOptions({ layout: AppLayout })
@@ -27,7 +28,7 @@ const props = defineProps({
 
         <div
             v-if="reviews.meta.total === 0 || reviews.data.length === 0"
-            class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-12 text-center text-sm text-muted-foreground"
+            class="my-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-12 text-center text-sm text-muted-foreground"
         >
             <Icon
                 name="NotebookPen"
@@ -45,11 +46,11 @@ const props = defineProps({
 
         <ul
             v-else
-            class="divide-y divide-muted rounded-xl bg-white shadow">
+            class="divide-y divide-muted rounded-xl dark:divide-zinc-950 bg-white dark:bg-zinc-900 shadow">
             <li
                 v-for="review in props.reviews.data"
                 :key="review.uuid"
-                class="p-4 md:p-6 flex items-start flex-col gap-4 md:flex-row"
+                class="p-4 md:p-6 flex items-start group flex-col gap-4 md:flex-row"
             >
                 <BookCardHorizontal
                     :book="review.book"
