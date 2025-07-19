@@ -10,6 +10,11 @@ use App\Http\Requests\DestroyReviewRequest;
 
 class ReviewController extends Controller
 {
+    public function index(Request $request)
+    {
+        dd($request->user()->reviews()->with('book')->get());
+    }
+
     public function store(Request $request, Book $book)
     {
         $validated = $request->validate([

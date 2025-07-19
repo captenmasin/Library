@@ -17,7 +17,7 @@ test('users can authenticate using the login screen', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('user.books.index', absolute: false));
+    $response->assertRedirect(route('home', absolute: false));
 });
 
 test('users can authenticate using their username', function () {
@@ -29,7 +29,7 @@ test('users can authenticate using their username', function () {
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('user.books.index', absolute: false));
+    $response->assertRedirect(route('home', absolute: false));
 });
 
 test('users can not authenticate with invalid password', function () {
