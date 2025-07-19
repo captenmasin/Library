@@ -49,16 +49,11 @@ function submit () {
 
 function deleteReview () {
     if (props.existingReview) {
-        router.delete(useRoute('reviews.destroy', { book: props.book, review: props.existingReview }), {
-            preserveScroll: true,
-            onSuccess: () => {
-                displayForm.value = false
-                form.title = ''
-                form.content = ''
+        displayForm.value = false
+        form.title = ''
+        form.content = ''
 
-                form.defaults()
-            }
-        })
+        form.defaults()
     }
 }
 </script>
@@ -127,29 +122,12 @@ function deleteReview () {
             v-if="!displayForm && hasExistingReview && existingReview"
             :review="existingReview"
             :book="book"
-            class="mb-4 border-2 border-dashed border-secondary rounded p-4" />
+            class="mb-4 border-2 border-dashed border-secondary rounded p-4"
+            @deleted="deleteReview" />
 
         <div
             v-if="!displayForm"
             class="mb-4 flex w-full gap-4 justify-end items-end">
-            <ConfirmationModal
-                v-if="hasExistingReview && existingReview"
-                @confirmed="deleteReview()">
-                <template #title>
-                    Are you sure you want to delete this review?
-                </template>
-                <template #description>
-                    This action cannot be undone.
-                </template>
-                <template #trigger>
-                    <Button
-                        variant="link"
-                        class="text-destructive">
-                        Delete
-                    </Button>
-                </template>
-            </ConfirmationModal>
-
             <Button
                 v-if="hasExistingReview"
                 variant="secondary"

@@ -4,8 +4,7 @@ use App\Models\Book;
 use App\Models\Note;
 use App\Models\User;
 use App\Enums\UserBookStatus;
-
-// Test that a user can add a note to a book
+use Inertia\Testing\AssertableInertia;
 
 test('user cannot add a note to a book not in their library', function () {
     $user = User::factory()->create();
@@ -114,6 +113,25 @@ test('notes require authentication', function () {
 
     $this->delete(route('notes.destroy', [$book->path, $note->id]))
         ->assertRedirect(route('login'));
+});
+
+test('user can view their notes', function () {
+    $user = User::factory()->create();
+    $book = Book::factory()->create();
+
+    Note::factory()->create([
+        'user_id' => $user->id,
+        'book_id' => $book->id,
+        'content' => 'My personal note',
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('user.notes.index'))
+        ->assertStatus(200)
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('user/Notes')
+            ->has('notes')
+            ->has('notes.meta'));
 });
 
 test('user can update their note', function () {

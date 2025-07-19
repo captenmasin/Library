@@ -22,7 +22,24 @@ test('book can be removed from library', function () {
     ]);
 });
 
-// Test removing a book that is not in the user's library
+test('book can be added to library', function () {
+    $user = User::factory()->create();
+    $book = Book::factory()->create();
+
+    $response = $this->actingAs($user)
+        ->post(route('api.user.books.store'), [
+            'identifier' => $book->identifier,
+            'status' => UserBookStatus::Reading->value,
+        ]);
+
+    $response->assertRedirect();
+
+    $this->assertDatabaseHas('book_user', [
+        'user_id' => $user->id,
+        'book_id' => $book->id,
+        'status' => UserBookStatus::Reading->value,
+    ]);
+});
 
 test('removing missing book returns an error', function () {
     $user = User::factory()->create();

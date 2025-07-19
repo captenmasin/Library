@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import ConfirmationModal from '@/components/ConfirmationModal.vue'
 import { PropType } from 'vue'
+import { cn } from '@/lib/utils'
 import { Book } from '@/types/book'
 import { Note } from '@/types/note'
-import { Link } from '@inertiajs/vue3'
 import { useDateFormat } from '@vueuse/core'
 import { Badge } from '@/components/ui/badge'
+import { Link, router } from '@inertiajs/vue3'
+import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { useMarkdown } from '@/composables/useMarkdown'
 
-defineProps({
+const props = defineProps({
     book: {
         type: Object as PropType<Book>,
         required: true
@@ -16,30 +19,48 @@ defineProps({
     note: {
         type: Object as PropType<Note>,
         required: true
+    },
+    class: {
+        type: String,
+        default: ''
     }
 })
 
 function formatDate (date) {
     return useDateFormat(date, 'Mo MMMM h:ma')
 }
+
+function deleteNote () {
+    router.delete(useRoute('notes.destroy', { book: props.book, note: props.note }), {
+        preserveScroll: true
+    })
+}
 </script>
 
 <template>
-    <div class="group py-6">
+    <div :class="cn('group py-6', props.class)">
         <div class="flex items-center justify-between">
             <div class="text-sm font-semibold text-secondary-foreground">
                 {{ formatDate(note.created_at) }}
             </div>
             <div class="flex items-center gap-2">
                 <div class="flex transition-all group-hover:opacity-100 md:opacity-0">
-                    <Link
-                        :href="useRoute('notes.destroy', { book: book, note: note.id })"
-                        preserve-scroll
-                        class="cursor-pointer text-xs text-destructive hover:underline"
-                        method="delete"
-                    >
-                        Delete
-                    </Link>
+                    <ConfirmationModal
+                        @confirmed="deleteNote()">
+                        <template #title>
+                            Are you sure you want to delete this note?
+                        </template>
+                        <template #description>
+                            This action cannot be undone.
+                        </template>
+                        <template #trigger>
+                            <Button
+                                variant="link"
+                                class="text-destructive py-0 h-auto text-xs">
+                                Delete
+                            </Button>
+                        </template>
+                    </ConfirmationModal>
                 </div>
                 <Badge
                     variant="secondary"

@@ -107,7 +107,7 @@ function submit (rating: number | null) {
                 v-for="star in 5"
                 :key="star"
                 type="button"
-                class="pr-1"
+                class="pr-0.5"
                 :aria-label="`Rate ${star} star`"
                 @mouseover="currentlyHovering = star"
                 @mouseleave="currentlyHovering = null"

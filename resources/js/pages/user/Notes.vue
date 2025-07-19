@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageTitle from '@/components/PageTitle.vue'
 import SingleNote from '@/components/SingleNote.vue'
@@ -6,7 +7,10 @@ import CustomPagination from '@/components/CustomPagination.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import { PropType } from 'vue'
 import { Note } from '@/types/note'
+import { Link } from '@inertiajs/vue3'
 import { Paginated } from '@/types/pagination'
+import { Button } from '@/components/ui/button'
+import { useRoute } from '@/composables/useRoute'
 
 defineOptions({ layout: AppLayout })
 
@@ -24,11 +28,31 @@ const props = defineProps({
             Your Notes
         </PageTitle>
 
-        <ul class="divide-y divide-muted rounded-xl bg-white shadow">
+        <div
+            v-if="notes.meta.total === 0 || notes.data.length === 0"
+            class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-12 text-center text-sm text-muted-foreground"
+        >
+            <Icon
+                name="NotebookPen"
+                class="size-8" />
+            <h3 class="font-serif text-2xl font-semibold">
+                Nothing to see here
+            </h3>
+            <p v-if="notes.data.length === 0">
+                There's no notes on this page
+            </p>
+            <p v-else>
+                You haven't added any notes to books yet
+            </p>
+        </div>
+
+        <ul
+            v-else
+            class="divide-y divide-muted rounded-xl bg-white shadow">
             <li
                 v-for="note in props.notes.data"
                 :key="note.id"
-                class="p-4 flex flex-col gap-4 md:flex-row"
+                class="p-4 md:p-6 flex items-start flex-col gap-4 md:flex-row"
             >
                 <BookCardHorizontal
                     :book="note.book"
@@ -38,12 +62,13 @@ const props = defineProps({
                 <SingleNote
                     :book="note.book"
                     :note="note"
-                    class="flex-1"
+                    class="flex-1 py-0"
                 />
             </li>
         </ul>
         <CustomPagination
+            v-if="notes.meta.total > notes.meta.per_page"
             class="my-4"
-            :meta="props.notes.meta" />
+            :meta="notes.meta" />
     </div>
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageTitle from '@/components/PageTitle.vue'
 import SingleReview from '@/components/SingleReview.vue'
@@ -24,11 +25,31 @@ const props = defineProps({
             Your Reviews
         </PageTitle>
 
-        <ul class="divide-y divide-muted rounded-xl bg-white shadow">
+        <div
+            v-if="reviews.meta.total === 0 || reviews.data.length === 0"
+            class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-12 text-center text-sm text-muted-foreground"
+        >
+            <Icon
+                name="NotebookPen"
+                class="size-8" />
+            <h3 class="font-serif text-2xl font-semibold">
+                Nothing to see here
+            </h3>
+            <p v-if="reviews.data.length === 0">
+                There's no reviews on this page
+            </p>
+            <p v-else>
+                You haven't reviewed any books yet
+            </p>
+        </div>
+
+        <ul
+            v-else
+            class="divide-y divide-muted rounded-xl bg-white shadow">
             <li
                 v-for="review in props.reviews.data"
                 :key="review.uuid"
-                class="p-4 flex flex-col gap-4 md:flex-row"
+                class="p-4 md:p-6 flex items-start flex-col gap-4 md:flex-row"
             >
                 <BookCardHorizontal
                     :book="review.book"
@@ -38,11 +59,12 @@ const props = defineProps({
                 <SingleReview
                     :book="review.book"
                     :review="review"
-                    class="flex-1"
+                    class="flex-1 py-0"
                 />
             </li>
         </ul>
         <CustomPagination
+            v-if="reviews.meta.total > reviews.meta.per_page"
             class="my-4"
             :meta="props.reviews.meta" />
     </div>

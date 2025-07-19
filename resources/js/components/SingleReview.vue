@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import UserAvatar from '@/components/UserAvatar.vue'
+import RatingForm from '@/components/books/RatingForm.vue'
 import StarRatingDisplay from '@/components/StarRatingDisplay.vue'
-import { PropType } from 'vue'
+import ConfirmationModal from '@/components/ConfirmationModal.vue'
 import { cn } from '@/lib/utils'
 import { Book } from '@/types/book'
 import { Note } from '@/types/note'
-import { Link } from '@inertiajs/vue3'
 import { Review } from '@/types/review'
+import { computed, PropType } from 'vue'
 import { useDateFormat } from '@vueuse/core'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
+import { Link, router } from '@inertiajs/vue3'
+import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { useMarkdown } from '@/composables/useMarkdown'
 import { getInitials } from '@/composables/useInitials'
+import { useAuthedUser } from '@/composables/useAuthedUser'
 import { useImageTransform } from '@/composables/useImageTransform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
@@ -33,20 +37,67 @@ const props = defineProps({
 
 const { getImageUrl } = useImageTransform()
 
+const { authedUser } = useAuthedUser()
+
 function formatDate (date) {
     return useDateFormat(date, 'Mo MMMM h:ma')
 }
+
+const emit = defineEmits(['deleted'])
+
+function deleteReview () {
+    router.delete(useRoute('reviews.destroy', { book: props.book, review: props.review }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            emit('deleted')
+        }
+    })
+}
+
+const isUserReview = computed(() => {
+    return props.review.user && props.review.user.id === authedUser.value?.id
+})
 </script>
 
 <template>
     <div :class="cn('group py-6', props.class)">
-        <h3
-            v-if="review.title"
-            class="text-xl font-semibold">
-            {{ review.title }}
-        </h3>
+        <div class="flex items-center justify-between">
+            <h3
+                v-if="review.title"
+                class="text-xl font-semibold">
+                {{ review.title }}
+            </h3>
+
+            <div
+                v-if="isUserReview"
+                class="flex transition-all group-hover:opacity-100 md:opacity-0">
+                <ConfirmationModal
+                    @confirmed="deleteReview()">
+                    <template #title>
+                        Are you sure you want to delete this review?
+                    </template>
+                    <template #description>
+                        This action cannot be undone.
+                    </template>
+                    <template #trigger>
+                        <Button
+                            variant="link"
+                            class="text-destructive py-0 h-auto text-xs">
+                            Delete
+                        </Button>
+                    </template>
+                </ConfirmationModal>
+            </div>
+        </div>
+
+        <RatingForm
+            v-if="review.rating?.value && isUserReview"
+            class="mt-px mb-2"
+            star-size="size-5"
+            :book="book" />
+
         <StarRatingDisplay
-            v-if="review.rating?.value"
+            v-else-if="review.rating?.value && !isUserReview"
             :rating="review.rating.value"
             class="mt-px mb-2" />
         <div

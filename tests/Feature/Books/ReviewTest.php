@@ -3,6 +3,7 @@
 use App\Models\Book;
 use App\Models\User;
 use App\Models\Review;
+use Inertia\Testing\AssertableInertia;
 
 test('user can create book review', function () {
     $user = User::factory()->create();
@@ -88,6 +89,26 @@ test('user cannot delete others review', function () {
 
     $response->assertForbidden();
     $this->assertDatabaseHas('reviews', ['id' => $review->id]);
+});
+
+test('user can view their reviews', function () {
+    $user = User::factory()->create();
+    $book = Book::factory()->create();
+
+    Review::factory()->create([
+        'user_id' => $user->id,
+        'book_id' => $book->id,
+        'title' => 'My Review',
+        'content' => 'My review',
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('user.reviews.index'))
+        ->assertStatus(200)
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('user/Reviews')
+            ->has('reviews')
+            ->has('reviews.meta'));
 });
 
 test('reviews require authentication', function () {
