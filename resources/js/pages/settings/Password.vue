@@ -82,15 +82,38 @@ defineOptions({
 <template>
     <div>
         <SettingsLayout>
-            <div class="space-y-6">
-                <HeadingSmall
-                    title="Update password"
-                    description="Ensure your account is using a long, random password to stay secure" />
-
+            <div class="flex flex-col space-y-8">
                 <form
-                    class="space-y-6"
+                    class="space-y-4 md:space-y-5"
                     @submit.prevent="updatePassword">
-                    <div class="grid gap-2">
+                    <div class="grid gap-4 grid-cols-2">
+                        <div class="grid gap-1">
+                            <Label for="password">New password</Label>
+                            <Input
+                                id="password"
+                                ref="passwordInput"
+                                v-model="form.password"
+                                type="password"
+                                class="mt-1 block w-full"
+                                autocomplete="new-password"
+                            />
+                            <InputError :message="form.errors.password" />
+                        </div>
+
+                        <div class="grid gap-1">
+                            <Label for="password_confirmation">Confirm password</Label>
+                            <Input
+                                id="password_confirmation"
+                                v-model="form.password_confirmation"
+                                type="password"
+                                class="mt-1 block w-full"
+                                autocomplete="new-password"
+                            />
+                            <InputError :message="form.errors.password_confirmation" />
+                        </div>
+                    </div>
+
+                    <div class="grid gap-1">
                         <Label for="current_password">Current password</Label>
                         <Input
                             id="current_password"
@@ -99,43 +122,11 @@ defineOptions({
                             type="password"
                             class="mt-1 block w-full"
                             autocomplete="current-password"
-                            placeholder="Current password"
                         />
                         <InputError :message="form.errors.current_password" />
                     </div>
 
-                    <div class="grid gap-2">
-                        <Label for="password">New password</Label>
-                        <Input
-                            id="password"
-                            ref="passwordInput"
-                            v-model="form.password"
-                            type="password"
-                            class="mt-1 block w-full"
-                            autocomplete="new-password"
-                            placeholder="New password"
-                        />
-                        <InputError :message="form.errors.password" />
-                    </div>
-
-                    <div class="grid gap-2">
-                        <Label for="password_confirmation">Confirm password</Label>
-                        <Input
-                            id="password_confirmation"
-                            v-model="form.password_confirmation"
-                            type="password"
-                            class="mt-1 block w-full"
-                            autocomplete="new-password"
-                            placeholder="Confirm password"
-                        />
-                        <InputError :message="form.errors.password_confirmation" />
-                    </div>
-
-                    <div class="flex items-center gap-4">
-                        <Button :disabled="form.processing">
-                            Save password
-                        </Button>
-
+                    <div class="flex items-center justify-end gap-4">
                         <Transition
                             enter-active-class="transition ease-in-out"
                             enter-from-class="opacity-0"
@@ -148,6 +139,9 @@ defineOptions({
                                 Saved.
                             </p>
                         </Transition>
+                        <Button :disabled="form.processing">
+                            Save password
+                        </Button>
                     </div>
                 </form>
 
@@ -182,10 +176,13 @@ defineOptions({
                     </div>
                 </div>
 
-                <Button
-                    @click.prevent="addPassKey">
-                    Add a passkey
-                </Button>
+                <div class="flex justify-end">
+                    <Button
+                        variant="secondary"
+                        @click.prevent="addPassKey">
+                        Add a passkey
+                    </Button>
+                </div>
             </div>
         </SettingsLayout>
     </div>

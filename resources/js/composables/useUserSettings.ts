@@ -1,6 +1,7 @@
 import { useRequest } from '@/composables/useRequest'
 import { useRoute } from '@/composables/useRoute'
 import { usePage } from '@inertiajs/vue3'
+import { toast } from 'vue-sonner'
 
 export function useUserSettings () {
     const props = usePage().props
@@ -15,6 +16,10 @@ export function useUserSettings () {
     function updateMultipleSettings (settings: Record<string, any>) {
         return useRequest(useRoute('api.user.settings.multiple.update'), 'PATCH', {
             settings
+        }).then(response => {
+            if (response.success) {
+                toast.success(response.message || 'Settings updated successfully')
+            }
         })
     }
 

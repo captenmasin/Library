@@ -12,7 +12,7 @@ import { useRoute } from '@/composables/useRoute'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
 interface Props {
-    mustVerifyEmail: boolean;
+    mustVerifyEmail?: boolean;
     status?: string;
 }
 

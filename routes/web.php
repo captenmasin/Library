@@ -77,7 +77,6 @@ Route::middleware('auth')->name('user.')->group(function () {
         Route::delete('profile/avatar', [ProfileController::class, 'destroyAvatar'])->name('profile.avatar.destroy');
 
         Route::get('danger', [ProfileController::class, 'danger'])->name('profile.danger');
-        Route::get('books', [UserBookController::class, 'edit'])->name('books.edit');
 
         Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
         Route::put('password', [PasswordController::class, 'update'])->name('password.update');

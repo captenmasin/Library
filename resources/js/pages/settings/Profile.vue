@@ -100,124 +100,170 @@ defineOptions({
     <div>
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
-                <HeadingSmall
-                    title="Profile information"
-                    description="Update your name and email address" />
-
                 <form
-                    class="space-y-6"
+                    class="space-y-6 md:space-y-8"
                     @submit.prevent="submit">
-                    <div class="grid">
-                        <Label for="name">Name</Label>
-                        <Input
-                            id="name"
-                            v-model="form.name"
-                            class="mt-1 block w-full"
-                            required
-                            autocomplete="name"
-                            placeholder="Full name" />
-                        <InputError
-                            class="mt-2"
-                            :message="form.errors.name" />
-                    </div>
-
-                    <div class="grid">
-                        <Label for="name">Username</Label>
-                        <Input
-                            id="username"
-                            v-model="form.username"
-                            required
-                            class="mt-1 block w-full"
-                            autocomplete="username"
-                            placeholder="Username" />
-                        <InputError
-                            class="mt-2"
-                            :message="form.errors.username" />
-                    </div>
-
-                    <div>
-                        <Label for="avatar">Avatar</Label>
-
-                        <div class="flex w-full items-center gap-2">
-                            <label for="avatar">
-                                <Avatar
-                                    :key="fileInputKey"
-                                    class="flex overflow-hidden rounded-full border size-10 border-input-border">
-                                    <AvatarImage
-                                        v-if="previewUrl"
-                                        :src="previewUrl"
-                                        :alt="authedUser?.name" />
-                                    <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
-                                        {{ getInitials(authedUser?.name) }}
-                                    </AvatarFallback>
-                                </Avatar>
-                            </label>
-                            <div class="grid w-full">
-                                <div class="flex gap-2">
-                                    <Input
-                                        id="avatar"
-                                        ref="fileInput"
-                                        :key="fileInputKey"
-                                        type="file"
-                                        accept="image/*"
-                                        @input="handleFileChange" />
-                                    <Button
-                                        v-if="authedUser?.avatar"
-                                        type="button"
-                                        variant="destructive-ghost"
-                                        size="icon"
-                                        @click="deleteAvatar">
-                                        <Icon name="Trash" />
-                                    </Button>
-                                </div>
-
-                                <progress
-                                    :class="form.progress ? 'opacity-100' : 'opacity-0'"
-                                    :value="form.progress?.percentage"
-                                    class="-mt-1 w-full px-1 form-progress-bar h-[2px]"
-                                    max="100"
-                                >
-                                    {{ form.progress?.percentage }}%
-                                </progress>
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                        <Label
+                            for="name"
+                            class="grid gap-1">
+                            <p>Full name</p>
+                            <p class="text-xs text-muted-foreground">
+                                Your display name
+                            </p>
+                        </Label>
+                        <div class="flex flex-col w-full">
+                            <Input
+                                id="name"
+                                v-model="form.name"
+                                class="block w-full"
+                                required
+                                autocomplete="name"
+                                placeholder="Full name" />
+                            <InputError
+                                class="mt-2"
+                                :message="form.errors.name" />
                         </div>
-                        <InputError
-                            class="ml-12"
-                            :message="form.errors.avatar" />
                     </div>
 
-                    <div class="grid">
-                        <Label for="profile_colour">
-                            Favourite colour
+                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                        <Label
+                            for="name"
+                            class="grid gap-1">
+                            <p>Username</p>
+                            <p class="text-xs text-muted-foreground">
+                                A unique name for your profile
+                            </p>
+                        </Label>
+                        <div class="flex flex-col w-full">
+                            <Input
+                                id="username"
+                                v-model="form.username"
+                                required
+                                class="block w-full"
+                                autocomplete="username"
+                                placeholder="Username" />
+                            <InputError
+                                class="mt-2"
+                                :message="form.errors.username" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                        <Label
+                            for="avatar"
+                            class="grid gap-1">
+                            <p>Avatar</p>
+                            <p class="text-xs text-muted-foreground">
+                                A profile picture to represent you
+                            </p>
                         </Label>
 
-                        <div class="size-12">
-                            <ColorPicker v-model="form.profile_colour" />
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-2">
+                                <label for="avatar">
+                                    <Avatar
+                                        :key="fileInputKey"
+                                        class="flex overflow-hidden rounded-full border size-10 border-input-border">
+                                        <AvatarImage
+                                            v-if="previewUrl"
+                                            :src="previewUrl"
+                                            :alt="authedUser?.name" />
+                                        <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
+                                            {{ getInitials(authedUser?.name) }}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </label>
+                                <div class="grid w-full items-start ">
+                                    <div class="flex gap-2">
+                                        <Input
+                                            id="avatar"
+                                            ref="fileInput"
+                                            :key="fileInputKey"
+                                            type="file"
+                                            accept="image/*"
+                                            @input="handleFileChange" />
+                                        <Button
+                                            v-if="authedUser?.avatar"
+                                            type="button"
+                                            variant="destructive-ghost"
+                                            size="icon"
+                                            @click="deleteAvatar">
+                                            <Icon name="Trash" />
+                                        </Button>
+                                    </div>
+
+                                    <progress
+                                        :class="form.progress ? 'opacity-100' : 'opacity-0'"
+                                        :value="form.progress?.percentage"
+                                        class="-mt-1 w-full px-1 form-progress-bar h-[2px]"
+                                        max="100"
+                                    >
+                                        {{ form.progress?.percentage }}%
+                                    </progress>
+                                </div>
+                            </div>
+                            <InputError
+                                class="mt-2"
+                                :message="form.errors.avatar" />
                         </div>
-
-                        <InputError
-                            class="mt-2"
-                            :message="form.errors.email" />
                     </div>
 
-                    <div class="grid">
-                        <Label for="email">Email address</Label>
-                        <Input
-                            id="email"
-                            v-model="form.email"
-                            type="email"
-                            class="mt-1 block w-full"
-                            required
-                            autocomplete="username"
-                            placeholder="Email address"
-                        />
-                        <InputError
-                            class="mt-2"
-                            :message="form.errors.email" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                        <Label
+                            for="profile_colour"
+                            class="grid gap-1">
+                            <p>
+                                Favourite Colour
+                            </p>
+                            <p class="text-xs text-muted-foreground">
+                                Your favourite colour for your profile
+                            </p>
+                        </Label>
+
+                        <div class="flex flex-col w-full">
+                            <div>
+                                <ColorPicker v-model="form.profile_colour" />
+                            </div>
+
+                            <InputError
+                                class="mt-2"
+                                :message="form.errors.profile_colour" />
+                        </div>
                     </div>
 
-                    <div v-if="mustVerifyEmail && !authedUser?.email_verified">
-                        <p class="-mt-4 text-sm text-muted-foreground">
+                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                        <Label
+                            for="email"
+                            class="grid gap-1">
+                            <p>
+                                Email address
+                            </p>
+                            <p class="text-xs text-muted-foreground">
+                                Your email address for notifications and account recovery
+                            </p>
+                        </Label>
+
+                        <div class="flex flex-col w-full">
+                            <Input
+                                id="email"
+                                v-model="form.email"
+                                type="email"
+                                class="block w-full"
+                                required
+                                autocomplete="username"
+                                placeholder="Email address"
+                            />
+                            <InputError
+                                class="mt-2"
+                                :message="form.errors.email" />
+                        </div>
+                    </div>
+
+                    <div
+                        v-if="mustVerifyEmail && !authedUser?.email_verified"
+                        class="mt-1">
+                        <p class="text-sm text-muted-foreground">
                             Your email address is unverified.
                             <Link
                                 :href="useRoute('verification.send')"
@@ -237,12 +283,12 @@ defineOptions({
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center justify-end gap-4">
                         <div
                             class="mt-8 flex items-center justify-end gap-4">
                             <Button
                                 type="button"
-                                variant="ghost"
+                                variant="secondary"
                                 :disabled="form.processing || !form.isDirty"
                                 @click="resetForm">
                                 Reset

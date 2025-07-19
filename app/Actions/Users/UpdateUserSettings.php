@@ -24,12 +24,17 @@ class UpdateUserSettings
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json([
+                'success' => false,
+                'message' => implode(', ', $validator->errors()->all()),
+                'errors' => $validator->errors(),
+            ], 422);
         }
 
         $this->handle($request->user(), $request->input('settings'));
 
         return response()->json([
+            'success' => true,
             'message' => 'User settings updated successfully.',
         ]);
     }
