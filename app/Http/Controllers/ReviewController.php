@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Inertia\Inertia;
 use App\Models\Review;
+use App\Http\Resources\ReviewResource;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
@@ -17,7 +18,8 @@ class ReviewController extends Controller
         $reviews = $request->user()->reviews()
             ->with(['book.authors', 'book.covers', 'book.ratings', 'user'])
             ->orderByDesc('created_at')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('user/Reviews', [
             'reviews' => ReviewResource::collection($reviews),
