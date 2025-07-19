@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Inertia\Inertia;
 use App\Models\Review;
+use App\Http\Resources\ReviewResource;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
 use App\Http\Requests\DestroyReviewRequest;
@@ -13,10 +14,15 @@ class ReviewController extends Controller
 {
     public function index(Request $request)
     {
+        $reviews = $request->user()->reviews()
+            ->with(['book.authors', 'book.covers', 'book.ratings', 'user'])
+            ->orderByDesc('created_at')
+            ->get();
+
         return Inertia::render('user/Reviews', [
-            'reviews' => $request->user()->reviews()
-                ->with(['book'])
-                ->orderBy('created_at', 'desc')->get(),
+            'reviews' => ReviewResource::collection($reviews),
+        ])->withMeta([
+            'title' => 'Reviews',
         ]);
     }
 
