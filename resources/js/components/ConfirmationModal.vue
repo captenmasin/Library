@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import { useForwardPropsEmits, type DialogRootEmits, type DialogRootProps } from 'reka-ui'
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+
+// your extra events in property/signature form:
+type ExtraEmits = {
+    /** user clicked “Confirm” */
+    confirmed(): void
+    /** user clicked “Cancel” */
+    'not-confirmed'(): void
+}
 
 const props = defineProps<DialogRootProps>()
-const emits = defineEmits<DialogRootEmits & {(e: 'confirmed'): void; (e: 'not-confirmed'): void }>()
+
+// merge them together as one object‐style emit map
+const emits = defineEmits<DialogRootEmits & ExtraEmits>()
 
 const forwarded = useForwardPropsEmits(props, emits)
 </script>
@@ -36,7 +37,7 @@ const forwarded = useForwardPropsEmits(props, emits)
                     </slot>
                 </DialogDescription>
             </DialogHeader>
-            <DialogFooter class="flex gap-2 sm:justify-end">
+            <DialogFooter class="flex gap-2 mt-4 sm:justify-end">
                 <DialogClose as-child>
                     <Button
                         variant="outline"

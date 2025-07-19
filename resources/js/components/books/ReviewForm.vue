@@ -2,16 +2,17 @@
 import Icon from '@/components/Icon.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 import SingleReview from '@/components/SingleReview.vue'
+import ConfirmationModal from '@/components/ConfirmationModal.vue'
 import { Book } from '@/types/book'
 import { Review } from '@/types/review'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { computed, PropType, ref } from 'vue'
 import { Button } from '@/components/ui/button'
-import { Link, useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { Textarea } from '@/components/ui/textarea'
 import { getInitials } from '@/composables/useInitials'
+import { Link, router, useForm } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
 import { useImageTransform } from '@/composables/useImageTransform'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -44,6 +45,21 @@ function submit () {
             form.defaults()
         }
     })
+}
+
+function deleteReview () {
+    if (props.existingReview) {
+        router.delete(useRoute('reviews.destroy', { book: props.book, review: props.existingReview }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                displayForm.value = false
+                form.title = ''
+                form.content = ''
+
+                form.defaults()
+            }
+        })
+    }
 }
 </script>
 
@@ -89,7 +105,6 @@ function submit () {
                     v-model="form.content"
                     class="w-full rounded border p-2"
                     rows="4"
-                    placeholder="Write your thoughts..."
                 />
             </div>
             <div class="flex justify-end">
@@ -117,18 +132,23 @@ function submit () {
         <div
             v-if="!displayForm"
             class="mb-4 flex w-full gap-4 justify-end items-end">
-            <Button
+            <ConfirmationModal
                 v-if="hasExistingReview && existingReview"
-                variant="link"
-                class="text-destructive"
-                as-child>
-                <Link
-                    :href="useRoute('reviews.destroy', { book: book, review: existingReview })"
-                    method="delete"
-                    preserve-scroll>
-                    Delete
-                </Link>
-            </Button>
+                @confirmed="deleteReview()">
+                <template #title>
+                    Are you sure you want to delete this review?
+                </template>
+                <template #description>
+                    This action cannot be undone.
+                </template>
+                <template #trigger>
+                    <Button
+                        variant="link"
+                        class="text-destructive">
+                        Delete
+                    </Button>
+                </template>
+            </ConfirmationModal>
 
             <Button
                 v-if="hasExistingReview"
