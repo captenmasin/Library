@@ -42,6 +42,8 @@ watch(
     <AppHeaderLayout>
         <MetaHead />
         <slot />
-        <Toaster class="pointer-events-auto" />
+        <Toaster
+            :duration="2000"
+            class="pointer-events-auto" />
     </AppHeaderLayout>
 </template>
