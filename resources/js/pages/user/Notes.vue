@@ -4,7 +4,10 @@ import PageTitle from '@/components/PageTitle.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import SingleNote from '@/components/SingleNote.vue'
 import Pagination from '@/components/Pagination.vue'
-import { PropType } from 'vue'
+import Icon from '@/components/Icon.vue'
+import { PropType, ref } from 'vue'
+import { router } from '@inertiajs/vue3'
+import { Button } from '@/components/ui/button/index.js'
 import { Note } from '@/types/note'
 import { Paginated } from '@/types/pagination'
 
@@ -16,7 +19,6 @@ const props = defineProps({
         default: () => ({ data: [], links: {}, meta: {} })
     }
 })
-
 </script>
 
 <template>
