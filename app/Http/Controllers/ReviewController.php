@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Inertia\Inertia;
 use App\Models\Review;
-use App\Http\Resources\ReviewResource;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
-use App\Http\Resources\ReviewResource;
 use App\Http\Resources\ReviewResource;
 use App\Http\Requests\DestroyReviewRequest;
 

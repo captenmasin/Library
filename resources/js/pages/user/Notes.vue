@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageTitle from '@/components/PageTitle.vue'
-import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import SingleNote from '@/components/SingleNote.vue'
-import Pagination from '@/components/Pagination.vue'
-import Icon from '@/components/Icon.vue'
-import { PropType, ref } from 'vue'
-import { router } from '@inertiajs/vue3'
-import { Button } from '@/components/ui/button/index.js'
+import CustomPagination from '@/components/CustomPagination.vue'
+import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
+import { PropType } from 'vue'
 import { Note } from '@/types/note'
 import { Paginated } from '@/types/pagination'
 
@@ -23,7 +20,9 @@ const props = defineProps({
 
 <template>
     <div>
-        <PageTitle class="mb-4">Your Notes</PageTitle>
+        <PageTitle class="mb-4">
+            Your Notes
+        </PageTitle>
 
         <ul class="divide-y divide-muted rounded-xl bg-white shadow">
             <li
@@ -43,6 +42,8 @@ const props = defineProps({
                 />
             </li>
         </ul>
-        <Pagination :meta="props.notes.meta" />
+        <CustomPagination
+            class="my-4"
+            :meta="props.notes.meta" />
     </div>
 </template>

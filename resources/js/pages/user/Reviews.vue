@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageTitle from '@/components/PageTitle.vue'
-import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import SingleReview from '@/components/SingleReview.vue'
-import Pagination from '@/components/Pagination.vue'
-import Icon from '@/components/Icon.vue'
-import { PropType, ref } from 'vue'
+import CustomPagination from '@/components/CustomPagination.vue'
+import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
+import { PropType } from 'vue'
 import { Review } from '@/types/review'
 import { Paginated } from '@/types/pagination'
 
@@ -21,7 +20,9 @@ const props = defineProps({
 
 <template>
     <div>
-        <PageTitle class="mb-4">Your Reviews</PageTitle>
+        <PageTitle class="mb-4">
+            Your Reviews
+        </PageTitle>
 
         <ul class="divide-y divide-muted rounded-xl bg-white shadow">
             <li
@@ -41,6 +42,8 @@ const props = defineProps({
                 />
             </li>
         </ul>
-        <Pagination :meta="props.reviews.meta" />
+        <CustomPagination
+            class="my-4"
+            :meta="props.reviews.meta" />
     </div>
 </template>
