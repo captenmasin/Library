@@ -58,7 +58,7 @@ function submit () {
                 :size="64"
                 font-size="text-lg md:text-xl" />
 
-            <h2 class="font-bold text-lg md:text-2xl font-serif">
+            <h2 class="font-semibold text-lg md:text-2xl font-serif">
                 Share your thoughts
             </h2>
 

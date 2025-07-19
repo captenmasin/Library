@@ -222,7 +222,7 @@ defineOptions({
                 <div class="bg-secondary md:bg-transparent rounded-md mt-4">
                     <button
                         class="text-left flex w-full py-2 px-4 md:p-0 items-center justify-between"
-                        @pointerdown="detailsOpen = !detailsOpen">
+                        @click="detailsOpen = !detailsOpen">
                         <h3 class="md:text-lg font-semibold">
                             Details
                         </h3>

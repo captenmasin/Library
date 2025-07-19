@@ -95,7 +95,7 @@ defineOptions({ layout: AppLayout })
     <div class="container">
         <header class="mt-6 mb-4 flex w-full items-center justify-between">
             <div class="flex flex-col">
-                <h1 class="font-serif text-2xl font-bold text-foreground md:text-3xl">
+                <h1 class="font-serif text-2xl font-semibold text-foreground md:text-3xl">
                     Welcome back, Mason
                 </h1>
                 <p class="text-sm text-accent-foreground">
@@ -136,7 +136,7 @@ defineOptions({ layout: AppLayout })
                         <p class="text-sm text-current/60">
                             {{ stat.name }}
                         </p>
-                        <p class="text-xl font-bold md:text-2xl">
+                        <p class="text-xl font-semibold md:text-2xl">
                             {{ stat.value }}
                         </p>
                     </div>
