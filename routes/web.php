@@ -95,3 +95,5 @@ Route::get('image-transform/{options}/{path}', ImageTransformerController::class
 // Auth and test-only routes
 require __DIR__.'/auth.php';
 require __DIR__.'/testing.php';
+
+Route::fallback(\App\Actions\ErrorPage::class);

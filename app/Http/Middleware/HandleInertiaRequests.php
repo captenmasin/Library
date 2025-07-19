@@ -47,7 +47,7 @@ class HandleInertiaRequests extends Middleware
             'app' => [
                 'name' => config('app.name'),
                 'url' => config('app.url'),
-                'route' => $request->route()->getName(),
+                'route' => $request->route()?->getName(),
                 'storage_url' => config('filesystems.disks.public.url'),
             ],
             'currentUrl' => url()->full(),
@@ -58,8 +58,8 @@ class HandleInertiaRequests extends Middleware
             ],
 
             'flash' => [
-                'success' => fn () => $request->session()->get('success'),
-                'error' => fn () => $request->session()->get('error'),
+                'success' => fn () => $request->hasSession() ? $request->session()->get('success') : null,
+                'error' => fn () => $request->hasSession() ? $request->session()->get('error') : null,
             ],
 
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',

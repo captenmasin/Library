@@ -1,0 +1,112 @@
+<?php
+
+return [
+    'enabled' => env('PWA_ENABLED', true),
+    'manifest' => [
+        'id' => env('APP_URL'),
+        'name' => env('APP_NAME'),
+        'short_name' => env('APP_NAME'),
+        'start_url' => env('APP_URL').'?utm_source=pwa&pwa-mode=true',
+        'display' => 'standalone',
+        'categories' => [''],
+        'description' => env('APP_DESCRIPTION'),
+        'background_color' => '#f7f6fe',
+        'dark_background_color' => '#121D38',
+        'theme_color' => '#f7f6fe',
+        'orientation' => 'any',
+        'status_bar' => '#6E51FC',
+        'appleMobileWebAppCapable' => 'yes',
+        'appleMobileWebAppStatusBarStyle' => 'black',
+        'splash' => [
+            '640x1136' => config('app.url').'/images/pwa/splash/640x1136.jpeg',
+            '750x1334' => config('app.url').'/images/pwa/splash/750x1334.jpeg',
+            '828x1792' => config('app.url').'/images/pwa/splash/828x1792.jpeg',
+            '1125x2436' => config('app.url').'/images/pwa/splash/1125x2436.jpeg',
+            '1136x640' => config('app.url').'/images/pwa/splash/1136x640.jpeg',
+            '1170x2532' => config('app.url').'/images/pwa/splash/1170x2532.jpeg',
+            '1242x2208' => config('app.url').'/images/pwa/splash/1242x2208.jpeg',
+            '1242x2688' => config('app.url').'/images/pwa/splash/1242x2688.jpeg',
+            '1284x2778' => config('app.url').'/images/pwa/splash/1284x2778.jpeg',
+            '1334x750' => config('app.url').'/images/pwa/splash/1334x750.jpeg',
+            '1536x2048' => config('app.url').'/images/pwa/splash/1536x2048.jpeg',
+            '1620x2160' => config('app.url').'/images/pwa/splash/1620x2160.jpeg',
+            '1668x2224' => config('app.url').'/images/pwa/splash/1668x2224.jpeg',
+            '1668x2388' => config('app.url').'/images/pwa/splash/1668x2388.jpeg',
+            '1792x828' => config('app.url').'/images/pwa/splash/1792x828.jpeg',
+            '2048x1536' => config('app.url').'/images/pwa/splash/2048x1536.jpeg',
+            '2048x2732' => config('app.url').'/images/pwa/splash/2048x2732.jpeg',
+            '2160x1620' => config('app.url').'/images/pwa/splash/2160x1620.jpeg',
+            '2208x1242' => config('app.url').'/images/pwa/splash/2208x1242.jpeg',
+            '2224x1668' => config('app.url').'/images/pwa/splash/2224x1668.jpeg',
+            '2388x1668' => config('app.url').'/images/pwa/splash/2388x1668.jpeg',
+            '2436x1125' => config('app.url').'/images/pwa/splash/2436x1125.jpeg',
+            '2532x1170' => config('app.url').'/images/pwa/splash/2532x1170.jpeg',
+            '2688x1242' => config('app.url').'/images/pwa/splash/2688x1242.jpeg',
+            '2732x2048' => config('app.url').'/images/pwa/splash/2732x2048.jpeg',
+            '2778x1284' => config('app.url').'/images/pwa/splash/2778x1284.jpeg',
+        ],
+        'icons' => [
+            [
+                'src' => config('app.url').'/images/pwa/icons/144.png',
+                'type' => 'image/png',
+                'sizes' => '144x144',
+                'purpose' => 'any',
+            ],
+            [
+                'src' => config('app.url').'/images/pwa/icons/144.png',
+                'type' => 'image/png',
+                'sizes' => '144x144',
+                'purpose' => 'maskable',
+            ],
+            [
+                'src' => config('app.url').'/images/pwa/icons/192.png',
+                'type' => 'image/png',
+                'sizes' => '192x192',
+                'purpose' => 'any',
+            ],
+            [
+                'src' => config('app.url').'/images/pwa/icons/192.png',
+                'type' => 'image/png',
+                'sizes' => '192x192',
+                'purpose' => 'maskable',
+            ],
+            [
+                'src' => config('app.url').'/images/pwa/icons/512.png',
+                'type' => 'image/png',
+                'sizes' => '512x512',
+                'purpose' => 'any',
+            ],
+            [
+                'src' => config('app.url').'/images/pwa/icons/512.png',
+                'sizes' => '512x512',
+                'type' => 'image/png',
+                'purpose' => 'maskable',
+            ],
+            [
+                'src' => config('app.url').'/images/pwa/icons/512-monochrome.png',
+                'type' => 'image/png',
+                'sizes' => '512x512',
+                'purpose' => 'monochrome',
+            ],
+        ],
+        'shortcuts' => [
+        ],
+        'dir' => 'ltr',
+        'lang' => 'en',
+        'screenshots' => [
+
+        ],
+        'scope' => config('app.url'),
+        'prefer_related_applications' => false,
+        'protocol_handlers' => [
+
+        ],
+        'edge_side_panel' => [
+            'preferred_width' => 500,
+        ],
+        'handle_links' => 'auto',
+        'launch_handler' => [
+            'client_mode' => ['navigate-existing', 'auto'],
+        ],
+    ],
+];
