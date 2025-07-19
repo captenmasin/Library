@@ -24,9 +24,9 @@ class DeployApp extends Command
         // Laravel caches
         $this->info('🗄️  Clearing and caching Laravel configurations...');
         $this->call('cache:clear');
-        $this->call('config:cache');
-        $this->call('route:cache');
-        $this->call('view:cache');
+        $this->call('config:clear');
+        $this->call('route:clear');
+        $this->call('view:clear');
 
         // SQLite file
         $sqlitePath = database_path('database.sqlite');
@@ -50,6 +50,11 @@ class DeployApp extends Command
         } else {
             $this->info('🛑 Octane is not running. Skipping reload.');
         }
+
+        // Re-cache the configuration
+        $this->call('config:cache');
+        $this->call('route:cache');
+        $this->call('view:cache');
 
         $this->info('✅ Deployment completed.');
 

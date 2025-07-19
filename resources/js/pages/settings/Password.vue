@@ -9,8 +9,8 @@ import { UserPasskey } from '@/types/user'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { useRoute } from '@/composables/useRoute'
 import { router, useForm } from '@inertiajs/vue3'
+import { useRoute } from '@/composables/useRoute'
 import { useRequest } from '@/composables/useRequest'
 import { startRegistration } from '@simplewebauthn/browser'
 
@@ -64,7 +64,7 @@ async function addPassKey () {
             passkey: JSON.stringify(credential)
         })
     } catch (error) {
-        toast.error('Failed to register passkey. Please try again.')
+        console.log(error)
     }
 }
 
@@ -150,37 +150,43 @@ defineOptions({
                         </Transition>
                     </div>
                 </form>
-            </div>
 
-            <HeadingSmall
-                title="Passkeys"
-                description="Paaaaaaaaaasskeys" />
+                <HeadingSmall
+                    title="Passkeys"
+                    description="Use passkeys to log in without a password"
+                />
 
-            <div v-if="passkeys && passkeys?.length > 0">
-                <h2 class="mb-4 font-bold">
-                    Your passkeys:
-                </h2>
-                <div class="divide-y">
+                <div
+                    v-if="passkeys && passkeys?.length > 0"
+                    class="flex flex-col gap-6">
                     <div
                         v-for="passkey in passkeys"
                         :key="passkey.id"
-                        class="flex items-center justify-between py-2">
-                        <div>
-                            <p>Name: {{ passkey.name }}</p>
-                            <p>Last used at: {{ passkey.last_used_at || 'Never' }}</p>
+                        class="flex items-center justify-between">
+                        <div class="flex flex-col gap-1">
+                            <div class="flex">
+                                <p class="font-mono bg-muted flex text-xs text-muted-foreground px-2 py-0.5 rounded-full">
+                                    {{ passkey.name }}
+                                </p>
+                            </div>
+                            <p class="text-sm px-1">
+                                Last used at: {{ passkey.last_used_at || 'Never' }}
+                            </p>
                         </div>
-                        <button @click="deletePasskey(passkey.id)">
+                        <Button
+                            variant="link"
+                            class="text-destructive"
+                            @click="deletePasskey(passkey.id)">
                             Delete
-                        </button>
+                        </Button>
                     </div>
                 </div>
-            </div>
 
-            <button
-                class="btn"
-                @click.prevent="addPassKey">
-                Add a passkey
-            </button>
+                <Button
+                    @click.prevent="addPassKey">
+                    Add a passkey
+                </Button>
+            </div>
         </SettingsLayout>
     </div>
 </template>
