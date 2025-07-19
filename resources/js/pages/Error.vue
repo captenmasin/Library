@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue'
 import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import { useRoute } from '@/Composables/useRoute'
+import { useRoute } from '@/composables/useRoute'
 import { Button } from '@/components/ui/button/index.js'
 
 const props = defineProps({
