@@ -17,7 +17,7 @@
 
     <link rel="icon" type="image/png" href="/favicon-96x96.png?v={{ $buildId }}" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v={{ $buildId }}" />
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico?v=<?= $buildId ?>" />
 
     @if(!empty($meta['preload']))
         @foreach($meta['preload'] as $preload)

@@ -127,7 +127,7 @@ class UserBookController extends Controller
 
             'tags' => Inertia::defer(fn () => TagResource::collection($tags)),
         ])->withMeta([
-            'title' => 'Your library',
+            'title' => 'Your Library',
             'description' => 'A collection of your books.',
         ]);
     }

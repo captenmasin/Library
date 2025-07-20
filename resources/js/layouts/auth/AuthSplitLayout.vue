@@ -18,13 +18,13 @@ defineProps<{
             <div class="absolute inset-4 bg-secondary text-secondary-foreground rounded-xl" />
             <Link
                 :href="useRoute('user.books.index')"
-                class="relative z-20 flex items-center text-xl font-serif text-foreground font-medium">
+                class="relative z-20 flex items-center text-2xl text-primary font-serif font-semibold">
                 <AppLogoIcon class="mr-2 rounded-lg fill-current size-8" />
                 {{ name }}
             </Link>
         </div>
         <div class="lg:p-8">
-            <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-sm">
+            <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-sm py-4">
                 <AppLogoIcon class="rounded-lg fill-current size-10 mx-auto lg:hidden mb-2" />
                 <div class="flex flex-col text-center space-y-1">
                     <h1

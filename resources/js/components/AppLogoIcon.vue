@@ -13,6 +13,6 @@ defineProps({
     <div
         v-bind="$attrs"
         :style="white ? '--color-primary: #fff; --color-secondary: #fff;' : ''"
-        class="flex items-center justify-center overflow-hidden border border-primary/20"
+        class="flex items-center justify-center overflow-hidden border border-primary/30"
         v-html="Logo" />
 </template>
