@@ -32,7 +32,8 @@ function formatDate (date) {
 
 function deleteNote () {
     router.delete(useRoute('notes.destroy', { book: props.book, note: props.note }), {
-        preserveScroll: true
+        preserveScroll: true,
+        only: ['notes', 'book']
     })
 }
 </script>

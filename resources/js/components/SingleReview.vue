@@ -48,6 +48,7 @@ const emit = defineEmits(['deleted'])
 function deleteReview () {
     router.delete(useRoute('reviews.destroy', { book: props.book, review: props.review }), {
         preserveScroll: true,
+        only: ['reviews', 'book'],
         onSuccess: () => {
             emit('deleted')
         }

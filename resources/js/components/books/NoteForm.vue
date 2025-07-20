@@ -23,33 +23,22 @@ const noteForm = useForm({
     content: ''
 })
 
-const displayNoteForm = ref(true)
-
 const submit = () => {
     noteForm.post(useRoute('notes.store', props.book), {
+        only: ['book'],
         preserveScroll: true,
         onSuccess: () => {
-            displayNoteForm.value = false
+            noteForm.reset()
         }
     })
 }
 
 const noteInput = ref<HTMLInputElement | null>(null)
-
-function openNoteForm () {
-    displayNoteForm.value = true
-    nextTick(() => {
-        if (noteInput.value) {
-            noteInput.value.focus()
-        }
-    })
-}
 </script>
 
 <template>
     <div>
         <form
-            v-if="displayNoteForm"
             @submit.prevent="submit">
             <Textarea
                 id="noteInput"

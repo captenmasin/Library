@@ -40,6 +40,7 @@ const displayForm = ref(false)
 function submit () {
     form.post(useRoute('reviews.store', props.book), {
         preserveScroll: true,
+        only: ['reviews', 'book'],
         onSuccess: () => {
             displayForm.value = false
             form.defaults()
@@ -65,7 +66,7 @@ function deleteReview () {
             class="py-8 items-center flex text-center gap-2 border-2 border-dashed border-primary/20 rounded flex-col justify-center">
             <UserAvatar
                 :user="authedUser"
-                class="size-10 md:size-16"
+                class="size-10 md:size-14"
                 :size="64"
                 font-size="text-lg md:text-xl" />
 
