@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Laravel\Scout\Searchable;
-use App\Observers\BookObserver;
+use Spatie\Sluggable\HasSlug;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -12,14 +13,11 @@ use Glorand\Model\Settings\Traits\HasSettingsField;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-#[ObservedBy([BookObserver::class])]
 class Book extends Model implements HasMedia
 {
-    /** @use HasFactory<\Database\Factories\BookFactory> */
-    use HasFactory, HasSettingsField, InteractsWithMedia, Searchable;
+    use HasFactory, HasSettingsField, HasSlug, InteractsWithMedia, Searchable;
 
     protected static $unguarded = true;
 
@@ -30,6 +28,13 @@ class Book extends Model implements HasMedia
         return [
             'codes' => 'array',
         ];
+    }
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom(['title', 'identifier'])
+            ->saveSlugsTo('path');
     }
 
     public function getRouteKeyName(): string

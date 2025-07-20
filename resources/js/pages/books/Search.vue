@@ -254,7 +254,7 @@ defineOptions({
 
                     <div
                         v-if="results && results.total > 0"
-                        class="-mt-2">
+                        class="-mt-4">
                         <ul
                             class="divide-y divide-muted-foreground/5">
                             <BookCardHorizontal

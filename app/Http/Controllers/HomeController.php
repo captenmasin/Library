@@ -60,7 +60,8 @@ class HomeController extends Controller
                 'booksInLibrary' => $books->count(),
                 'completedBooks' => $completedBooks->count() ?? 0,
                 'readingBooks' => $readingBooks->count() ?? 0,
-                'pagesRead' => Number::format($completedBooks->sum('page_count')) ?? 0,
+                //                'pagesRead' => Number::format($completedBooks->sum('page_count')) ?? 0,
+                'planToRead' => $planToReadBooks->count() ?? 0,
             ],
             'currentlyReading' => BookResource::collection(
                 $currentlyReading

@@ -28,7 +28,7 @@ const props = defineProps({
 
         <div
             v-if="reviews.meta.total === 0 || reviews.data.length === 0"
-            class="my-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-12 text-center text-sm text-muted-foreground"
+            class="my-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-8 md:py-12 text-center text-sm text-muted-foreground"
         >
             <Icon
                 name="NotebookPen"

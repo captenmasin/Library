@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Str;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -41,6 +42,10 @@ class BookResource extends JsonResource
             'in_library' => $user && $this->isInLibrary($user),
             'user_status' => $user ? $this->getUserStatus($user) : null,
             'user_tags' => $user ? $this->getUserTags($user) : [],
+
+            'edition' => $this->edition,
+            'binding' => $this->normalizeBinding($this->binding),
+            'language' => $this->language,
 
             'colour' => $this->settings()->get('colour', '#000000'),
             'created_at' => $this->created_at,
@@ -135,5 +140,22 @@ class BookResource extends JsonResource
         $notes = $this->notes->where('user_id', $user?->id)->sortByDesc('created_at');
 
         return $notes ? NoteResource::collection($notes) : null;
+    }
+
+    private function normalizeBinding(mixed $binding): string
+    {
+        if (Str::contains($binding, 'unknown')) {
+            return '';
+        }
+
+        $binding = Str::replace('Mass Market', '', $binding);
+        $binding = Str::replace('School & Library Binding', 'Paperback', $binding);
+        $binding = Str::replace('Edition', '', $binding);
+
+        if ($binding === 'electronic resource') {
+            return 'eBook';
+        }
+
+        return ucfirst($binding);
     }
 }

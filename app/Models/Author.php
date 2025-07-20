@@ -3,18 +3,24 @@
 namespace App\Models;
 
 use App\Traits\HasUuid;
-use App\Observers\AuthorObserver;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-#[ObservedBy([AuthorObserver::class])]
 class Author extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasSlug, HasUuid;
 
     protected static $unguarded = true;
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
 
     public function getRouteKeyName(): string
     {

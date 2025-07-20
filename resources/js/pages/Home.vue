@@ -3,23 +3,24 @@ import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import TagCloud from '@/components/TagCloud.vue'
 import BookCard from '@/components/books/BookCard.vue'
+import SingleActivity from '@/components/SingleActivity.vue'
+import CircularText from '@/components/Bits/CircularText.vue'
 import { PropType } from 'vue'
 import { Tag } from '@/types/tag'
 import { Book } from '@/types/book'
 import { Link } from '@inertiajs/vue3'
 import { Author } from '@/types/author'
-import { useTimeAgo } from '@vueuse/core'
 import { Activity } from '@/types/activity'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { UserBookStatus } from '@/enums/UserBookStatus'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 type Stats = {
     booksInLibrary: number;
     completedBooks: number;
     readingBooks: number;
     pagesRead: number | string;
+    planToRead: number | string;
 };
 
 const props = defineProps({
@@ -74,18 +75,22 @@ const stats = [
         color: 'text-yellow-500'
     },
     {
-        name: 'Pages read this year',
+        name: 'Plan to read',
         // value: props.statValues.pagesRead,
-        value: '//TODO',
-        link: useRoute('user.books.index'),
-        icon: 'Hash',
+        value: props.statValues.planToRead,
+        link: useRoute('user.books.index', { status: UserBookStatus.PlanToRead }),
+        icon: 'BookMarked',
         color: 'text-blue-500'
     }
+    // {
+    //     name: 'Pages read this year',
+    //     // value: props.statValues.pagesRead,
+    //     value: '//TODO',
+    //     link: useRoute('user.books.index'),
+    //     icon: 'Hash',
+    //     color: 'text-blue-500'
+    // }
 ]
-
-function getTimeAgo (date: string | Date) {
-    return useTimeAgo(new Date(date))
-}
 
 defineOptions({ layout: AppLayout })
 </script>
@@ -179,7 +184,7 @@ defineOptions({ layout: AppLayout })
 
                     <div
                         v-else
-                        class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-12 text-center text-sm text-muted-foreground"
+                        class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-8 md:py-12 text-center text-sm text-muted-foreground"
                     >
                         <Icon
                             name="BookOpen"
@@ -209,36 +214,16 @@ defineOptions({ layout: AppLayout })
                             as-child
                             class="px-0"
                             variant="link">
-                            <Link :href="'#'">
+                            <Link :href="useRoute('user.activities.index')">
                                 View all
                             </Link>
                         </Button>
                     </div>
                     <ul class="divide-y divide-muted rounded-xl dark:divide-zinc-950 bg-white dark:bg-zinc-900 shadow">
-                        <li
+                        <SingleActivity
                             v-for="activity in activities"
                             :key="activity.id"
-                            class="flex flex-col justify-between gap-1 p-4 text-sm">
-                            <p
-                                class="text-secondary-foreground"
-                                v-html="activity.description" />
-                            <div class="flex shrink-0">
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            <p class="text-xs text-secondary-foreground/50">
-                                                {{ getTimeAgo(activity.created_at) }}
-                                            </p>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>
-                                                {{ new Date(activity.created_at).toLocaleString() }}
-                                            </p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </div>
-                        </li>
+                            :activity="activity" />
                     </ul>
                 </section>
             </div>

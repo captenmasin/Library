@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Tag;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TagFactory extends Factory
@@ -13,7 +12,7 @@ class TagFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word().'-'.Str::random(8),
+            'name' => $this->faker->word(),
         ];
     }
 }

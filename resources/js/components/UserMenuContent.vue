@@ -5,7 +5,7 @@ import { Link, router } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { UserPermission } from '@/enums/UserPermission'
 import { useAuthedUser } from '@/composables/useAuthedUser'
-import { LogOut, Settings, Shield, BriefcaseBusiness, NotebookPen, Star } from 'lucide-vue-next'
+import { LogOut, Settings, Shield, BriefcaseBusiness, NotebookPen, Star, Activity } from 'lucide-vue-next'
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 
 interface Props {
@@ -49,6 +49,16 @@ defineProps<Props>()
                 prefetch>
                 <Star class="mr-2 h-4 w-4" />
                 Reviews
+            </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem :as-child="true">
+            <Link
+                class="block w-full"
+                :href="useRoute('user.activities.index')"
+                prefetch>
+                <Activity class="mr-2 h-4 w-4" />
+                Activities
             </Link>
         </DropdownMenuItem>
 

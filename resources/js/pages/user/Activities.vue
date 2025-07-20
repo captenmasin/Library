@@ -3,11 +3,13 @@ import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageTitle from '@/components/PageTitle.vue'
 import SingleNote from '@/components/SingleNote.vue'
+import SingleActivity from '@/components/SingleActivity.vue'
 import CustomPagination from '@/components/CustomPagination.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import { PropType } from 'vue'
 import { Note } from '@/types/note'
 import { Link } from '@inertiajs/vue3'
+import { Activity } from '@/types/activity'
 import { Paginated } from '@/types/pagination'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
@@ -15,8 +17,8 @@ import { useRoute } from '@/composables/useRoute'
 defineOptions({ layout: AppLayout })
 
 const props = defineProps({
-    notes: {
-        type: Object as PropType<Paginated<Note>>,
+    activities: {
+        type: Object as PropType<Paginated<Activity>>,
         default: () => ({ data: [], links: {}, meta: {} })
     }
 })
@@ -25,50 +27,39 @@ const props = defineProps({
 <template>
     <div>
         <PageTitle class="mb-4">
-            Your Notes
+            Your Activities
         </PageTitle>
 
         <div
-            v-if="notes.meta.total === 0 || notes.data.length === 0"
+            v-if="activities.meta.total === 0 || activities.data.length === 0"
             class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-8 md:py-12 text-center text-sm text-muted-foreground"
         >
             <Icon
-                name="NotebookPen"
+                name="Activity"
                 class="size-8" />
             <h3 class="font-serif text-2xl font-semibold">
                 Nothing to see here
             </h3>
-            <p v-if="notes.data.length === 0">
-                There's no notes on this page
+            <p v-if="activities.data.length === 0">
+                There's no activities on this page
             </p>
             <p v-else>
-                You haven't added any notes to books yet
+                You haven't done anything yet. Start by adding a book or a note!
             </p>
         </div>
 
         <ul
             v-else
             class="divide-y divide-muted rounded-xl dark:divide-zinc-950 bg-white dark:bg-zinc-900 shadow">
-            <li
-                v-for="note in props.notes.data"
-                :key="note.id"
-                class="p-4 md:p-6 flex items-start group flex-col gap-4 md:flex-row"
-            >
-                <BookCardHorizontal
-                    :book="note.book"
-                    :include-actions="false"
-                    class="md:w-1/3"
-                />
-                <SingleNote
-                    :book="note.book"
-                    :note="note"
-                    class="flex-1 py-0"
-                />
-            </li>
+            <SingleActivity
+                v-for="activity in props.activities.data"
+                :key="activity.id"
+                :activity="activity"
+            />
         </ul>
         <CustomPagination
-            v-if="notes.meta.total > notes.meta.per_page"
+            v-if="activities.meta.total > activities.meta.per_page"
             class="my-4"
-            :meta="notes.meta" />
+            :meta="activities.meta" />
     </div>
 </template>

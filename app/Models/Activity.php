@@ -58,9 +58,9 @@ class Activity extends Model
 
             ActivityType::BookNoteRemoved->value => "You removed your note from <strong>{$bookTitle}</strong>.",
 
-            ActivityType::BookReviewAdded->value => "You added a review for <strong>{$bookTitle}</strong> &mdash; ".($extra['rating'] ?? '?').' stars.',
+            ActivityType::BookReviewAdded->value => "You added a review for <strong>{$bookTitle}</strong> ".(! empty($extra['rating']) ? ('&mdash; '.$extra['rating'].' stars') : '').'.',
 
-            ActivityType::BookReviewUpdated->value => "You updated your review for <strong>{$bookTitle}</strong> &mdash; ".($extra['rating'] ?? '?').' stars.',
+            ActivityType::BookReviewUpdated->value => "You updated your review for <strong>{$bookTitle}</strong>".(! empty($extra['rating']) ? ('&mdash; '.$extra['rating'].' stars') : '').'.',
 
             ActivityType::BookReviewRemoved->value => "You removed your review from <strong>{$bookTitle}</strong>.",
 

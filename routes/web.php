@@ -1,6 +1,7 @@
 <?php
 
 use Inertia\Inertia;
+use App\Actions\ErrorPage;
 use Illuminate\Support\Benchmark;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserBookController;
 use App\Http\Controllers\BookCoverController;
+use App\Http\Controllers\ActivitiesController;
 use App\Http\Controllers\ImageTransformerController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\PasswordController;
@@ -64,8 +66,9 @@ Route::prefix('{book}')->middleware('auth')->group(function () {
 
 // Authenticated user routes
 Route::middleware('auth')->name('user.')->group(function () {
-    Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
     Route::get('notes', [NoteController::class, 'index'])->name('notes.index');
+    Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::get('activities', [ActivitiesController::class, 'index'])->name('activities.index');
 
     Route::prefix('books')->name('books.')->controller(UserBookController::class)->group(function () {
         Route::get('/', 'index')->name('index');
@@ -98,4 +101,4 @@ Route::get('image-transform/{options}/{path}', ImageTransformerController::class
 require __DIR__.'/auth.php';
 require __DIR__.'/testing.php';
 
-Route::fallback(\App\Actions\ErrorPage::class);
+Route::fallback(ErrorPage::class);

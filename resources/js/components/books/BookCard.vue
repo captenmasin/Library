@@ -38,6 +38,7 @@ const { userRating } = useBook(props.book)
                 :href="book.links.show"
                 prefetch>
                 <div class="relative w-full overflow-hidden aspect-book group">
+                    {{ book.binding }}
                     <Image
                         v-if="book.cover"
                         :src="book.cover"

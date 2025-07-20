@@ -88,6 +88,8 @@ defineOptions({
 
 <template>
     <div class="md:mt-4">
+        {{ book.binding }}
+
         <div class="flex flex-col md:flex-row gap-4 md:gap-10">
             <div class="flex w-full order-1 md:w-1/5 flex-col">
                 <div class="flex gap-4">
