@@ -19,6 +19,7 @@ class ActivitiesController extends Controller
             'activities' => ActivityResource::collection($activities),
         ])->withMeta([
             'title' => 'Activities',
+            'description' => 'A list of your recent activities.',
         ]);
     }
 }

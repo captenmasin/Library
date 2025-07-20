@@ -36,7 +36,7 @@ class BookController extends Controller
             )->deepMerge()->matchOn(''),
         ])->withMeta([
             'title' => 'Add Book',
-            'description' => 'Add a new book to your collection by providing its identifier (ISBN, Open Library ID, etc.).',
+            'description' => 'Add a new book to your collection by searching for it online or scanning its barcode.',
         ]);
     }
 
@@ -76,6 +76,7 @@ class BookController extends Controller
             )),
         ])->withMeta([
             'title' => $book->title,
+            'description' => $book->description ?? $book->title.' by '.$book->authors->pluck('name')->implode(', '),
         ]);
     }
 
@@ -89,6 +90,9 @@ class BookController extends Controller
 
         return Inertia::render('books/Preview', [
             'identifier' => $identifier,
+        ])->withMeta([
+            'title' => 'Importing Book...',
+            'description' => 'We are fetching the book details from the database. This may take a few seconds.',
         ]);
     }
 

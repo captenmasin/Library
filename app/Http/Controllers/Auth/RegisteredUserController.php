@@ -20,7 +20,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('auth/Register');
+        return Inertia::render('auth/Register')
+            ->withMeta([
+                'title' => 'Create an account',
+                'description' => 'Enter your details below to create your account.',
+            ]);
     }
 
     /**

@@ -33,10 +33,10 @@ const message = computed(() => {
         <div class="mx-auto w-full max-w-6xl px-6 py-24 lg:px-8">
             <div class="flex items-center">
                 <div class="w-1/2">
-                    <p class="text-base font-semibold leading-8 text-primary dark:text-white">
+                    <p class="text-[10rem] font-serif font-semibold leading-[1] text-primary dark:text-white">
                         {{ status }}
                     </p>
-                    <h1 class="text-4xl font-semibold font-heading line-height-1 sm:text-[4rem] md:mt-2">
+                    <h1 class="text-lg font-semibold font-heading line-height-1 md:mt-2">
                         {{ title }}
                     </h1>
                     <p class="mt-1 max-w-xs text-base text-zinc-600 text-pretty dark:text-zinc-400 sm:text-xl md:mt-6">

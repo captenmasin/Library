@@ -17,7 +17,11 @@ class ConfirmablePasswordController extends Controller
      */
     public function show(): Response
     {
-        return Inertia::render('auth/ConfirmPassword');
+        return Inertia::render('auth/ConfirmPassword')
+            ->withMeta([
+                'title' => 'Confirm your password',
+                'description' => 'Please confirm your password to continue.',
+            ]);
     }
 
     /**

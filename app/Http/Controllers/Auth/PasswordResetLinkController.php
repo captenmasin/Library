@@ -18,6 +18,9 @@ class PasswordResetLinkController extends Controller
     {
         return Inertia::render('auth/ForgotPassword', [
             'status' => $request->session()->get('status'),
+        ])->withMeta([
+            'title' => 'Forgot your password?',
+            'description' => 'Enter your email address below to receive a password reset link.',
         ]);
     }
 

@@ -362,7 +362,7 @@ defineOptions({ layout: AppLayout })
 
                 <ul
                     v-else
-                    :class="view === 'list' ? 'grid-cols-1 gap-8 md:gap-4' : 'grid-cols-2 sm:grid-cols-3 gap-2.5 md:gap-2 xl:gap-4 md:grid-cols-5'"
+                    :class="view === 'list' ? 'grid-cols-1 gap-8 md:gap-4' : 'grid-cols-2 sm:grid-cols-3 gap-2.5 md:gap-2 xl:gap-4 md:grid-cols-4 xl:grid-cols-5'"
                     class="grid">
                     <li
                         v-for="book in filteredBooks"

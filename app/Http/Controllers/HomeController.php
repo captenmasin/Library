@@ -75,6 +75,9 @@ class HomeController extends Controller
             'authors' => AuthorResource::collection(
                 $authors
             ),
+        ])->withMeta([
+            'title' => 'Home',
+            'description' => 'Your personal dashboard.',
         ]);
     }
 }

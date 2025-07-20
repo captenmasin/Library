@@ -21,6 +21,9 @@ class AuthenticatedSessionController extends Controller
         return Inertia::render('auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
+        ])->withMeta([
+            'title' => 'Log in to your account',
+            'description' => 'Enter your email/username and password below to log in.',
         ]);
     }
 

@@ -127,7 +127,8 @@ class UserBookController extends Controller
 
             'tags' => Inertia::defer(fn () => TagResource::collection($tags)),
         ])->withMeta([
-            'title' => 'Books',
+            'title' => 'Your library',
+            'description' => 'A collection of your books.',
         ]);
     }
 
@@ -139,16 +140,6 @@ class UserBookController extends Controller
 
         return redirect()->back()
             ->with('success', 'Tags updated successfully');
-    }
-
-    public function edit(Request $request)
-    {
-        return Inertia::render('settings/Books', [
-
-        ])->withMeta([
-            'title' => 'Book Settings',
-            'description' => 'Manage your book collection and settings.',
-        ]);
     }
 
     public function destroy(DestroyBookUserRequest $request, Book $book)

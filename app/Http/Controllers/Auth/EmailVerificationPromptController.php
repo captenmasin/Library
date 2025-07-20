@@ -17,6 +17,10 @@ class EmailVerificationPromptController extends Controller
     {
         return $request->user()->hasVerifiedEmail()
                     ? redirect()->intended(route('user.books.index', absolute: false))
-                    : Inertia::render('auth/VerifyEmail', ['status' => $request->session()->get('status')]);
+                    : Inertia::render('auth/VerifyEmail', ['status' => $request->session()->get('status')])
+                        ->withMeta([
+                            'title' => 'Verify your email address',
+                            'description' => 'Please verify your email address to continue.',
+                        ]);
     }
 }

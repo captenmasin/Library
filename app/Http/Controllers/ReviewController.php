@@ -24,6 +24,7 @@ class ReviewController extends Controller
             'reviews' => ReviewResource::collection($reviews),
         ])->withMeta([
             'title' => 'Reviews',
+            'description' => 'A list of your reviews on books.',
         ]);
     }
 

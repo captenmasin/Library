@@ -25,6 +25,7 @@ class NoteController extends Controller
             'notes' => NoteResource::collection($notes),
         ])->withMeta([
             'title' => 'Notes',
+            'description' => 'A list of your private notes on books.',
         ]);
     }
 

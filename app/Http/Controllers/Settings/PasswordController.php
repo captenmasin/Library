@@ -26,6 +26,9 @@ class PasswordController extends Controller
         return Inertia::render('settings/Password', [
             'passkeys' => $request->user()->passkeys()->get()
                 ->map(fn ($key) => $key->only(['id', 'name', 'last_used_at'])),
+        ])->withMeta([
+            'title' => 'Password Settings',
+            'description' => 'Manage your password and passkeys.',
         ]);
     }
 

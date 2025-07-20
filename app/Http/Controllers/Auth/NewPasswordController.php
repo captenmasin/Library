@@ -24,6 +24,9 @@ class NewPasswordController extends Controller
         return Inertia::render('auth/ResetPassword', [
             'email' => $request->email,
             'token' => $request->route('token'),
+        ])->withMeta([
+            'title' => 'Reset your password',
+            'description' => 'Enter your new password below to reset it.',
         ]);
     }
 
