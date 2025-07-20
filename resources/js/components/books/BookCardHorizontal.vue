@@ -51,7 +51,7 @@ const { userRating } = useBook(props.book)
 
 <template>
     <div
-        class="flex w-full flex-col gap-2 md:items-center"
+        class="flex w-full flex-col group gap-2 md:items-center"
         :class="narrow ? '' : 'md:flex-row md:gap-8'">
         <div class="flex w-full gap-4">
             <component
@@ -59,7 +59,10 @@ const { userRating } = useBook(props.book)
                 :href="url"
                 :target="target"
                 prefetch>
-                <div class="aspect-book w-20 shrink-0 overflow-hidden rounded-sm shadow-sm md:w-22">
+                <div class="aspect-book relative w-20 shrink-0 overflow-hidden rounded-sm shadow-sm md:w-22">
+                    <span class="absolute opacity-0 group-hover:opacity-100 transition-all top-1 right-1 text-xs bg-white/75 text-zinc-900 px-1.5 py-px rounded-full">
+                        {{ book.binding }}
+                    </span>
                     <img
                         :src="book.cover ?? DefaultCover"
                         :alt="`Book cover image for ${book.title}`"

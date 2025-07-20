@@ -23,7 +23,7 @@ class BookResource extends JsonResource
             'title' => html_entity_decode($this->title),
             'description' => $description,
             'description_clean' => strip_tags($description),
-            'published_date' => $this->published_date,
+            'published_date' => Str::before($this->published_date, ' '),
             'tags' => $this->whenLoaded('tags', fn () => TagResource::collection($this->tags)),
             'page_count' => $this->page_count,
 

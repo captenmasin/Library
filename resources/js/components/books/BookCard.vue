@@ -38,7 +38,9 @@ const { userRating } = useBook(props.book)
                 :href="book.links.show"
                 prefetch>
                 <div class="relative w-full overflow-hidden aspect-book group">
-                    {{ book.binding }}
+                    <span class="absolute opacity-0 group-hover:opacity-100 delay-100 transition-all top-2 right-2 text-xs bg-white/75 text-zinc-900 px-1.5 py-px rounded-full">
+                        {{ book.binding }}
+                    </span>
                     <Image
                         v-if="book.cover"
                         :src="book.cover"
@@ -50,7 +52,7 @@ const { userRating } = useBook(props.book)
                         class="absolute bottom-0 left-0 flex w-full items-end p-4 opacity-0 transition-all duration-300 h-full group-hover:opacity-100"
                         :style="{backgroundImage: `linear-gradient(to top, ${changeColourOpacity(book.colour, 1)}, rgba(0, 0, 0, 0))`}">
                         <div class="flex w-full translate-y-4 flex-col gap-1.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                            <h2 class="font-serif font-semibold text-base line-clamp-4 leading-5">
+                            <h2 class="font-serif font-semibold text-base md:text-lg line-clamp-4 leading-5">
                                 {{ book.title }}
                             </h2>
                             <p

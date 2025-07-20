@@ -55,6 +55,9 @@ export type BookApiResult = {
     published_date?: string
     cover?: string
     service: string
+    edition?: string
+    binding?: string
+    language?: string
     links: {
         show?: string
     }
