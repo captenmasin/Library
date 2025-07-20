@@ -156,6 +156,10 @@ class BookResource extends JsonResource
             return 'eBook';
         }
 
-        return ucfirst($binding);
+        if (strtolower($binding) === 'print') {
+            return 'Paperback';
+        }
+
+        return ucfirst(strtolower($binding));
     }
 }

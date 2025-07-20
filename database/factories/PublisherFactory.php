@@ -14,7 +14,7 @@ class PublisherFactory extends Factory
     {
         return [
             'uuid' => $this->faker->uuid(),
-            'name' => $this->faker->name(),
+            'name' => $this->faker->name().'-'.rand(0, 99999),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

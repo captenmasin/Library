@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use Inertia\Inertia;
 use Inertia\Middleware;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
@@ -57,10 +58,10 @@ class HandleInertiaRequests extends Middleware
                 'check' => Auth::check(),
             ],
 
-            'flash' => [
+            'flash' => Inertia::always(fn () => [
                 'success' => fn () => $request->hasSession() ? $request->session()->get('success') : null,
                 'error' => fn () => $request->hasSession() ? $request->session()->get('error') : null,
-            ],
+            ]),
 
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

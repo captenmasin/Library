@@ -17,6 +17,10 @@ const props = defineProps({
     starSize: {
         type: String,
         default: 'size-6'
+    },
+    only: {
+        type: Array as PropType<string[]>,
+        default: () => []
     }
 })
 
@@ -49,7 +53,9 @@ function updateRating (rating: number) {
             rating: props.book.user_rating
         }),
         {
+            only: props.only.length ? props.only : [],
             preserveScroll: true,
+            preserveState: true,
             onSuccess: () => {
                 emit('updated', form.rating.value)
             }
@@ -65,7 +71,9 @@ function storeRating (rating: number) {
     form.rating.value = rating
 
     form.post(useRoute('ratings.store', { book: props.book }), {
+        only: props.only.length ? props.only : [],
         preserveScroll: true,
+        preserveState: true,
         onSuccess: () => {
             emit('added', form.rating.value)
         }
@@ -73,13 +81,16 @@ function storeRating (rating: number) {
 }
 
 function clearRating () {
+    form.rating.value = 0
     router.delete(
         useRoute('ratings.destroy', {
             book: props.book?.path,
             rating: props.book.user_rating
         }),
         {
+            only: props.only.length ? props.only : [],
             preserveScroll: true,
+            preserveState: true,
             onSuccess: (params) => {
                 emit('deleted')
             }

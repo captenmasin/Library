@@ -216,10 +216,11 @@ defineOptions({ layout: AppLayout })
         </div>
 
         <!-- Main layout ----------------------------------------------------- -->
-        <div class="mt-0 flex flex-col items-start gap-0 md:gap-8 md:mt-8 md:flex-row">
+        <div
+            class="flex flex-col items-start gap-0 md:gap-8 md:pt-0 md:mt-4 md:flex-row">
             <aside
-                :class="displayFilters ? 'h-[calc-size(auto,size)] overflow-auto border-secondary' : 'h-0 overflow-hidden border-background'"
-                class="relative -mx-4 w-[calc(100%+calc(var(--spacing)*8))] flex-col gap-2 border-y bg-muted px-4 transition-[height,border-color] duration-500 md:mx-0 md:flex md:h-auto md:w-72 md:overflow-visible md:border-0 md:bg-transparent md:px-0"
+                :class="displayFilters ? 'mt-4 h-[calc-size(auto,size)] overflow-auto border-secondary' : 'mt-0 h-0 overflow-hidden border-background'"
+                class="relative -mx-4 w-[calc(100%+calc(var(--spacing)*8))] flex-col gap-2 md:mt-0 border-y bg-muted px-4 transition-all duration-500 md:mx-0 md:flex md:h-auto md:w-72 md:overflow-visible md:border-0 md:bg-transparent md:px-0"
             >
                 <!-- Search ---------------------------------------------------- -->
                 <div class="mt-4 flex flex-col gap-2 md:mt-0">
@@ -275,8 +276,10 @@ defineOptions({ layout: AppLayout })
                         <!-- Author filter -------------------------------------------- -->
                         <div class="grid gap-2 w-full">
                             <!--                            <Label for="query">Tag</Label>-->
-                            <Select v-model="tag">
-                                <SelectTrigger class="w-full">
+                            <Select
+                                v-model="tag"
+                                class="w-full flex">
+                                <SelectTrigger class="w-full md:max-w-72">
                                     <SelectValue placeholder="Filter by tag" />
                                 </SelectTrigger>
                                 <SelectContent>

@@ -3,11 +3,7 @@ import Icon from '@/components/Icon.vue'
 import Image from '@/components/Image.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import TagCloud from '@/components/TagCloud.vue'
-import SingleNote from '@/components/SingleNote.vue'
-import NoteForm from '@/components/books/NoteForm.vue'
 import BookCard from '@/components/books/BookCard.vue'
-import HeadingSmall from '@/components/HeadingSmall.vue'
-import ReviewForm from '@/components/books/ReviewForm.vue'
 import RatingForm from '@/components/books/RatingForm.vue'
 import BookActions from '@/components/books/BookActions.vue'
 import NotesSection from '@/components/books/NotesSection.vue'
@@ -16,15 +12,10 @@ import ReviewsSection from '@/components/books/ReviewsSection.vue'
 import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
 import { Review } from '@/types/review'
 import type { Book } from '@/types/book'
-import { useDateFormat } from '@vueuse/core'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { useRoute } from '@/composables/useRoute'
+import { type PropType, ref, watch } from 'vue'
+import { Deferred, router } from '@inertiajs/vue3'
 import { usePlural } from '@/composables/usePlural'
-import { Separator } from '@/components/ui/separator'
 import { useMarkdown } from '@/composables/useMarkdown'
-import { Deferred, Link, router } from '@inertiajs/vue3'
-import { computed, type PropType, ref, watch } from 'vue'
 import { useAuthedUser } from '@/composables/useAuthedUser'
 import { useUserSettings } from '@/composables/useUserSettings'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -77,8 +68,9 @@ watch(displayType, (newType) => {
     }
 })
 
-function refresh () {
+function refreshRating () {
     router.reload({
+        only: ['book', 'averageRating'],
         onSuccess: () => {
             refreshKey.value += 1
         }
@@ -135,11 +127,12 @@ defineOptions({
                     </h3>
                     <RatingForm
                         :key="refreshKey"
+                        :only="['rating', 'book', 'averageRating']"
                         class="mt-1"
                         :book="book"
-                        @deleted="refresh"
-                        @added="refresh"
-                        @updated="refresh" />
+                        @deleted="refreshRating"
+                        @added="refreshRating"
+                        @updated="refreshRating" />
                 </div>
             </div>
             <div class="flex w-full order-3 md:order-2 md:w-3/5 flex-col">
@@ -202,9 +195,9 @@ defineOptions({
                 <div>
                     <BookActions
                         :book="book"
-                        @removed="refresh"
-                        @added="refresh"
-                        @updated="refresh" />
+                        @removed="refreshRating"
+                        @added="refreshRating"
+                        @updated="refreshRating" />
                 </div>
 
                 <div
@@ -215,6 +208,7 @@ defineOptions({
                     </h3>
                     <RatingForm
                         :key="refreshKey"
+                        :only="['rating', 'book', 'averageRating']"
                         class="mt-1"
                         star-size="size-5"
                         :book="book"
@@ -227,9 +221,9 @@ defineOptions({
                     <button
                         class="text-left flex w-full py-2 px-4 md:p-0 items-center justify-between"
                         @click="detailsOpen = !detailsOpen">
-                        <h3 class="md:text-lg font-semibold">
+                        <p class="md:text-lg font-semibold">
                             Details
-                        </h3>
+                        </p>
                         <Icon
                             name="ChevronDown"
                             :class="detailsOpen ? 'rotate-180' : ''"
@@ -260,23 +254,28 @@ defineOptions({
                             </p>
                             <TagCloud :tags="book.tags" />
                         </div>
-                        <div
-                            v-if="related && related.length > 0"
-                            class="mt-4 hidden md:block">
-                            <p class="text-sm/6 font-medium">
-                                Related
-                            </p>
-                            <div class="-mx-1 flex flex-wrap">
-                                <div
-                                    v-for="relatedBook in related"
-                                    :key="relatedBook.identifier"
-                                    class="w-1/2 p-1">
-                                    <BookCard
-                                        :hover="false"
-                                        :book="relatedBook" />
+
+                        <Deferred data="related">
+                            <template #fallback />
+
+                            <div
+                                v-if="related && related.length > 0"
+                                class="mt-4 hidden md:block">
+                                <p class="text-sm/6 font-medium">
+                                    Related
+                                </p>
+                                <div class="-mx-1 flex flex-wrap">
+                                    <div
+                                        v-for="relatedBook in related"
+                                        :key="relatedBook.identifier"
+                                        class="w-1/2 p-1">
+                                        <BookCard
+                                            :hover="false"
+                                            :book="relatedBook" />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </Deferred>
                     </div>
                 </div>
             </div>
