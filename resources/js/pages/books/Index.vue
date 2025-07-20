@@ -137,7 +137,7 @@ defineOptions({ layout: AppLayout })
                         Search results for "{{ currentSearch }}"
                     </template>
                     <template v-else>
-                        All Books
+                        Your Library
                         <Badge
                             class="mt-1 font-sans text-xs"
                             variant="secondary">
