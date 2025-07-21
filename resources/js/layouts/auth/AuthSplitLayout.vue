@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import BookPile from '~/images/book-pile.png'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
+import BookPileSmall from '~/images/book-pile-small.png'
+import ProgressiveImage from '@/components/ProgressiveImage.vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 
@@ -16,8 +19,14 @@ defineProps<{
     <div class="relative grid flex-col items-center bg-background justify-center px-8 h-dvh sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0">
         <div class="relative hidden h-full flex-col p-10 text-white dark:border-r lg:flex">
             <div
-                style="background-image: url('https://images.unsplash.com/photo-1585521550659-64a7cafb39e2?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');"
-                class="absolute inset-4 bg-cover bg-center bg-secondary text-secondary-foreground rounded-xl" />
+                class="absolute inset-4 bg-cover overflow-hidden shadow-md bg-center bg-secondary text-secondary-foreground rounded-xl">
+                <ProgressiveImage
+                    :src="BookPile"
+                    :placeholder="BookPileSmall"
+                    alt="Book Pile"
+                    image-class="absolute inset-0 w-full h-full object-cover"
+                />
+            </div>
             <Link
                 :href="useRoute('user.books.index')"
                 class="relative z-20 flex items-center text-2xl text-white font-serif font-semibold tracking-tight">
