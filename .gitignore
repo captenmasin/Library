@@ -8,6 +8,8 @@
 /storage/pail
 /vendor
 /public/manifest.json
+/public/images
+/public/service-worker.js
 .env
 .env.backup
 .env.production

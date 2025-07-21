@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Laravel\Octane\Octane;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Cache\Console\ClearCommand;
+use Laravel\Horizon\Console\TerminateCommand;
 
 class DeployApp extends Command
 {
@@ -19,11 +21,11 @@ class DeployApp extends Command
         $this->runShell('npm run build');
 
         // Terminate Horizon
-        $this->callSilent('horizon:terminate');
+        $this->callSilent(TerminateCommand::class);
 
         // Laravel caches
         $this->info('🗄️  Clearing and caching Laravel configurations...');
-        $this->call('cache:clear');
+        $this->call(ClearCommand::class);
         $this->call('config:clear');
         $this->call('route:clear');
         $this->call('view:clear');
@@ -41,7 +43,10 @@ class DeployApp extends Command
         $this->call('db:seed', ['--force' => true]);
 
         // Horizon again
-        $this->callSilent('horizon:terminate');
+        $this->callSilent(TerminateCommand::class);
+
+        // Generate PWA manifest
+        $this->call(GeneratePwaManifest::class);
 
         // Reload Octane if running
         if ($this->isOctaneRunning()) {
