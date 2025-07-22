@@ -14,6 +14,7 @@ import { Activity } from '@/types/activity'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { UserBookStatus } from '@/enums/UserBookStatus'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 type Stats = {
     booksInLibrary: number;
@@ -46,10 +47,13 @@ const props = defineProps({
     }
 })
 
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const mdAndSmaller = breakpoints.smallerOrEqual('md')
+
 const actions = [
-    { name: 'View your books', icon: 'LibraryBig', url: 'viewAllBooks' },
-    { name: 'Find a new book', icon: 'plus', url: 'addBook' },
-    { name: 'Scan a barcode', icon: 'ScanBarcode', url: 'addBook' }
+    { name: 'View your library', smallName: 'Your library', icon: 'LibraryBig', url: useRoute('user.books.index') },
+    { name: 'Find a new book', smallName: 'Find book', icon: 'Search', url: useRoute('books.search') },
+    { name: 'Scan a barcode', smallName: 'Scan barcode', icon: 'ScanBarcode', url: useRoute('books.search', { scan: true }) }
 ]
 
 const stats = [
@@ -96,8 +100,8 @@ defineOptions({ layout: AppLayout })
 </script>
 
 <template>
-    <div class="container">
-        <header class="mt-6 mb-4 flex w-full items-center justify-between">
+    <div class="container mx-auto">
+        <header class="mt-0 md:mt-6 mb-4 flex w-full gap-2.5 md:items-center justify-between flex-col xs:flex-row">
             <div class="flex flex-col">
                 <h1 class="font-serif text-2xl font-semibold text-foreground md:text-3xl">
                     Welcome back, Mason
@@ -106,28 +110,31 @@ defineOptions({ layout: AppLayout })
                     Here's a quick look at your library
                 </p>
             </div>
-            <ul class="NOflex hidden gap-4">
+            <ul class="flex gap-1 md:gap-4">
                 <li
                     v-for="action in actions"
                     :key="action.name">
                     <Button
-                        variant="ghost"
-                        size="sm"
-                        class="cursor-pointer text-primary"
-                        :href="action.url">
+                        :variant="mdAndSmaller ? 'ghost' : 'ghost'"
+                        :size="mdAndSmaller ? 'icon' : 'sm'"
+                        :as="Link"
+                        :href="action.url"
+                        class="md:text-primary">
                         <Icon
                             :name="action.icon"
                             class="size-4" />
-                        {{ action.name }}
+                        <span class="hidden xl:inline">
+                            {{ action.name }}
+                        </span>
+                        <span class="hidden md:inline xl:hidden">
+                            {{ action.smallName }}
+                        </span>
                     </Button>
                 </li>
             </ul>
         </header>
 
         <section>
-            <!--            <h2 class="mb-4 text-xl font-semibold text-accent-foreground">-->
-            <!--                Your reading summary-->
-            <!--            </h2>-->
             <div class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4">
                 <Link
                     v-for="stat in stats"
@@ -152,8 +159,8 @@ defineOptions({ layout: AppLayout })
             </div>
         </section>
 
-        <div class="mt-2 flex flex-col items-start gap-8 md:mt-8 md:flex-row">
-            <div class="mt-4 flex w-full flex-col md:mt-0 md:w-auto md:flex-1">
+        <div class="mt-4 flex flex-col items-start gap-6 md:gap-8 md:mt-12 md:flex-row">
+            <div class="flex w-full flex-col md:mt-0 md:w-auto md:flex-1">
                 <section>
                     <h2
                         v-if="currentlyReading && currentlyReading.length"
@@ -205,7 +212,7 @@ defineOptions({ layout: AppLayout })
 
                 <section
                     v-if="activities && activities.length"
-                    class="mt-8">
+                    class="mt-4 md:mt-12">
                     <div class="mb-1 flex items-center justify-between">
                         <h2 class="font-serif text-xl font-semibold text-accent-foreground">
                             Recent activity
