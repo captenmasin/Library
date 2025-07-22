@@ -95,6 +95,7 @@ const isUserReview = computed(() => {
             v-if="review.rating?.value && isUserReview"
             class="mt-px mb-2"
             star-size="size-5"
+            :only="['rating', 'book', 'averageRating']"
             :book="book" />
 
         <StarRatingDisplay
