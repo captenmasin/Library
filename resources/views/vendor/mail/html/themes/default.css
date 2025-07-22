@@ -39,9 +39,9 @@ a img {
 
 h1 {
     color: #1b1917;
-    font-size: 18px;
+    font-size: 28px;
     font-family: "Source Serif 4", Georgia, serif;
-    font-weight: bold;
+    font-weight: 500;
     margin-top: 0;
     text-align: left;
 }
