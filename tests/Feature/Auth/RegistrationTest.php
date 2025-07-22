@@ -22,7 +22,7 @@ test('new users can register', function () {
     $response->assertRedirect(route('user.books.index', absolute: false));
 
     $this->followRedirects($response)->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('books/Index')
+        ->component('auth/VerifyEmail')
     );
 });
 
