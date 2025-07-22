@@ -91,15 +91,14 @@ const isUserReview = computed(() => {
             </div>
         </div>
 
-        <RatingForm
-            v-if="review.rating?.value && isUserReview"
-            class="mt-px mb-2"
-            star-size="size-5"
-            :only="['rating', 'book', 'averageRating']"
-            :book="book" />
+        <!--        <RatingForm-->
+        <!--            v-if="review.rating?.value && isUserReview"-->
+        <!--            class="mt-px mb-2"-->
+        <!--            star-size="size-5"-->
+        <!--            :only="['ratings', 'rating', 'book', 'averageRating']"-->
+        <!--            :book="book" />-->
 
         <StarRatingDisplay
-            v-else-if="review.rating?.value && !isUserReview"
             :rating="review.rating.value"
             class="mt-px mb-2" />
         <div
