@@ -87,6 +87,9 @@ router.on('navigate', (event) => {
                                 variant="ghost"
                                 size="icon"
                                 class="mr-2 h-9 w-9">
+                                <span class="sr-only">
+                                    Open Navigation Menu
+                                </span>
                                 <Menu class="h-5 w-5" />
                             </Button>
                         </SheetTrigger>
