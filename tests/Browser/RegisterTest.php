@@ -12,9 +12,9 @@ test('user can register and be redirected to books', function () {
             ->type('#password', $password)
             ->type('#password_confirmation', $password)
             ->press('Create account')
-            ->waitForLocation('/books')
-            ->assertPathIs('/books')
-            ->assertSee('Books')
+            ->waitForLocation('/verify-email')
+            ->assertPathIs('/verify-email')
+            ->assertSee('Verify email')
             ->fullLogout();
     });
 });
