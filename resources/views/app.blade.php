@@ -27,7 +27,8 @@
         @endforeach
     @endif
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     @include('partials.meta.seo')
     @include('partials.meta.pwa')

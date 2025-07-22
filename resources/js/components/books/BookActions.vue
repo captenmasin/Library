@@ -74,6 +74,9 @@ function selectNewStatus (book: BookApiResult | Book, status: UserBookStatus | '
                     class="w-full"
                     :class="addingBooks.includes(book.identifier) ? 'pl-9' : ''">
                     <SelectValue placeholder="Add to library" />
+                    <span class="sr-only">
+                        Select book status
+                    </span>
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>

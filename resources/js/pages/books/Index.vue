@@ -165,6 +165,9 @@ defineOptions({ layout: AppLayout })
                                 v-if="sort"
                                 class="text-muted-foreground">Sort:</span>
                             <SelectValue placeholder="Sort by..." />
+                            <span class="sr-only">
+                                Select sort option
+                            </span>
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
@@ -188,6 +191,9 @@ defineOptions({ layout: AppLayout })
                                     size="icon"
                                     @click="order = order === 'asc' ? 'desc' : 'asc'"
                                 >
+                                    <span class="sr-only">
+                                        Toggle sort order
+                                    </span>
                                     <Icon :name="order === 'asc' ? 'ArrowUpWideNarrow' : 'ArrowDownWideNarrow'" />
                                 </Button>
                             </TooltipTrigger>
@@ -242,6 +248,9 @@ defineOptions({ layout: AppLayout })
                                         variant="link"
                                         class="cursor-pointer"
                                         size="icon">
+                                        <span class="sr-only">
+                                            Search
+                                        </span>
                                         <Icon name="Search" />
                                     </Button>
                                 </div>
@@ -254,6 +263,9 @@ defineOptions({ layout: AppLayout })
                             <Select v-model="author">
                                 <SelectTrigger class="w-full">
                                     <SelectValue placeholder="Filter by author" />
+                                    <span class="sr-only">
+                                        Select author filter
+                                    </span>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
@@ -281,6 +293,9 @@ defineOptions({ layout: AppLayout })
                                 class="w-full flex">
                                 <SelectTrigger class="w-full md:max-w-72">
                                     <SelectValue placeholder="Filter by tag" />
+                                    <span class="sr-only">
+                                        Select tag filter
+                                    </span>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>

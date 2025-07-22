@@ -48,7 +48,8 @@ const query = ref(props.initialQuery)
 const author = ref(props.initialAuthor)
 const loadingMore = ref(false)
 
-const showAuthorField = ref(author.value !== '' && author.value !== null)
+// const showAuthorField = ref(author.value !== '' && author.value !== null)
+const showAuthorField = ref(true)
 
 function searchBooks () {
     router.get(useRoute('books.search'), {
@@ -119,7 +120,8 @@ defineOptions({
                                 id="query"
                                 v-model.trim="query"
                                 name="query"
-                                placeholder="e.g. Dune, horror, science fiction" />
+                                placeholder="e.g Jaws, The Great Gatsby"
+                            />
                         </div>
 
                         <div
@@ -255,14 +257,14 @@ defineOptions({
                     <div
                         v-if="results && results.total > 0"
                         class="-mt-4">
-                        <ul
+                        <div
                             class="divide-y divide-muted-foreground/5">
                             <BookCardHorizontal
                                 v-for="book in hasSearch ? results.books : []"
                                 :key="book.identifier"
                                 class="py-4"
                                 :book="book" />
-                        </ul>
+                        </div>
 
                         <div v-if="loadingMore">
                             <HorizontalSkeleton />

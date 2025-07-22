@@ -12,9 +12,9 @@ return [
         'description' => env('APP_DESCRIPTION'),
         'background_color' => '#fcfbf8',
         'dark_background_color' => '#0f0f0f',
-        'theme_color' => '#913608',
+        'theme_color' => '#fcfbf8',
         'orientation' => 'any',
-        'status_bar' => '#913608',
+        'status_bar' => '#fcfbf8',
         'appleMobileWebAppCapable' => 'yes',
         'appleMobileWebAppStatusBarStyle' => 'black',
         'splash' => [
