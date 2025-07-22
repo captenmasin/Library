@@ -141,6 +141,9 @@ router.on('navigate', (event) => {
                     :href="useRoute('home')"
                     prefetch
                     class="flex items-center gap-x-2">
+                    <span class="sr-only">
+                        Go to Home
+                    </span>
                     <div class="flex aspect-square items-center justify-center size-8">
                         <AppLogoIcon class="rounded-lg fill-current text-white size-full dark:text-black" />
                     </div>

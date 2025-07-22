@@ -182,16 +182,16 @@ defineOptions({ layout: AppLayout })
                         </ul>
                     </div>
 
-                    <div
+                    <article
                         v-else
                         class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-8 md:py-12 text-center text-sm text-muted-foreground"
                     >
                         <Icon
                             name="BookOpen"
                             class="size-8" />
-                        <h3 class="font-serif text-2xl font-semibold">
+                        <h2 class="font-serif text-2xl font-semibold">
                             Currently reading
-                        </h3>
+                        </h2>
                         <p>You aren't reading anything right now</p>
                         <Button
                             class="mt-2"
@@ -200,7 +200,7 @@ defineOptions({ layout: AppLayout })
                                 Add books to your library
                             </Link>
                         </Button>
-                    </div>
+                    </article>
                 </section>
 
                 <section

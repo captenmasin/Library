@@ -39,5 +39,22 @@ export default defineConfig({
             '@': path.resolve(__dirname, './resources/js'),
             '~': path.resolve('./resources')
         }
+    },
+    build: {
+        target: 'esnext', // Assumes modern browser support
+        minify: 'esbuild', // Fastest minifier
+        cssCodeSplit: true,
+        emptyOutDir: true
+    },
+    optimizeDeps: {
+        include: ['vue', '@inertiajs/inertia', '@inertiajs/inertia-vue3'],
+        esbuildOptions: {
+            target: 'es2020'
+        }
+    },
+    server: {
+        fs: {
+            strict: true
+        }
     }
 })

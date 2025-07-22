@@ -9,11 +9,10 @@ import { Label } from '@/components/ui/label'
 import { LoaderCircle } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
+import { router, useForm } from '@inertiajs/vue3'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useRequest } from '@/composables/useRequest'
 import { Separator } from '@/components/ui/separator'
-import { Head, router, useForm } from '@inertiajs/vue3'
-import { startRegistration } from '@simplewebauthn/browser/esm'
 
 const props = defineProps<{
     status?: string;
