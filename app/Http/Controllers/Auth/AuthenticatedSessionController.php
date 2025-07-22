@@ -18,8 +18,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(Request $request): Response
     {
+        $redirectUrl = $request->input('redirect', null);
+
         return Inertia::render('auth/Login', [
             'canResetPassword' => Route::has('password.request'),
+            'redirect' => $redirectUrl,
             'status' => $request->session()->get('status'),
         ])->withMeta([
             'title' => 'Log in to your account',
@@ -35,6 +38,13 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        if ($request->has('redirect')) {
+            $redirectUrl = $request->input('redirect');
+            if (filter_var($redirectUrl, FILTER_VALIDATE_URL)) {
+                return redirect()->to($redirectUrl);
+            }
+        }
 
         return redirect()->intended(route('home', absolute: false));
     }

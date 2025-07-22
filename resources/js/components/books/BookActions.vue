@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import { PropType } from 'vue'
+import { router } from '@inertiajs/vue3'
+import { useRoute } from '@/composables/useRoute'
 import { Book, BookApiResult } from '@/types/book'
 import { UserBookStatus } from '@/enums/UserBookStatus'
+import { useAuthedUser } from '@/composables/useAuthedUser'
 import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
@@ -18,7 +21,18 @@ const emit = defineEmits(['updated', 'added', 'removed'])
 const { possibleStatuses, updateStatus, selectedStatuses, addedBookIdentifiers, addingBooks, addBookToUser, removeBookFromUser } =
     useUserBookStatus()
 
+const { authed } = useAuthedUser()
+
 function selectNewStatus (book: BookApiResult | Book, status: UserBookStatus | 'REMOVE') {
+    if (!authed.value) {
+        router.get(
+            useRoute('login', {
+                redirect: useRoute('books.show', book)
+            })
+        )
+        return
+    }
+
     if (status === 'REMOVE') {
         removeBookFromUser(book, () => {
             emit('removed', book)

@@ -15,15 +15,17 @@ import { Separator } from '@/components/ui/separator'
 import { Head, router, useForm } from '@inertiajs/vue3'
 import { startRegistration } from '@simplewebauthn/browser/esm'
 
-defineProps<{
+const props = defineProps<{
     status?: string;
     canResetPassword: boolean;
+    redirect?: string;
 }>()
 
 const form = useForm({
     login: '',
     password: '',
-    remember: true
+    remember: true,
+    redirect: props.redirect || null
 })
 
 const submit = async () => {

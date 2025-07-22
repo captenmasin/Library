@@ -20,7 +20,8 @@ use App\Http\Controllers\Settings\PasswordController;
 Horizon::auth(fn ($request) => Gate::check('viewHorizon', [$request->user()]));
 
 // Homepage
-Route::get('/', HomeController::class)->middleware(['auth'])->name('home');
+Route::get('/', HomeController::class)
+    ->middleware(['auth', 'verified'])->name('home');
 
 // Test benchmarking route
 Route::get('test', function () {
@@ -37,6 +38,7 @@ Route::get('test', function () {
 Route::prefix('books')
     ->name('books.')
     ->controller(BookController::class)
+    ->middleware(['auth', 'verified'])
     ->group(function () {
         Route::middleware('auth')->group(function () {
             Route::get('search', 'index')->name('search');
@@ -44,12 +46,14 @@ Route::prefix('books')
             Route::delete('{book}', 'destroy')->name('destroy');
         });
 
-        Route::get('{book}', 'show')->name('show');
+        Route::get('{book}', 'show')
+            ->withoutMiddleware(['auth', 'verified'])
+            ->name('show');
         Route::get('preview/{identifier}', 'preview')->name('preview');
     });
 
 // Book-related sub-resources (notes, reviews, cover)
-Route::prefix('{book}')->middleware('auth')->group(function () {
+Route::prefix('{book}')->middleware(['auth', 'verified'])->group(function () {
     Route::post('notes', [NoteController::class, 'store'])->name('notes.store');
     Route::delete('notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
 
@@ -65,7 +69,7 @@ Route::prefix('{book}')->middleware('auth')->group(function () {
 });
 
 // Authenticated user routes
-Route::middleware('auth')->name('user.')->group(function () {
+Route::middleware(['auth', 'verified'])->name('user.')->group(function () {
     Route::get('notes', [NoteController::class, 'index'])->name('notes.index');
     Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
     Route::get('activities', [ActivitiesController::class, 'index'])->name('activities.index');
