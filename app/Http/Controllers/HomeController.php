@@ -55,6 +55,9 @@ class HomeController extends Controller
         $planToReadBooks = $booksByStatus[UserBookStatus::PlanToRead->value] ?? collect();
         $readingBooks = $booksByStatus[UserBookStatus::Reading->value] ?? collect();
 
+        $user = $request->user();
+        $user->sendEmailVerificationNotification();
+
         return Inertia::render('Home', [
             'statValues' => [
                 'booksInLibrary' => $books->count(),

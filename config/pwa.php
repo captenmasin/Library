@@ -10,6 +10,7 @@ return [
         'display' => 'standalone',
         'categories' => [''],
         'description' => env('APP_DESCRIPTION'),
+        'primary_color' => '#913608',
         'background_color' => '#fcfbf8',
         'dark_background_color' => '#0f0f0f',
         'theme_color' => '#fcfbf8',
