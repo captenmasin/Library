@@ -10,7 +10,7 @@ use Laravel\Horizon\Console\TerminateCommand;
 
 class DeployApp extends Command
 {
-    protected $signature = 'app:deploy';
+    protected $signature = 'app:deploy {--ssr : Enable server-side rendering}';
 
     public function handle(): int
     {
@@ -18,7 +18,13 @@ class DeployApp extends Command
 
         // NPM
         $this->runShell('npm ci');
-        $this->runShell('npm run build');
+
+        if ($this->option('ssr')) {
+            $this->info('🌐 Enabling server-side rendering...');
+            $this->runShell('npm run build:ssr');
+        } else {
+            $this->runShell('npm run build');
+        }
 
         // Terminate Horizon
         $this->callSilent(TerminateCommand::class);
