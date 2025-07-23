@@ -6,7 +6,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 12.19.3.
+ * Generated for Laravel 12.20.0.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -5919,6 +5919,21 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Get the specified array configuration value as a collection.
+         *
+         * @param  string  $key
+         * @param  (\Closure():(array<array-key, mixed>|null))|array<array-key, mixed>|null  $default
+         * @return Collection<array-key, mixed>
+         *
+         * @static
+         */
+        public static function collection($key, $default = null)
+        {
+            /** @var \Illuminate\Config\Repository $instance */
+            return $instance->collection($key, $default);
+        }
+
+        /**
          * Set a given configuration value.
          *
          * @param  array|string  $key
@@ -6322,6 +6337,36 @@ namespace Illuminate\Support\Facades {
         {
             /** @var \Illuminate\Log\Context\Repository $instance */
             return $instance->addHidden($key, $value);
+        }
+
+        /**
+         * Add a context value if it does not exist yet, and return the value.
+         *
+         * @param  string  $key
+         * @param  mixed  $value
+         * @return mixed
+         *
+         * @static
+         */
+        public static function remember($key, $value)
+        {
+            /** @var \Illuminate\Log\Context\Repository $instance */
+            return $instance->remember($key, $value);
+        }
+
+        /**
+         * Add a hidden context value if it does not exist yet, and return the value.
+         *
+         * @param  string  $key
+         * @param  mixed  $value
+         * @return mixed
+         *
+         * @static
+         */
+        public static function rememberHidden($key, $value)
+        {
+            /** @var \Illuminate\Log\Context\Repository $instance */
+            return $instance->rememberHidden($key, $value);
         }
 
         /**
@@ -14807,10 +14852,6 @@ namespace Illuminate\Support\Facades {
         }
     }
     /**
-     * @method static array validate(array $rules, ...$params)
-     * @method static array validateWithBag(string $errorBag, array $rules, ...$params)
-     * @method static bool hasValidSignature(bool $absolute = true)
-     *
      * @see \Illuminate\Http\Request
      */
     class Request
@@ -17484,6 +17525,90 @@ namespace Illuminate\Support\Facades {
         {
             \Illuminate\Http\Request::flushMacros();
         }
+
+        /**
+         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestValidation()
+         *
+         * @param  array  $rules
+         * @param  mixed  $params
+         *
+         * @static
+         */
+        public static function validate($rules, ...$params)
+        {
+            return \Illuminate\Http\Request::validate($rules, ...$params);
+        }
+
+        /**
+         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestValidation()
+         *
+         * @param  string  $errorBag
+         * @param  array  $rules
+         * @param  mixed  $params
+         *
+         * @static
+         */
+        public static function validateWithBag($errorBag, $rules, ...$params)
+        {
+            return \Illuminate\Http\Request::validateWithBag($errorBag, $rules, ...$params);
+        }
+
+        /**
+         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestSignatureValidation()
+         *
+         * @param  mixed  $absolute
+         *
+         * @static
+         */
+        public static function hasValidSignature($absolute = true)
+        {
+            return \Illuminate\Http\Request::hasValidSignature($absolute);
+        }
+
+        /**
+         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestSignatureValidation()
+         *
+         * @static
+         */
+        public static function hasValidRelativeSignature()
+        {
+            return \Illuminate\Http\Request::hasValidRelativeSignature();
+        }
+
+        /**
+         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestSignatureValidation()
+         *
+         * @param  mixed  $ignoreQuery
+         * @param  mixed  $absolute
+         *
+         * @static
+         */
+        public static function hasValidSignatureWhileIgnoring($ignoreQuery = [], $absolute = true)
+        {
+            return \Illuminate\Http\Request::hasValidSignatureWhileIgnoring($ignoreQuery, $absolute);
+        }
+
+        /**
+         * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestSignatureValidation()
+         *
+         * @param  mixed  $ignoreQuery
+         *
+         * @static
+         */
+        public static function hasValidRelativeSignatureWhileIgnoring($ignoreQuery = [])
+        {
+            return \Illuminate\Http\Request::hasValidRelativeSignatureWhileIgnoring($ignoreQuery);
+        }
+
+        /**
+         * @see \Inertia\ServiceProvider::registerRequestMacro()
+         *
+         * @static
+         */
+        public static function inertia()
+        {
+            return \Illuminate\Http\Request::inertia();
+        }
     }
     /**
      * @see \Illuminate\Routing\ResponseFactory
@@ -18979,6 +19104,32 @@ namespace Illuminate\Support\Facades {
         {
             /** @var \Illuminate\Routing\Router $instance */
             return $instance->tap($callback);
+        }
+
+        /**
+         * @see \Inertia\ServiceProvider::registerRouterMacro()
+         *
+         * @param  mixed  $uri
+         * @param  mixed  $component
+         * @param  mixed  $props
+         *
+         * @static
+         */
+        public static function inertia($uri, $component, $props = [])
+        {
+            return \Illuminate\Routing\Router::inertia($uri, $component, $props);
+        }
+
+        /**
+         * @see \Spatie\LaravelPasskeys\LaravelPasskeysServiceProvider::registerPasskeyRouteMacro()
+         *
+         * @param  string  $prefix
+         *
+         * @static
+         */
+        public static function passkeys($prefix = 'passkeys')
+        {
+            return \Illuminate\Routing\Router::passkeys($prefix);
         }
     }
     /**
@@ -25834,7 +25985,7 @@ namespace Barryvdh\Debugbar\Facades {
      *
      * @see \Barryvdh\Debugbar\LaravelDebugbar
      */
-    class Debugbar
+    class Debugbar extends \DebugBar\DebugBar
     {
         /**
          * Returns the HTTP driver
@@ -25921,13 +26072,14 @@ namespace Barryvdh\Debugbar\Facades {
          * @param  string  $name  Internal name, used to stop the measure
          * @param  string  $label  Public name
          * @param  string|null  $collector
+         * @param  string|null  $group
          *
          * @static
          */
-        public static function startMeasure($name, $label = null, $collector = null)
+        public static function startMeasure($name, $label = null, $collector = null, $group = null)
         {
             /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->startMeasure($name, $label, $collector);
+            return $instance->startMeasure($name, $label, $collector, $group);
         }
 
         /**
@@ -26087,13 +26239,14 @@ namespace Barryvdh\Debugbar\Facades {
          * @param  float  $end
          * @param  array|null  $params
          * @param  string|null  $collector
+         * @param  string|null  $group
          *
          * @static
          */
-        public static function addMeasure($label, $start, $end, $params = [], $collector = null)
+        public static function addMeasure($label, $start, $end, $params = [], $collector = null, $group = null)
         {
             /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->addMeasure($label, $start, $end, $params, $collector);
+            return $instance->addMeasure($label, $start, $end, $params, $collector, $group);
         }
 
         /**
@@ -26102,14 +26255,15 @@ namespace Barryvdh\Debugbar\Facades {
          * @param  string  $label
          * @param  \Closure  $closure
          * @param  string|null  $collector
+         * @param  string|null  $group
          * @return mixed
          *
          * @static
          */
-        public static function measure($label, $closure, $collector = null)
+        public static function measure($label, $closure, $collector = null, $group = null)
         {
             /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->measure($label, $closure, $collector);
+            return $instance->measure($label, $closure, $collector, $group);
         }
 
         /**
@@ -27495,7 +27649,7 @@ namespace Illuminate\Support {
 }
 
 namespace Illuminate\Http {
-    class Request
+    class Request extends \Symfony\Component\HttpFoundation\Request
     {
         /**
          * @see \Illuminate\Foundation\Providers\FoundationServiceProvider::registerRequestValidation()
@@ -27601,6 +27755,18 @@ namespace Illuminate\Routing {
         public static function inertia($uri, $component, $props = [])
         {
             return \Illuminate\Routing\Router::inertia($uri, $component, $props);
+        }
+
+        /**
+         * @see \Spatie\LaravelPasskeys\LaravelPasskeysServiceProvider::registerPasskeyRouteMacro()
+         *
+         * @param  string  $prefix
+         *
+         * @static
+         */
+        public static function passkeys($prefix = 'passkeys')
+        {
+            return \Illuminate\Routing\Router::passkeys($prefix);
         }
     }
     class Route
@@ -31001,30 +31167,7 @@ namespace Spatie\MediaLibrary\MediaCollections\Models\Collections {
      *
      * @extends Collection<TKey, TModel>
      */
-    class MediaCollection
-    {
-        /**
-         * @see \Barryvdh\Debugbar\ServiceProvider::register()
-         *
-         * @static
-         */
-        public static function debug()
-        {
-            return \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection::debug();
-        }
-
-        /**
-         * @see \Spatie\LaravelRay\RayServiceProvider::registerMacros()
-         *
-         * @param  string  $description
-         *
-         * @static
-         */
-        public static function ray($description = '')
-        {
-            return \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection::ray($description);
-        }
-    }
+    class MediaCollection extends \Illuminate\Database\Eloquent\Collection {}
 }
 
 namespace Illuminate\Database\Eloquent {
@@ -31034,30 +31177,7 @@ namespace Illuminate\Database\Eloquent {
      *
      * @extends \Illuminate\Support\Collection<TKey, TModel>
      */
-    class Collection
-    {
-        /**
-         * @see \Barryvdh\Debugbar\ServiceProvider::register()
-         *
-         * @static
-         */
-        public static function debug()
-        {
-            return \Illuminate\Database\Eloquent\Collection::debug();
-        }
-
-        /**
-         * @see \Spatie\LaravelRay\RayServiceProvider::registerMacros()
-         *
-         * @param  string  $description
-         *
-         * @static
-         */
-        public static function ray($description = '')
-        {
-            return \Illuminate\Database\Eloquent\Collection::ray($description);
-        }
-    }
+    class Collection extends \Illuminate\Support\Collection {}
 }
 
 namespace Illuminate\View {
@@ -36002,7 +36122,7 @@ namespace {
          * Get the count of the total records for the paginator.
          *
          * @param  array<string|\Illuminate\Contracts\Database\Query\Expression>  $columns
-         * @return int
+         * @return int<0, max>
          *
          * @static
          */
@@ -36083,7 +36203,7 @@ namespace {
          * Retrieve the "count" result of the query.
          *
          * @param  \Illuminate\Contracts\Database\Query\Expression|string  $columns
-         * @return int
+         * @return int<0, max>
          *
          * @static
          */
@@ -36209,7 +36329,7 @@ namespace {
         /**
          * Insert new records into the database while ignoring errors.
          *
-         * @return int
+         * @return int<0, max>
          *
          * @static
          */
@@ -36292,7 +36412,7 @@ namespace {
          *
          * @param  array<string, float|int|numeric-string>  $columns
          * @param  array<string, mixed>  $extra
-         * @return int
+         * @return int<0, max>
          *
          * @throws \InvalidArgumentException
          *
@@ -36309,7 +36429,7 @@ namespace {
          *
          * @param  array<string, float|int|numeric-string>  $columns
          * @param  array<string, mixed>  $extra
-         * @return int
+         * @return int<0, max>
          *
          * @throws \InvalidArgumentException
          *
@@ -36916,6 +37036,16 @@ namespace {
         {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->macroCall($method, $parameters);
+        }
+
+        /**
+         * @see \Spatie\LaravelRay\RayServiceProvider::registerMacros()
+         *
+         * @static
+         */
+        public static function ray()
+        {
+            return \Illuminate\Database\Query\Builder::ray();
         }
     }
     class Event extends \Illuminate\Support\Facades\Event {}
