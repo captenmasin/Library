@@ -99,6 +99,10 @@ const submit = () => {
                             autocomplete="new-password"
                             placeholder="Confirm password"
                         />
+                    </div>
+
+                    <div class="-mt-3">
+                        <InputError :message="form.errors.password" />
                         <InputError :message="form.errors.password_confirmation" />
                     </div>
                 </div>
