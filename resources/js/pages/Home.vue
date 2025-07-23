@@ -5,15 +5,16 @@ import TagCloud from '@/components/TagCloud.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import SingleActivity from '@/components/SingleActivity.vue'
 import CircularText from '@/components/Bits/CircularText.vue'
-import { PropType } from 'vue'
 import { Tag } from '@/types/tag'
 import { Book } from '@/types/book'
 import { Link } from '@inertiajs/vue3'
 import { Author } from '@/types/author'
+import { computed, PropType } from 'vue'
 import { Activity } from '@/types/activity'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { UserBookStatus } from '@/enums/UserBookStatus'
+import { useAuthedUser } from '@/composables/useAuthedUser'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 type Stats = {
@@ -46,6 +47,8 @@ const props = defineProps({
         default: () => []
     }
 })
+
+const { authedUser } = useAuthedUser()
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const mdAndSmaller = breakpoints.smallerOrEqual('md')
@@ -96,15 +99,22 @@ const stats = [
     // }
 ]
 
+const firstName = computed(() => {
+    if (!authedUser.value) return ''
+    return authedUser.value.name.split(' ')[0]
+})
+
 defineOptions({ layout: AppLayout })
 </script>
 
 <template>
     <div class="container mx-auto">
         <header class="mt-0 md:mt-6 mb-4 flex w-full gap-2.5 md:items-center justify-between flex-col xs:flex-row">
-            <div class="flex flex-col">
+            <div
+                v-if="authedUser"
+                class="flex flex-col">
                 <h1 class="font-serif text-2xl font-semibold text-foreground md:text-3xl">
-                    Welcome back, Mason
+                    Welcome back, {{ firstName }}
                 </h1>
                 <p class="text-sm text-accent-foreground">
                     Here's a quick look at your library
