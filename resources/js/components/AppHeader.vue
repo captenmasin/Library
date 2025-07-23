@@ -26,8 +26,6 @@ const props = withDefaults(defineProps<Props>(), {
     breadcrumbs: () => []
 })
 
-const { getImageUrl } = useImageTransform()
-
 const page = usePage()
 
 const { authed, authedUser } = useAuthedUser()
@@ -99,10 +97,10 @@ router.on('navigate', (event) => {
                             <SheetTitle class="sr-only">
                                 Navigation Menu
                             </SheetTitle>
-                            <SheetHeader class="flex justify-start text-left">
-                                <AppLogoIcon class="rounded-sm fill-current text-black size-6 dark:text-white" />
+                            <SheetHeader class="flex p-0 justify-start text-left">
+                                <AppLogoIcon class="rounded-xl fill-current text-black size-10 dark:text-white" />
                             </SheetHeader>
-                            <div class="flex h-full flex-1 flex-col justify-between py-6 space-y-4">
+                            <div class="flex h-full flex-1 flex-col justify-between space-y-4">
                                 <nav class="-mx-3 space-y-1">
                                     <Link
                                         v-for="item in mainNavItems"
@@ -234,12 +232,12 @@ router.on('navigate', (event) => {
             </div>
         </div>
 
-        <div
-            v-if="props.breadcrumbs.length > 1"
-            class="flex w-full border-b border-sidebar-border/70">
-            <div class="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
-                <Breadcrumbs :breadcrumbs="breadcrumbs" />
-            </div>
-        </div>
+        <!--        <div-->
+        <!--            v-if="props.breadcrumbs.length > 1"-->
+        <!--            class="flex w-full border-b border-sidebar-border/70">-->
+        <!--            <div class="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">-->
+        <!--                <Breadcrumbs :breadcrumbs="breadcrumbs" />-->
+        <!--            </div>-->
+        <!--        </div>-->
     </div>
 </template>

@@ -126,6 +126,11 @@ class UserBookController extends Controller
             'authors' => Inertia::defer(fn () => AuthorResource::collection($authors)),
 
             'tags' => Inertia::defer(fn () => TagResource::collection($tags)),
+
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+                ['title' => 'Books', 'href' => route('user.books.index')],
+            ],
         ])->withMeta([
             'title' => 'Your Library',
             'description' => 'A collection of your books.',

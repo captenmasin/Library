@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use App\Models\Book;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\ReviewResource;
@@ -34,6 +35,11 @@ class BookController extends Controller
                     page: $page,
                 )
             )->deepMerge()->matchOn(''),
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+                ['title' => 'Books', 'href' => route('user.books.index')],
+                ['title' => 'Add Book', 'href' => route('books.search')],
+            ],
         ])->withMeta([
             'title' => 'Add Book',
             'description' => 'Add a new book to your collection by searching for it online or scanning its barcode.',
@@ -74,6 +80,11 @@ class BookController extends Controller
                 $book->reviews->load('user', 'book')
                     ->reject(fn ($review) => Auth::check() ? $review->user_id === Auth::id() : false)
             )),
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+                ['title' => 'Books', 'href' => route('user.books.index')],
+                ['title' => Str::limit($book->title, 52), 'href' => route('books.show', $book)],
+            ],
         ])->withMeta([
             'title' => $book->title,
             'description' => $book->description ?? $book->title.' by '.$book->authors->pluck('name')->implode(', '),
@@ -86,10 +97,15 @@ class BookController extends Controller
             return redirect()->route('books.show', Book::where('identifier', $identifier)->first());
         }
 
-        ImportBookFromData::dispatchAfterResponse($identifier);
+        //        ImportBookFromData::dispatchAfterResponse($identifier);
 
         return Inertia::render('books/Preview', [
             'identifier' => $identifier,
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+                ['title' => 'Books', 'href' => route('user.books.index')],
+                ['title' => 'Importing Book'],
+            ],
         ])->withMeta([
             'title' => 'Importing Book...',
             'description' => 'We are fetching the book details from the database. This may take a few seconds.',

@@ -91,7 +91,15 @@ Route::middleware(['auth', 'verified'])->name('user.')->group(function () {
         Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
         Route::put('password', [PasswordController::class, 'update'])->name('password.update');
 
-        Route::get('appearance', fn () => Inertia::render('settings/Appearance'))->name('appearance');
+        Route::get('appearance', function () {
+            return Inertia::render('settings/Appearance', [
+                'breadcrumbs' => [
+                    ['title' => 'Home', 'href' => route('home')],
+                    ['title' => 'Settings', 'href' => route('user.settings.profile.edit')],
+                    ['title' => 'Appearance', 'href' => route('user.settings.appearance')],
+                ],
+            ]);
+        })->name('appearance');
     });
 });
 

@@ -99,6 +99,7 @@ const isUserReview = computed(() => {
         <!--            :book="book" />-->
 
         <StarRatingDisplay
+            v-if="review.rating?.value"
             :rating="review.rating.value"
             class="mt-px mb-2" />
         <div

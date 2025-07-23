@@ -21,6 +21,10 @@ class ProfileController extends Controller
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+                ['title' => 'Settings', 'href' => route('user.settings.profile.edit')],
+            ],
         ])->withMeta([
             'title' => 'Profile Settings',
             'description' => 'Manage your profile information, including your name, email, and avatar.',
@@ -29,7 +33,13 @@ class ProfileController extends Controller
 
     public function danger(Request $request): Response
     {
-        return Inertia::render('settings/Danger')
+        return Inertia::render('settings/Danger', [
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+                ['title' => 'Settings', 'href' => route('user.settings.profile.edit')],
+                ['title' => 'Danger zone', 'href' => route('user.settings.profile.danger')],
+            ],
+        ])
             ->withMeta([
                 'title' => 'Danger Zone',
                 'description' => 'Delete your account.',

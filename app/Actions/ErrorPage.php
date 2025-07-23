@@ -22,6 +22,10 @@ class ErrorPage
 
         return Inertia::render('Error', array_merge((new HandleInertiaRequests)->share(request()), [
             'status' => 404,
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+                ['title' => 'Page not found'],
+            ],
         ]))->withMeta([
             'title' => 'Not found',
         ])->toResponse(request())->setStatusCode($statusCode);

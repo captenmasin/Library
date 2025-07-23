@@ -92,230 +92,226 @@ const submit = () => {
 }
 
 defineOptions({
-    layout: AppLayout
+    layout: SettingsLayout
 })
 </script>
 
 <template>
-    <div>
-        <SettingsLayout>
-            <div class="flex flex-col space-y-6">
-                <form
-                    class="space-y-6 md:space-y-8"
-                    @submit.prevent="submit">
-                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
-                        <Label
-                            for="name"
-                            class="grid gap-1">
-                            <p>Full name</p>
-                            <p class="text-xs text-muted-foreground">
-                                Your display name
-                            </p>
-                        </Label>
-                        <div class="flex flex-col w-full">
-                            <Input
-                                id="name"
-                                v-model="form.name"
-                                class="block w-full"
-                                required
-                                autocomplete="name"
-                                placeholder="Full name" />
-                            <InputError
-                                class="mt-2"
-                                :message="form.errors.name" />
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
-                        <Label
-                            for="name"
-                            class="grid gap-1">
-                            <p>Username</p>
-                            <p class="text-xs text-muted-foreground">
-                                A unique name for your profile
-                            </p>
-                        </Label>
-                        <div class="flex flex-col w-full">
-                            <Input
-                                id="username"
-                                v-model="form.username"
-                                required
-                                class="block w-full"
-                                autocomplete="username"
-                                placeholder="Username" />
-                            <InputError
-                                class="mt-2"
-                                :message="form.errors.username" />
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
-                        <Label
-                            for="avatar"
-                            class="grid gap-1">
-                            <p>Avatar</p>
-                            <p class="text-xs text-muted-foreground">
-                                A profile picture to represent you
-                            </p>
-                        </Label>
-
-                        <div class="flex flex-col">
-                            <div class="flex items-center gap-2">
-                                <label for="avatar">
-                                    <Avatar
-                                        :key="fileInputKey"
-                                        class="flex overflow-hidden rounded-full border size-10 border-input-border">
-                                        <AvatarImage
-                                            v-if="previewUrl"
-                                            :src="previewUrl"
-                                            :alt="authedUser?.name" />
-                                        <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
-                                            {{ getInitials(authedUser?.name) }}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </label>
-                                <div class="grid w-full items-start ">
-                                    <div class="flex gap-2">
-                                        <Input
-                                            id="avatar"
-                                            ref="fileInput"
-                                            :key="fileInputKey"
-                                            type="file"
-                                            accept="image/*"
-                                            @input="handleFileChange" />
-                                        <Button
-                                            v-if="authedUser?.avatar"
-                                            type="button"
-                                            variant="destructive-ghost"
-                                            size="icon"
-                                            @click="deleteAvatar">
-                                            <Icon name="Trash" />
-                                        </Button>
-                                    </div>
-
-                                    <progress
-                                        :class="form.progress ? 'opacity-100' : 'opacity-0'"
-                                        :value="form.progress?.percentage"
-                                        class="-mt-1 w-full px-1 form-progress-bar h-[2px]"
-                                        max="100"
-                                    >
-                                        {{ form.progress?.percentage }}%
-                                    </progress>
-                                </div>
-                            </div>
-                            <InputError
-                                class="mt-2"
-                                :message="form.errors.avatar" />
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
-                        <Label
-                            for="profile_colour"
-                            class="grid gap-1">
-                            <p>
-                                Favourite Colour
-                            </p>
-                            <p class="text-xs text-muted-foreground">
-                                Your favourite colour for your profile
-                            </p>
-                        </Label>
-
-                        <div class="flex flex-col w-full">
-                            <div>
-                                <ColorPicker v-model="form.profile_colour" />
-                            </div>
-
-                            <InputError
-                                class="mt-2"
-                                :message="form.errors.profile_colour" />
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
-                        <Label
-                            for="email"
-                            class="grid gap-1">
-                            <p>
-                                Email address
-                            </p>
-                            <p class="text-xs text-muted-foreground">
-                                Your email address for notifications and account recovery
-                            </p>
-                        </Label>
-
-                        <div class="flex flex-col w-full">
-                            <Input
-                                id="email"
-                                v-model="form.email"
-                                type="email"
-                                class="block w-full"
-                                required
-                                autocomplete="username"
-                                placeholder="Email address"
-                            />
-                            <InputError
-                                class="mt-2"
-                                :message="form.errors.email" />
-                        </div>
-                    </div>
-
-                    <div
-                        v-if="mustVerifyEmail && !authedUser?.email_verified"
-                        class="mt-1">
-                        <p class="text-sm text-muted-foreground">
-                            Your email address is unverified.
-                            <Link
-                                :href="useRoute('verification.send')"
-                                method="post"
-                                as="button"
-                                preserve-scroll
-                                class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                            >
-                                Click here to resend the verification email.
-                            </Link>
-                        </p>
-
-                        <div
-                            v-if="status === 'verification-link-sent'"
-                            class="mt-2 text-sm font-medium text-green-600">
-                            A new verification link has been sent to your email address.
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-end gap-4">
-                        <div
-                            class="mt-8 flex items-center justify-end gap-4">
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                :disabled="form.processing || !form.isDirty"
-                                @click="resetForm">
-                                Reset
-                            </Button>
-
-                            <Button
-                                type="submit"
-                                :disabled="form.processing || !form.isDirty">
-                                Save
-                            </Button>
-                        </div>
-
-                        <Transition
-                            enter-active-class="transition ease-in-out"
-                            enter-from-class="opacity-0"
-                            leave-active-class="transition ease-in-out"
-                            leave-to-class="opacity-0"
-                        >
-                            <p
-                                v-show="form.recentlySuccessful"
-                                class="text-sm text-neutral-600">
-                                Saved.
-                            </p>
-                        </Transition>
-                    </div>
-                </form>
+    <div class="flex flex-col space-y-6">
+        <form
+            class="space-y-6 md:space-y-8"
+            @submit.prevent="submit">
+            <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                <Label
+                    for="name"
+                    class="grid gap-1">
+                    <p>Full name</p>
+                    <p class="text-xs text-muted-foreground">
+                        Your display name
+                    </p>
+                </Label>
+                <div class="flex flex-col w-full">
+                    <Input
+                        id="name"
+                        v-model="form.name"
+                        class="block w-full"
+                        required
+                        autocomplete="name"
+                        placeholder="Full name" />
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.name" />
+                </div>
             </div>
-        </SettingsLayout>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                <Label
+                    for="name"
+                    class="grid gap-1">
+                    <p>Username</p>
+                    <p class="text-xs text-muted-foreground">
+                        A unique name for your profile
+                    </p>
+                </Label>
+                <div class="flex flex-col w-full">
+                    <Input
+                        id="username"
+                        v-model="form.username"
+                        required
+                        class="block w-full"
+                        autocomplete="username"
+                        placeholder="Username" />
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.username" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                <Label
+                    for="avatar"
+                    class="grid gap-1">
+                    <p>Avatar</p>
+                    <p class="text-xs text-muted-foreground">
+                        A profile picture to represent you
+                    </p>
+                </Label>
+
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-2">
+                        <label for="avatar">
+                            <Avatar
+                                :key="fileInputKey"
+                                class="flex overflow-hidden rounded-full border size-10 border-input-border">
+                                <AvatarImage
+                                    v-if="previewUrl"
+                                    :src="previewUrl"
+                                    :alt="authedUser?.name" />
+                                <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
+                                    {{ getInitials(authedUser?.name) }}
+                                </AvatarFallback>
+                            </Avatar>
+                        </label>
+                        <div class="grid w-full items-start ">
+                            <div class="flex gap-2">
+                                <Input
+                                    id="avatar"
+                                    ref="fileInput"
+                                    :key="fileInputKey"
+                                    type="file"
+                                    accept="image/*"
+                                    @input="handleFileChange" />
+                                <Button
+                                    v-if="authedUser?.avatar"
+                                    type="button"
+                                    variant="destructive-ghost"
+                                    size="icon"
+                                    @click="deleteAvatar">
+                                    <Icon name="Trash" />
+                                </Button>
+                            </div>
+
+                            <progress
+                                :class="form.progress ? 'opacity-100' : 'opacity-0'"
+                                :value="form.progress?.percentage"
+                                class="-mt-1 w-full px-1 form-progress-bar h-[2px]"
+                                max="100"
+                            >
+                                {{ form.progress?.percentage }}%
+                            </progress>
+                        </div>
+                    </div>
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.avatar" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                <Label
+                    for="profile_colour"
+                    class="grid gap-1">
+                    <p>
+                        Favourite Colour
+                    </p>
+                    <p class="text-xs text-muted-foreground">
+                        Your favourite colour for your profile
+                    </p>
+                </Label>
+
+                <div class="flex flex-col w-full">
+                    <div>
+                        <ColorPicker v-model="form.profile_colour" />
+                    </div>
+
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.profile_colour" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 items-start gap-1">
+                <Label
+                    for="email"
+                    class="grid gap-1">
+                    <p>
+                        Email address
+                    </p>
+                    <p class="text-xs text-muted-foreground">
+                        Your email address for notifications and account recovery
+                    </p>
+                </Label>
+
+                <div class="flex flex-col w-full">
+                    <Input
+                        id="email"
+                        v-model="form.email"
+                        type="email"
+                        class="block w-full"
+                        required
+                        autocomplete="username"
+                        placeholder="Email address"
+                    />
+                    <InputError
+                        class="mt-2"
+                        :message="form.errors.email" />
+                </div>
+            </div>
+
+            <div
+                v-if="mustVerifyEmail && !authedUser?.email_verified"
+                class="mt-1">
+                <p class="text-sm text-muted-foreground">
+                    Your email address is unverified.
+                    <Link
+                        :href="useRoute('verification.send')"
+                        method="post"
+                        as="button"
+                        preserve-scroll
+                        class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                    >
+                        Click here to resend the verification email.
+                    </Link>
+                </p>
+
+                <div
+                    v-if="status === 'verification-link-sent'"
+                    class="mt-2 text-sm font-medium text-green-600">
+                    A new verification link has been sent to your email address.
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-4">
+                <div
+                    class="mt-8 flex items-center justify-end gap-4">
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        :disabled="form.processing || !form.isDirty"
+                        @click="resetForm">
+                        Reset
+                    </Button>
+
+                    <Button
+                        type="submit"
+                        :disabled="form.processing || !form.isDirty">
+                        Save
+                    </Button>
+                </div>
+
+                <Transition
+                    enter-active-class="transition ease-in-out"
+                    enter-from-class="opacity-0"
+                    leave-active-class="transition ease-in-out"
+                    leave-to-class="opacity-0"
+                >
+                    <p
+                        v-show="form.recentlySuccessful"
+                        class="text-sm text-neutral-600">
+                        Saved.
+                    </p>
+                </Transition>
+            </div>
+        </form>
     </div>
 </template>
