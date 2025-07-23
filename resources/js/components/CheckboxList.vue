@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useId } from 'reka-ui'
-import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 
 interface Option {

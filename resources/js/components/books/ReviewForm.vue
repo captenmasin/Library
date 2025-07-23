@@ -2,20 +2,16 @@
 import Icon from '@/components/Icon.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 import SingleReview from '@/components/SingleReview.vue'
-import ConfirmationModal from '@/components/ConfirmationModal.vue'
 import { Book } from '@/types/book'
 import { Review } from '@/types/review'
+import { useForm } from '@inertiajs/vue3'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { computed, PropType, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { Textarea } from '@/components/ui/textarea'
-import { getInitials } from '@/composables/useInitials'
-import { Link, router, useForm } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
-import { useImageTransform } from '@/composables/useImageTransform'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 const props = defineProps({
     book: {
@@ -28,7 +24,6 @@ const props = defineProps({
 const hasExistingReview = computed(() => !!props.existingReview)
 
 const { authed, authedUser } = useAuthedUser()
-const { getImageUrl } = useImageTransform()
 
 const form = useForm({
     title: props.existingReview?.title || '',

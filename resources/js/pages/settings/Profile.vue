@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
-import AppLayout from '@/layouts/AppLayout.vue'
 import useEmitter from '@/composables/useEmitter'
 import InputError from '@/components/InputError.vue'
 import ColorPicker from '@/components/ColorPicker.vue'
-import HeadingSmall from '@/components/HeadingSmall.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import { ref } from 'vue'
 import { toast } from 'vue-sonner'

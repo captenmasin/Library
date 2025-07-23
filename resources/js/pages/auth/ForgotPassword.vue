@@ -2,11 +2,11 @@
 import TextLink from '@/components/TextLink.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import InputError from '@/components/InputError.vue'
+import { useForm } from '@inertiajs/vue3'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LoaderCircle } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Head, useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 
 defineProps<{

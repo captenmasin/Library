@@ -2,8 +2,6 @@
 import UserAvatar from '@/components/UserAvatar.vue'
 import { computed } from 'vue'
 import type { User } from '@/types'
-import { useInitials } from '@/composables/useInitials'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface Props {
     user: User;
@@ -13,8 +11,6 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
     showEmail: false
 })
-
-const { getInitials } = useInitials()
 
 // Compute whether we should show the avatar image
 const showAvatar = computed(() => props.user.avatar && props.user.avatar !== '')

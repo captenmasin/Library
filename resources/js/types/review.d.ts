@@ -7,6 +7,7 @@ export type Review = {
     content: string,
     book_id: number,
     user_id: number,
+    created_at: string,
     rating?: {
         id?: number,
         value?: number,

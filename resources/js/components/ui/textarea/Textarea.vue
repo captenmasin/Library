@@ -19,7 +19,10 @@ const modelValue = useVModel(props, 'modelValue', emits, {
 })
 
 const textarea = ref<HTMLInputElement | null>(null)
-defineExpose({ focus: () => textarea.value?.focus(), blur: () => textarea.value?.blur() })
+defineExpose({
+    focus: () => textarea.value?.focus(),
+    blur: () => textarea.value?.blur()
+})
 </script>
 
 <template>

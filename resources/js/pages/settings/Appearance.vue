@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'
 import InputError from '@/components/InputError.vue'
-import HeadingSmall from '@/components/HeadingSmall.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
 import AppearanceTabs from '@/components/AppearanceTabs.vue'
 import { ref, watch } from 'vue'

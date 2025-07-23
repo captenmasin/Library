@@ -8,15 +8,15 @@ import { Vue3ColorPicker } from '@cyhnkckali/vue3-color-picker'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 const props = defineProps<{
-    modelValue: string
-    name?: string
-    class?: string
-    disabled?: boolean
+    modelValue: string;
+    name?: string;
+    class?: string;
+    disabled?: boolean;
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: string): void
-    (e: 'blur'): void
+    (e: 'update:modelValue', value: string): void;
+    (e: 'blur'): void;
 }>()
 
 const open = ref(false)
@@ -49,7 +49,7 @@ function onBlur () {
                 @click="open = true"
                 @blur="onBlur"
             >
-                <div class="w-5 h-5" />
+                <div class="h-5 w-5" />
             </Button>
         </PopoverTrigger>
 
@@ -63,7 +63,8 @@ function onBlur () {
                 :show-input-menu="false"
                 :show-color-list="false"
                 :show-eye-drop="false"
-                type="HEX" />
+                type="HEX"
+            />
 
             <!--            <Input-->
             <!--                v-model="parsedValue"-->

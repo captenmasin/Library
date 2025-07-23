@@ -7,7 +7,6 @@ import CustomPagination from '@/components/CustomPagination.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import { PropType } from 'vue'
 import { Review } from '@/types/review'
-import { Card } from '@/components/ui/card'
 import { Paginated } from '@/types/pagination'
 
 defineOptions({ layout: AppLayout })

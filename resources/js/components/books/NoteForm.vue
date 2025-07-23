@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import Icon from '@/components/Icon.vue'
 import InputError from '@/components/InputError.vue'
-import PlaceholderPattern from '@/components/PlaceholderPattern.vue'
 import { Book } from '@/types/book'
-import { nextTick, PropType, ref } from 'vue'
-import { Label } from '@/components/ui/label'
+import { PropType, ref } from 'vue'
+import { useForm } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button'
-import { Link, useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { Textarea } from '@/components/ui/textarea'
-import { useMarkdown } from '@/composables/useMarkdown'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const props = defineProps({
     book: {

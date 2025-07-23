@@ -1,6 +1,5 @@
 <script setup>
 import Icon from '@/components/Icon.vue'
-import DefaultCover from '~/images/default-cover.svg'
 import BarcodeScanned from '~/audio/barcode-scanned.mp3'
 import HorizontalSkeleton from '@/components/books/HorizontalSkeleton.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
@@ -12,8 +11,6 @@ import { useRequest } from '@/composables/useRequest'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { Button } from '@/components/ui/button/index.js'
 import { BrowserMultiFormatReader } from '@zxing/browser'
-import { useUserBookStatus } from '@/composables/useUserBookStatus.js'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select/index.js'
 
 // refs for UI state
 const video = ref(null)

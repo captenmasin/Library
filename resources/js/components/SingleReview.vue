@@ -1,24 +1,18 @@
 <script setup lang="ts">
 import UserAvatar from '@/components/UserAvatar.vue'
-import RatingForm from '@/components/books/RatingForm.vue'
 import StarRatingDisplay from '@/components/StarRatingDisplay.vue'
 import ConfirmationModal from '@/components/ConfirmationModal.vue'
 import { cn } from '@/lib/utils'
 import { Book } from '@/types/book'
-import { Note } from '@/types/note'
 import { Review } from '@/types/review'
 import { computed, PropType } from 'vue'
+import { router } from '@inertiajs/vue3'
 import { useDateFormat } from '@vueuse/core'
-import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
-import { Link, router } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { useMarkdown } from '@/composables/useMarkdown'
-import { getInitials } from '@/composables/useInitials'
 import { useAuthedUser } from '@/composables/useAuthedUser'
-import { useImageTransform } from '@/composables/useImageTransform'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 const props = defineProps({
     book: {
@@ -35,11 +29,9 @@ const props = defineProps({
     }
 })
 
-const { getImageUrl } = useImageTransform()
-
 const { authedUser } = useAuthedUser()
 
-function formatDate (date) {
+function formatDate (date: string | Date) {
     return useDateFormat(date, 'Mo MMMM h:ma')
 }
 

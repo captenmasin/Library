@@ -5,8 +5,8 @@ import NavUser from '@/components/NavUser.vue'
 import NavFooter from '@/components/NavFooter.vue'
 import { type NavItem } from '@/types'
 import { Link } from '@inertiajs/vue3'
+import { LayoutGrid } from 'lucide-vue-next'
 import { useRoute } from '@/composables/useRoute'
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 
 const mainNavItems: NavItem[] = [

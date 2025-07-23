@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import Heading from '@/components/Heading.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
+import { ref, watch } from 'vue'
 import { type NavItem } from '@/types'
-import { onMounted, ref, watch } from 'vue'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
-import { Separator } from '@/components/ui/separator'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 

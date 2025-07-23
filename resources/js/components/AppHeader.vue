@@ -1,18 +1,14 @@
 <script setup lang="ts">
 import UserAvatar from '@/components/UserAvatar.vue'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
-import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import UserMenuContent from '@/components/UserMenuContent.vue'
 import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
-import { getInitials } from '@/composables/useInitials'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
-import { useImageTransform } from '@/composables/useImageTransform'
 import { Home, LibraryBig, Menu, SearchIcon } from 'lucide-vue-next'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -22,7 +18,7 @@ interface Props {
     breadcrumbs?: BreadcrumbItem[];
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
     breadcrumbs: () => []
 })
 

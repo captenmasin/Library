@@ -1,5 +1,4 @@
 import { UserBookStatus } from '@/enums/UserBookStatus'
-import { UserPermission } from '@/enums/UserPermission'
 
 export type User = {
     id: number;

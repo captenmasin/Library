@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'
 import InputError from '@/components/InputError.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
-import { toast } from 'vue-sonner'
 import { PropType, ref } from 'vue'
 import { UserPasskey } from '@/types/user'
 import { Input } from '@/components/ui/input'
