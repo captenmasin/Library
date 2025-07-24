@@ -18,7 +18,7 @@ class BookTransformer
             : ['show' => route('books.preview', ['identifier' => $identifier])];
 
         $subjects = collect($data['subjects'] ?? [])
-            ->map(fn ($s) => trim(Str::before($s, '--')))
+            ->map(fn ($s) => str_replace('_', ' ', trim(Str::before($s, '--'))))
             ->unique()->values()->all();
 
         $authors = collect($data['authors'] ?? [])
