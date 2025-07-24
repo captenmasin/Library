@@ -16,13 +16,17 @@ class DeployApp extends Command
     {
         $this->info('🔧 Starting deployment...');
 
+        $this->info('📀 Storage link');
+        $this->call('storage:link');
+
         // NPM
         $this->runShell('npm ci');
 
         if ($this->option('ssr')) {
-            $this->info('🌐 Enabling server-side rendering...');
+            $this->info('🌐 Running SSR build...');
             $this->runShell('npm run build:ssr');
         } else {
+            $this->info('📦 Running frontend build...');
             $this->runShell('npm run build');
         }
 
