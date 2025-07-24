@@ -93,6 +93,8 @@ class AppServiceProvider extends ServiceProvider
             $this->visit('/test-logout')
                 ->waitForLocation('/login')
                 ->assertPathIs('/login');
+
+            return $this;
         });
 
         Browser::macro('disableClientSideValidation', function () {

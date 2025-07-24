@@ -100,6 +100,7 @@ defineOptions({
                             </DialogClose>
 
                             <Button
+                                id="confirm-delete-account"
                                 type="submit"
                                 variant="destructive"
                                 :disabled="form.processing">

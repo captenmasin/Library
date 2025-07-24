@@ -74,6 +74,7 @@ const isUserReview = computed(() => {
                     </template>
                     <template #trigger>
                         <Button
+                            :id="`delete-review-` + review.id"
                             variant="link"
                             class="text-destructive py-0 h-auto text-xs">
                             Delete

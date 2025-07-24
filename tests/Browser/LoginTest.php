@@ -11,6 +11,7 @@ test('user can login and be redirected to books', function () {
             'password' => $password,
         ]);
 
+        $browser->fullLogout();
         $browser->visit('/login')
             ->assertSee('Log in')
             ->type('#login', $user->email) // email OR username

@@ -80,27 +80,30 @@ Route::middleware(['auth', 'verified'])->name('user.')->group(function () {
     });
 
     // Authenticated user settings routes
-    Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::post('profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-        Route::delete('profile/avatar', [ProfileController::class, 'destroyAvatar'])->name('profile.avatar.destroy');
+    Route::prefix('settings')
+        ->withoutMiddleware('verified')
+        ->name('settings.')->group(function () {
+            Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+            Route::post('profile', [ProfileController::class, 'update'])->name('profile.update');
 
-        Route::get('danger', [ProfileController::class, 'danger'])->name('profile.danger');
+            Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+            Route::delete('profile/avatar', [ProfileController::class, 'destroyAvatar'])->name('profile.avatar.destroy');
 
-        Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
-        Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+            Route::get('danger', [ProfileController::class, 'danger'])->name('profile.danger');
 
-        Route::get('appearance', function () {
-            return Inertia::render('settings/Appearance', [
-                'breadcrumbs' => [
-                    ['title' => 'Home', 'href' => route('home')],
-                    ['title' => 'Settings', 'href' => route('user.settings.profile.edit')],
-                    ['title' => 'Appearance', 'href' => route('user.settings.appearance')],
-                ],
-            ]);
-        })->name('appearance');
-    });
+            Route::get('password', [PasswordController::class, 'edit'])->name('password.edit');
+            Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+            Route::get('appearance', function () {
+                return Inertia::render('settings/Appearance', [
+                    'breadcrumbs' => [
+                        ['title' => 'Home', 'href' => route('home')],
+                        ['title' => 'Settings', 'href' => route('user.settings.profile.edit')],
+                        ['title' => 'Appearance', 'href' => route('user.settings.appearance')],
+                    ],
+                ]);
+            })->name('appearance');
+        });
 });
 
 // Dynamic image transformation

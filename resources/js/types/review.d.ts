@@ -2,6 +2,7 @@ import { User } from '@/types/user'
 import { Book } from '@/types/book'
 
 export type Review = {
+    id: number,
     uuid: string,
     title: string,
     content: string,

@@ -259,7 +259,8 @@ test('user can delete a note on a book', function () {
 
     $this->browse(function (Browser $browser) use ($user, $book, $note) {
         $browser->loginAs($user)
-            ->visit(route('books.show', $book));
+            ->visit(route('books.show', $book))
+            ->waitFor('.book-display-type');
 
         $displayTabs = $browser->elements('.book-display-type [role="tab"]');
         $displayTabs[0]->click();
@@ -312,7 +313,7 @@ test('user can update a review on a book', function () {
     $user = User::factory()->create();
     $book = Book::factory()->create();
 
-    $review = Review::factory()->create([
+    Review::factory()->create([
         'user_id' => $user->id,
         'book_id' => $book->id,
         'title' => 'Old Title',
@@ -344,7 +345,6 @@ test('user can update a review on a book', function () {
 });
 
 // Users can delete a review on a book
-
 test('user can delete a review on a book', function () {
     $user = User::factory()->create();
     $book = Book::factory()->create();
@@ -357,18 +357,57 @@ test('user can delete a review on a book', function () {
         'title' => 'Delete Review',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user, $book) {
+    $this->browse(function (Browser $browser) use ($user, $book, $review) {
         $browser->loginAs($user)
-            ->visit(route('books.show', $book))
-            ->press('Delete')
-            ->pressAndWaitFor('Delete')
+            ->visit(route('books.show', $book));
+
+        $displayTabs = $browser->elements('.book-display-type [role="tab"]');
+        $displayTabs[1]->click();
+
+        $browser
+            ->click('#delete-review-'.$review->id)
+            ->waitForText('Are you sure you want to delete this review?')
+            ->press('Confirm')
             ->pause(500);
     });
 
     $this->assertDatabaseMissing('reviews', [
         'id' => $review->id,
     ]);
-})->todo();
+});
+
+test('user cannot see delete button on other users reviews', function () {
+    $user = User::factory()->create();
+    $secondUser = User::factory()->create();
+    $book = Book::factory()->create();
+
+    $user->books()->attach($book);
+    $secondUser->books()->attach($book);
+
+    Review::factory()->create([
+        'user_id' => $user->id,
+        'book_id' => $book->id,
+        'title' => 'Delete Review',
+    ]);
+
+    Review::factory()->create([
+        'user_id' => $secondUser->id,
+        'book_id' => $book->id,
+        'title' => 'Delete Review',
+    ]);
+
+    $this->browse(function (Browser $browser) use ($user, $book) {
+        $browser->loginAs($user)
+            ->visit(route('books.show', $book));
+
+        $displayTabs = $browser->elements('.book-display-type [role="tab"]');
+        $displayTabs[1]->click();
+
+        $browser->waitFor('.reviews-section')
+            ->assertMissing('#delete-review-2')
+            ->assertPresent('#delete-review-1');
+    });
+});
 
 // Users can update their rating of a book
 

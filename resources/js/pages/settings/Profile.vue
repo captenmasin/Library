@@ -185,6 +185,7 @@ defineOptions({
                                     variant="destructive-ghost"
                                     size="icon"
                                     @click="deleteAvatar">
+                                    <span class="sr-only">Remove avatar</span>
                                     <Icon name="Trash" />
                                 </Button>
                             </div>
@@ -265,7 +266,6 @@ defineOptions({
                         :href="useRoute('verification.send')"
                         method="post"
                         as="button"
-                        preserve-scroll
                         class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                     >
                         Click here to resend the verification email.
@@ -296,19 +296,6 @@ defineOptions({
                         Save
                     </Button>
                 </div>
-
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p
-                        v-show="form.recentlySuccessful"
-                        class="text-sm text-neutral-600">
-                        Saved.
-                    </p>
-                </Transition>
             </div>
         </form>
     </div>

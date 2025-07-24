@@ -93,7 +93,6 @@ defineOptions({
                         class="mt-1 block w-full"
                         autocomplete="new-password"
                     />
-                    <InputError :message="form.errors.password" />
                 </div>
 
                 <div class="grid gap-1">
@@ -105,6 +104,10 @@ defineOptions({
                         class="mt-1 block w-full"
                         autocomplete="new-password"
                     />
+                </div>
+
+                <div class="grid-cols-2 -mt-4">
+                    <InputError :message="form.errors.password" />
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
             </div>
