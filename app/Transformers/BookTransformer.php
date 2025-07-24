@@ -30,6 +30,7 @@ class BookTransformer
         $description = $data['overview'] ?? $data['synopsis'] ?? $data['description'] ?? null;
 
         return [
+            'id' => $data['id'] ?? null,
             'identifier' => $identifier,
             'codes' => [
                 ['type' => 'ISBN_13', 'identifier' => $data['isbn13'] ?? null],

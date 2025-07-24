@@ -6,6 +6,7 @@ import { Note } from '@/types/note'
 import { Tag } from '@/types/tag'
 
 export type Book = {
+    id: number,
     path: string,
     identifier: string,
     links: {
@@ -40,6 +41,7 @@ export type Book = {
 }
 
 export type BookApiResult = {
+    id: number
     codes: { type: string; identifier: string }[]
     identifier: string
     title: string

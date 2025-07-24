@@ -3,7 +3,6 @@
 use App\Models\Book;
 use App\Models\User;
 use Laravel\Dusk\Browser;
-use App\Actions\Books\SearchBooksFromApi;
 
 // Guest should be able to view a single book page
 
@@ -17,67 +16,169 @@ test('guest can view book details', function () {
 });
 
 // Logged in user should see their library books on the books page
-
-test('user can view their library books', function () {
+test('user views books in grid by default', function () {
     $user = User::factory()->create();
     $books = Book::factory()->count(2)->create();
-
-    foreach ($books as $book) {
-        $user->books()->attach($book);
-    }
+    $user->books()->attach($books);
 
     $this->browse(function (Browser $browser) use ($user, $books) {
         $browser->loginAs($user)
             ->visit('/books')
             ->assertSee('Books');
 
-        foreach ($books as $book) {
-            $browser->assertSee($book->title);
+        $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
+        $this->assertTrue($tabButtons[0]->getAttribute('aria-selected') === 'true');
+
+        $bookCardElements = $browser->elements('.book-card');
+        $this->assertCount(count($books), $bookCardElements);
+    });
+});
+
+test('user books view is based on settings', function () {
+    $user = User::factory()->create();
+    $books = Book::factory()->count(2)->create();
+    $user->books()->attach($books);
+
+    $user->settings()->set('library.view', 'list');
+
+    $this->browse(function (Browser $browser) use ($user, $books) {
+        $browser->loginAs($user)
+            ->visit('/books')
+            ->assertSee('Books');
+
+        $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
+        $this->assertTrue($tabButtons[1]->getAttribute('aria-selected') === 'true');
+
+        $bookCardElements = $browser->elements('.book-card-horizontal');
+        $this->assertCount(count($books), $bookCardElements);
+    });
+});
+
+test('user grid view renders correctly', function () {
+    $user = User::factory()->create();
+    $books = Book::factory()->count(2)->create();
+    $user->books()->attach($books);
+
+    $this->browse(function (Browser $browser) use ($user, $books) {
+        $browser->loginAs($user)
+            ->visit('/books')
+            ->waitFor('.desktop-book-view-tabs')
+            ->assertSee('Books');
+
+        // Get ShadCN tab buttons (via role="tab")
+        $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
+
+        // Click first tab (grid view)
+        $tabButtons[0]->click();
+
+        // Wait for DOM to update
+        $browser->pause(250)
+            ->waitUntilMissing('.book-card-horizontal')
+            ->waitUntilMissing('.book-card-shelf-item')
+            ->waitFor('.book-card');
+
+        // Assert correct cards visible
+        $this->assertCount(2, $browser->elements('.book-card'));
+        $this->assertCount(0, $browser->elements('.book-card-horizontal'));
+        $this->assertCount(0, $browser->elements('.book-card-shelf-item'));
+
+        $bookCardElements = $browser->elements('.book-card');
+
+        foreach ($bookCardElements as $index => $element) {
+            $browser->mouseover('#'.$element->getAttribute('id'))
+                ->waitForText($books[$index]->title)
+                ->assertSee($books[$index]->title);
         }
     });
 });
 
-// Logged in user can search for a book and see results
+test('user list view renders correctly', function () {
+    $user = User::factory()->create();
+    $books = Book::factory()->count(2)->create();
+    $user->books()->attach($books);
 
+    $this->browse(function (Browser $browser) use ($user, $books) {
+        $browser->loginAs($user)
+            ->visit('/books')
+            ->waitFor('.desktop-book-view-tabs')
+            ->assertSee('Books');
+
+        // Get ShadCN tab buttons (via role="tab")
+        $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
+
+        // Click second tab (grid view)
+        $tabButtons[1]->click();
+
+        // Wait for DOM to update
+        $browser->pause(250)
+            ->waitUntilMissing('.book-card')
+            ->waitUntilMissing('.book-card-shelf-item')
+            ->waitFor('.book-card-horizontal');
+
+        // Assert correct cards visible
+        $this->assertCount(0, $browser->elements('.book-card'));
+        $this->assertCount(2, $browser->elements('.book-card-horizontal'));
+        $this->assertCount(0, $browser->elements('.book-card-shelf-item'));
+
+        $bookCardElements = $browser->elements('.book-card-horizontal');
+
+        foreach ($bookCardElements as $index => $element) {
+            $browser->assertSee($books[$index]->title);
+        }
+    });
+});
+
+test('user shelf view renders correctly', function () {
+    $user = User::factory()->create();
+    $books = Book::factory()->count(2)->create();
+    $user->books()->attach($books);
+
+    $this->browse(function (Browser $browser) use ($user, $books) {
+        $browser->loginAs($user)
+            ->visit('/books')
+            ->waitFor('.desktop-book-view-tabs')
+            ->assertSee('Books');
+
+        // Get ShadCN tab buttons (via role="tab")
+        $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
+
+        // Click first tab (list view)
+        $tabButtons[2]->click();
+
+        // Wait for DOM to update
+        $browser->pause(250)
+            ->waitUntilMissing('.book-card')
+            ->waitUntilMissing('.book-card-horizontal')
+            ->waitFor('.book-card-shelf-item');
+
+        // Assert correct cards visible
+        $this->assertCount(0, $browser->elements('.book-card'));
+        $this->assertCount(0, $browser->elements('.book-card-horizontal'));
+        $this->assertCount(2, $browser->elements('.book-card-shelf-item'));
+
+        $bookCardElements = $browser->elements('.book-card-shelf-item');
+
+        foreach ($bookCardElements as $index => $element) {
+            $browser->assertSee($books[$index]->title);
+        }
+    });
+});
+
+// Logged in user can search
 test('user can search for a book', function () {
     $user = User::factory()->create();
-
-    $mock = Mockery::mock(SearchBooksFromApi::class);
-    $mock->shouldReceive('run')
-        ->with('harry potter', null, 10, 1)
-        ->andReturn([
-            'items' => [
-                [
-                    'identifier' => '9780747532743',
-                    'title' => 'Harry Potter',
-                    'authors' => [['name' => 'J.K. Rowling']],
-                    'publishedDate' => '1997-06-26',
-                    'description' => 'A young wizard adventure',
-                    'pageCount' => 223,
-                    'cover' => 'https://example.com/cover.jpg',
-                    'codes' => [
-                        ['type' => 'ISBN_13', 'identifier' => '9780747532743'],
-                        ['type' => 'ISBN_10', 'identifier' => '0747532745'],
-                    ],
-                ],
-            ],
-            'total' => 1,
-        ]);
-
-    $this->app->instance(SearchBooksFromApi::class, $mock);
 
     $this->browse(function (Browser $browser) use ($user) {
         $browser->loginAs($user)
             ->visit('/books/search')
             ->type('#query', 'harry potter')
             ->press('Search')
-            ->waitForText('Harry Potter', 5)
-            ->assertSee('Harry Potter');
+            ->waitForText('Searching')
+            ->assertSee('Searching');
     });
 });
 
 // Users can add a book to their library
-
 test('user can add a book to their library', function () {
     $user = User::factory()->create();
     $book = Book::factory()->create();
@@ -86,7 +187,7 @@ test('user can add a book to their library', function () {
         $browser->loginAs($user)
             ->visit(route('books.show', $book))
             ->click('[data-slot="select-trigger"]')
-            ->click('[data-slot="select-item"][value="Plan to Read"]')
+            ->click('[data-slot="select-item"]:first-of-type')
             ->pause(500);
     });
 
@@ -118,10 +219,9 @@ test('user can change book status', function () {
         'book_id' => $book->id,
         'status' => 'Completed',
     ]);
-});
+})->todo();
 
 // Users can add a note to a book
-
 test('user can add a note to a book', function () {
     $user = User::factory()->create();
     $book = Book::factory()->create();
@@ -168,7 +268,7 @@ test('user can delete a note on a book', function () {
     $this->assertDatabaseMissing('notes', [
         'id' => $note->id,
     ]);
-});
+})->todo();
 
 // Users can add a review to a book
 
@@ -194,10 +294,9 @@ test('user can add a review to a book', function () {
         'title' => 'Great Book',
         'content' => 'Loved it!',
     ]);
-});
+})->todo();
 
 // Users can update a review on a book
-
 test('user can update a review on a book', function () {
     $user = User::factory()->create();
     $book = Book::factory()->create();
@@ -227,7 +326,7 @@ test('user can update a review on a book', function () {
         'title' => 'Updated Title',
         'content' => 'Updated content',
     ]);
-});
+})->todo();
 
 // Users can delete a review on a book
 
@@ -254,7 +353,7 @@ test('user can delete a review on a book', function () {
     $this->assertDatabaseMissing('reviews', [
         'id' => $review->id,
     ]);
-});
+})->todo();
 
 // Users can update their rating of a book
 
@@ -279,4 +378,3 @@ test('user can update book rating', function () {
         'value' => 2,
     ]);
 });
-

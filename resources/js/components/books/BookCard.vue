@@ -24,7 +24,9 @@ const { userRating } = useBook(props.book)
 </script>
 
 <template>
-    <article class="flex gap-4">
+    <article
+        :id="`book-card-${book.id}`"
+        class="flex gap-4 book-card">
         <div
             class="flex w-full flex-col overflow-hidden rounded-md shadow-sm group"
             :style="{

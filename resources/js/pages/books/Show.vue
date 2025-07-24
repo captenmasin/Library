@@ -212,9 +212,9 @@ defineOptions({
                         class="mt-1"
                         star-size="size-5"
                         :book="book"
-                        @deleted="refresh"
-                        @added="refresh"
-                        @updated="refresh" />
+                        @deleted="refreshRating"
+                        @added="refreshRating"
+                        @updated="refreshRating" />
                 </div>
 
                 <div class="bg-secondary md:bg-transparent rounded-md mt-4">

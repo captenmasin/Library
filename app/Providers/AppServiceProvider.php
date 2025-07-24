@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Inertia\Response;
 use Laravel\Dusk\Browser;
 use App\Services\ISBNdbService;
@@ -96,6 +97,13 @@ class AppServiceProvider extends ServiceProvider
 
         Browser::macro('disableClientSideValidation', function () {
             $this->script('for(var f=document.forms,i=f.length;i--;)f[i].setAttribute("novalidate",i)');
+
+            return $this;
+        });
+
+        Browser::macro('loginFully', function (User $user) {
+            $this->loginAs($user)
+                ->visit('/sanctum/csrf-cookie');
 
             return $this;
         });

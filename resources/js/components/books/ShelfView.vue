@@ -78,7 +78,7 @@ function isTilted (identifier: string, index: number): boolean {
         <li
             v-for="(book, index) in books"
             :key="book.identifier"
-            class="mb-8 border-b-2 border-amber-900 group pb-[2px]">
+            class="mb-8 border-b-2 border-amber-900 book-card-shelf-item group pb-[2px]">
             <Link
                 :href="book.links.show"
                 prefetch

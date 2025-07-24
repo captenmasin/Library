@@ -18,6 +18,7 @@ class BookResource extends JsonResource
         $description = str_replace('\n', "\n", $description);
 
         return [
+            'id' => $this->id,
             'path' => $this->path,
             'identifier' => $this->identifier,
             'title' => html_entity_decode($this->title),
