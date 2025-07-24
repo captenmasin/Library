@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Artisan;
 use Laravel\Dusk\TestCase as BaseTestCase;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use PHPUnit\Framework\Attributes\AfterClass;
@@ -16,7 +17,9 @@ abstract class DuskTestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->artisan('migrate:fresh', ['--env' => 'dusk.local']);
+        //        $this->artisan('migrate:fresh', ['--env' => 'dusk']);
+        Artisan::call('migrate:fresh', ['--database' => 'testing']);
+        Artisan::call('db:seed', ['--database' => 'testing']);
     }
 
     /**

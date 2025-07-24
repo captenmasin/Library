@@ -2,6 +2,7 @@
 
 use App\Models\Book;
 use App\Models\User;
+use App\Models\Review;
 use Laravel\Dusk\Browser;
 
 // Guest should be able to view a single book page
@@ -199,7 +200,6 @@ test('user can add a book to their library', function () {
 });
 
 // Users can change a book status
-
 test('user can change book status', function () {
     $user = User::factory()->create();
     $book = Book::factory()->create();
@@ -210,7 +210,7 @@ test('user can change book status', function () {
         $browser->loginAs($user)
             ->visit(route('books.show', $book))
             ->click('[data-slot="select-trigger"]')
-            ->click('[data-slot="select-item"][value="Completed"]')
+            ->click('[data-slot="select-item"]:nth-of-type(3)')
             ->pause(500);
     });
 
@@ -219,7 +219,7 @@ test('user can change book status', function () {
         'book_id' => $book->id,
         'status' => 'Completed',
     ]);
-})->todo();
+});
 
 // Users can add a note to a book
 test('user can add a note to a book', function () {
@@ -257,21 +257,28 @@ test('user can delete a note on a book', function () {
         'content' => 'Delete me',
     ]);
 
-    $this->browse(function (Browser $browser) use ($user, $book) {
+    $this->browse(function (Browser $browser) use ($user, $book, $note) {
         $browser->loginAs($user)
-            ->visit(route('books.show', $book))
-            ->press('Delete')
-            ->pressAndWaitFor('Delete')
-            ->pause(500);
+            ->visit(route('books.show', $book));
+
+        $displayTabs = $browser->elements('.book-display-type [role="tab"]');
+        $displayTabs[0]->click();
+
+        $browser->waitFor('.notes-section')
+            ->assertSee('Delete me')
+            ->pressAndWaitFor('#delete-note-'.$note->id)
+            ->waitForText('Are you sure you want to delete this note?')
+            ->press('Confirm')
+            ->pause(500)
+            ->assertDontSee('Delete me');
     });
 
     $this->assertDatabaseMissing('notes', [
         'id' => $note->id,
     ]);
-})->todo();
+});
 
 // Users can add a review to a book
-
 test('user can add a review to a book', function () {
     $user = User::factory()->create();
     $book = Book::factory()->create();
@@ -280,28 +287,32 @@ test('user can add a review to a book', function () {
 
     $this->browse(function (Browser $browser) use ($user, $book) {
         $browser->loginAs($user)
-            ->visit(route('books.show', $book))
-            ->press('Write a review')
-            ->type('#reviewTitle', 'Great Book')
-            ->type('#reviewContent', 'Loved it!')
+            ->visit(route('books.show', $book));
+
+        $displayTabs = $browser->elements('.book-display-type [role="tab"]');
+        $displayTabs[1]->click();
+
+        $browser->press('Write a review')
+            ->type('#reviewTitle', 'A new review')
+            ->type('#reviewContent', 'Content here')
             ->press('Submit Review')
-            ->waitForText('Great Book', 5);
+            ->waitForText('A new review', 5);
     });
 
     $this->assertDatabaseHas('reviews', [
         'user_id' => $user->id,
         'book_id' => $book->id,
-        'title' => 'Great Book',
-        'content' => 'Loved it!',
+        'title' => 'A new review',
+        'content' => 'Content here',
     ]);
-})->todo();
+});
 
 // Users can update a review on a book
 test('user can update a review on a book', function () {
     $user = User::factory()->create();
     $book = Book::factory()->create();
 
-    $review = \App\Models\Review::factory()->create([
+    $review = Review::factory()->create([
         'user_id' => $user->id,
         'book_id' => $book->id,
         'title' => 'Old Title',
@@ -312,8 +323,12 @@ test('user can update a review on a book', function () {
 
     $this->browse(function (Browser $browser) use ($user, $book) {
         $browser->loginAs($user)
-            ->visit(route('books.show', $book))
-            ->press('Edit review')
+            ->visit(route('books.show', $book));
+
+        $displayTabs = $browser->elements('.book-display-type [role="tab"]');
+        $displayTabs[1]->click();
+
+        $browser->press('Edit review')
             ->type('#reviewTitle', 'Updated Title')
             ->type('#reviewContent', 'Updated content')
             ->press('Update Review')
@@ -326,7 +341,7 @@ test('user can update a review on a book', function () {
         'title' => 'Updated Title',
         'content' => 'Updated content',
     ]);
-})->todo();
+});
 
 // Users can delete a review on a book
 
@@ -336,7 +351,7 @@ test('user can delete a review on a book', function () {
 
     $user->books()->attach($book);
 
-    $review = \App\Models\Review::factory()->create([
+    $review = Review::factory()->create([
         'user_id' => $user->id,
         'book_id' => $book->id,
         'title' => 'Delete Review',

@@ -56,6 +56,7 @@ function deleteNote () {
                         </template>
                         <template #trigger>
                             <Button
+                                :id="`delete-note-` + note.id"
                                 variant="link"
                                 class="text-destructive py-0 h-auto text-xs">
                                 Delete
@@ -64,6 +65,7 @@ function deleteNote () {
                     </ConfirmationModal>
                 </div>
                 <Badge
+                    v-if="note.status"
                     variant="secondary"
                     class="text-xs">
                     {{ note.status }}

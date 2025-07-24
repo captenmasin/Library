@@ -165,7 +165,7 @@ defineOptions({
                         <div class="flex mb-4 w-full md:w-auto">
                             <Tabs
                                 v-model="displayType"
-                                class="flex w-full flex-1"
+                                class="flex w-full flex-1 book-display-type"
                                 :default-value="displayType">
                                 <TabsList class="w-full">
                                     <TabsTrigger
@@ -183,9 +183,11 @@ defineOptions({
                     <div>
                         <NotesSection
                             v-if="displayType === 'notes'"
+                            class="notes-section"
                             :book="book" />
                         <ReviewsSection
                             v-if="displayType === 'reviews'"
+                            class="reviews-section"
                             :book="book"
                             :reviews="reviews" />
                     </div>

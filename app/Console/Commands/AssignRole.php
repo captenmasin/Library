@@ -22,7 +22,7 @@ class AssignRole extends Command
             options: collect(UserRole::cases())
                 ->mapWithKeys(fn ($role) => [$role->value => $role->name])
                 ->toArray(),
-            default: [$selectedRole],
+            default: $selectedRole ? [$selectedRole] : [],
             required: true
         );
 
