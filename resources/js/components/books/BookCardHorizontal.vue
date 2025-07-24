@@ -51,7 +51,8 @@ const { userRating } = useBook(props.book)
 
 <template>
     <div
-        class="flex w-full flex-col group gap-2 md:items-center"
+        :id="`book-card-${book.id}`"
+        class="flex w-full flex-col group gap-2 md:items-center book-card-horizontal"
         :class="narrow ? '' : 'md:flex-row md:gap-8'">
         <div class="flex w-full gap-4">
             <component

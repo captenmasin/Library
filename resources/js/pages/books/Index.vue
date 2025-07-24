@@ -144,7 +144,7 @@ defineOptions({ layout: AppLayout })
                 </PageTitle>
                 <BookViewTabs
                     v-model="view"
-                    class="flex w-32 flex-1 shrink-0 max-w-32 md:hidden" />
+                    class="flex w-32 book-view-tabs mobile-book-view-tabs flex-1 shrink-0 max-w-32 md:hidden" />
             </div>
 
             <!-- View & Sort Controls ---------------------------------------- -->
@@ -152,7 +152,7 @@ defineOptions({ layout: AppLayout })
                 <!-- View toggle -->
                 <BookViewTabs
                     v-model="view"
-                    class="hidden md:flex" />
+                    class="hidden book-view-tabs desktop-book-view-tabs md:flex" />
 
                 <!-- Sort dropdown & order -->
                 <div class="flex w-full items-center justify-end gap-2.5 md:w-56 md:gap-2">

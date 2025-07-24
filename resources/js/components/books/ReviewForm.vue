@@ -33,12 +33,16 @@ const form = useForm({
 const displayForm = ref(false)
 
 function submit () {
+    console.log(useRoute('reviews.store', props.book))
     form.post(useRoute('reviews.store', props.book), {
         preserveScroll: true,
         only: ['reviews', 'book'],
         onSuccess: () => {
             displayForm.value = false
             form.defaults()
+        },
+        onError: () => {
+            alert('NO')
         }
     })
 }
@@ -106,9 +110,9 @@ function deleteReview () {
                     Cancel
                 </Button>
                 <Button
+                    id="dewlnnlwe"
                     type="submit"
-                    :disabled="form.processing"
-                >
+                    :disabled="form.processing">
                     {{ hasExistingReview ? 'Update Review' : 'Submit Review' }}
                 </Button>
             </div>

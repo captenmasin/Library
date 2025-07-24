@@ -11,14 +11,14 @@ defineModel('view', {
 
 const views = [
     {
-        value: 'list',
-        label: 'List',
-        icon: 'LayoutList'
-    },
-    {
         value: 'grid',
         label: 'Grid',
         icon: 'LayoutGrid'
+    },
+    {
+        value: 'list',
+        label: 'List',
+        icon: 'LayoutList'
     },
     {
         value: 'shelf',

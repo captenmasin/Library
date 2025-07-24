@@ -34,6 +34,10 @@ class ReviewController extends Controller
 
     public function store(Request $request, Book $book)
     {
+        ray('REVIEW POSTED', [
+            'data' => $request->only(['title', 'content']),
+        ]);
+
         $validated = $request->validate([
             'title' => 'nullable|string|max:256',
             'content' => 'nullable|string|max:2000',
