@@ -33,7 +33,7 @@ class UpdateUserBookStatus
             'book' => [
                 'identifier' => $book->identifier,
                 'title' => $book->title,
-                'status' => $status,
+                'status' => $status->value,
             ],
         ]);
 
