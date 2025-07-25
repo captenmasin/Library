@@ -12,6 +12,10 @@ class TrackEvent
 
     public function handle(AnalyticsEvent $name, ?array $meta): void
     {
+        if (! config('services.pirsch.enabled')) {
+            return;
+        }
+
         Pirsch::track(
             name: $name->value,
             meta: $meta,
