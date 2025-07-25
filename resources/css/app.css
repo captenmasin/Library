@@ -125,7 +125,7 @@
 
     html.pwa.pwa-ios body{
         padding-top: env(safe-area-inset-top);
-        @apply bg-red-400
+        @apply bg-blue-400
     }
 }
 
