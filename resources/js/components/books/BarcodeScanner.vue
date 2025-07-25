@@ -36,10 +36,10 @@ async function startScan () {
     book.value = null
     scanning.value = true
 
-    // useRequest(useRoute('api.books.fetch_or_create', '9780307763051'), 'GET')
-    //     .then(response => {
-    //         book.value = response.book
-    //     })
+    useRequest(useRoute('api.books.fetch_or_create', '9780307763051'), 'GET')
+        .then(response => {
+            book.value = response.book
+        })
 
     try {
         controls = await codeReader.decodeFromConstraints(
@@ -112,7 +112,7 @@ onMounted(() => {
             class="relative">
             <video
                 ref="video"
-                class="mx-auto w-full rounded shadow"
+                class="mx-auto h-24 bg-muted w-full rounded shadow"
                 autoplay
                 playsinline
                 muted

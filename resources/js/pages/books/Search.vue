@@ -15,7 +15,18 @@ import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input/index.js'
 import { Button } from '@/components/ui/button/index.js'
 import { Deferred, Link, router } from '@inertiajs/vue3'
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { createReusableTemplate, useMediaQuery } from '@vueuse/core'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger
+} from '@/components/ui/drawer'
 
 const props = defineProps({
     results: {
@@ -50,6 +61,8 @@ const loadingMore = ref(false)
 
 // const showAuthorField = ref(author.value !== '' && author.value !== null)
 const showAuthorField = ref(true)
+
+const showBarcodeScanner = ref(props.scan)
 
 function searchBooks () {
     router.get(useRoute('books.search'), {
@@ -94,6 +107,9 @@ const hasSearch = computed(() => {
 function formatNumber (num: number) {
     return new Intl.NumberFormat('en-US', { style: 'decimal' }).format(num)
 }
+
+const [UseTemplate, GridForm] = createReusableTemplate()
+const isDesktop = useMediaQuery('(min-width: 768px)')
 
 defineOptions({
     layout: AppLayout
@@ -174,23 +190,57 @@ defineOptions({
                         <span class="flex px-4 text-sm text-muted-foreground">or</span>
                         <Separator class="flex flex-1" />
                     </div>
-                    <Dialog :default-open="scan">
+
+                    <Dialog
+                        v-if="isDesktop"
+                        v-model:open="showBarcodeScanner">
                         <DialogTrigger as-child>
                             <Button
-                                class="w-full cursor-pointer"
-                                variant="secondary">
+                                variant="secondary"
+                                class="w-full">
                                 <Icon
-                                    name="ScanBarcode"
-                                    class="w-4" /> Scan barcode
+                                    name="ScanBarcode" />
+                                Scan Barcode
                             </Button>
                         </DialogTrigger>
-                        <DialogContent class="sm:max-w-lg">
-                            <DialogTitle>Add via barcode</DialogTitle>
-                            <div class="mt-2 overflow-auto max-h-[80dvh]">
-                                <BarcodeScanner />
-                            </div>
+                        <DialogContent class="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Search for a book via the barcode</DialogTitle>
+                            </DialogHeader>
+                            <BarcodeScanner />
                         </DialogContent>
                     </Dialog>
+
+                    <div v-else>
+                        <Drawer v-model:open="showBarcodeScanner">
+                            <DrawerTrigger as-child>
+                                <Button
+                                    variant="secondary"
+                                    class="w-full">
+                                    <Icon
+                                        name="ScanBarcode" />
+                                    Scan Barcode
+                                </Button>
+                            </DrawerTrigger>
+                            <DrawerContent>
+                                <DrawerHeader>
+                                    <DrawerTitle>Search for a book via the barcode</DrawerTitle>
+                                </DrawerHeader>
+                                <div class="flex flex-col px-4 overflow-auto">
+                                    <BarcodeScanner />
+                                    <DrawerFooter class="px-0">
+                                        <div class="flex justify-end">
+                                            <DrawerClose>
+                                                <Button variant="outline">
+                                                    Cancel
+                                                </Button>
+                                            </DrawerClose>
+                                        </div>
+                                    </DrawerFooter>
+                                </div>
+                            </DrawerContent>
+                        </Drawer>
+                    </div>
                 </div>
             </aside>
             <section class="flex flex-1 flex-col w-full md:w-auto">
