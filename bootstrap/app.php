@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\PwaDevice;
 use App\Http\Middleware\StripCookies;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\HandleAppearance;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(
             append: [
                 //                TrackPageview::class,
+                PwaDevice::class,
                 HandleAppearance::class,
                 ClientHintsHeaders::class,
                 HandleInertiaRequests::class,

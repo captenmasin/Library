@@ -122,6 +122,10 @@
     html {
         --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     }
+
+    html.pwa.pwa-ios body{
+        padding-top: env(safe-area-inset-top);
+    }
 }
 
 :root {

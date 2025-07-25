@@ -8,7 +8,14 @@
 
     $buildId = Vite::manifestHash('build');
 @endphp
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    @class([
+    'dark' => ($appearance ?? 'system') == 'dark',
+    'pwa' => \Illuminate\Support\Facades\Cookie::get('pwa-mode') === 'true',
+    'pwa-ios' => \Illuminate\Support\Facades\Cookie::get('pwa-device') === 'ios',
+    'pwa-android' => \Illuminate\Support\Facades\Cookie::get('pwa-device') === 'android',
+    ])
+>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,17 +43,17 @@
     @include('partials.meta.pwa')
 
     <script>
-        (function() {
-            const appearance = '{{ $appearance ?? "system" }}';
+        (function () {
+            const appearance = '{{ $appearance ?? "system" }}'
 
             if (appearance === 'system') {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
 
                 if (prefersDark) {
-                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.add('dark')
                 }
             }
-        })();
+        })()
     </script>
 
     <style>
