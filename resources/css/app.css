@@ -2,6 +2,7 @@
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
+
 @plugin "@tailwindcss/typography";
 @plugin "tailwindcss-motion";
 
@@ -81,19 +82,16 @@
 
     --text-shadow-2xs: 0px 1px 0px rgb(var(--shadow-color-rgb) / 0.15);
     --text-shadow-xs: 0px 1px 1px rgb(var(--shadow-color-rgb) / 0.2);
-    --text-shadow-sm:
-        0px 1px 0px rgb(var(--shadow-color-rgb) / 0.075), 0px 1px 1px rgb(var(--shadow-color-rgb) / 0.075), 0px 2px 2px rgb(var(--shadow-color-rgb) / 0.075);
-    --text-shadow-md:
-        0px 1px 1px rgb(var(--shadow-color-rgb) / 0.1), 0px 1px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 2px 4px rgb(var(--shadow-color-rgb) / 0.1);
-    --text-shadow-lg:
-        0px 1px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 3px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 4px 8px rgb(var(--shadow-color-rgb) / 0.1);
+    --text-shadow-sm: 0px 1px 0px rgb(var(--shadow-color-rgb) / 0.075), 0px 1px 1px rgb(var(--shadow-color-rgb) / 0.075), 0px 2px 2px rgb(var(--shadow-color-rgb) / 0.075);
+    --text-shadow-md: 0px 1px 1px rgb(var(--shadow-color-rgb) / 0.1), 0px 1px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 2px 4px rgb(var(--shadow-color-rgb) / 0.1);
+    --text-shadow-lg: 0px 1px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 3px 2px rgb(var(--shadow-color-rgb) / 0.1), 0px 4px 8px rgb(var(--shadow-color-rgb) / 0.1);
 
     --animate-scan: scan 3s linear infinite;
     @keyframes scan {
-        0%, 100%{
+        0%, 100% {
             top: 0;
         }
-        50%{
+        50% {
             top: 100%;
         }
     }
@@ -123,8 +121,8 @@
         --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     }
 
-    html.pwa.pwa-ios body{
-        padding-top: env(safe-area-inset-top);
+    html.pwa.pwa-ios body {
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
 }
 
