@@ -53,7 +53,7 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         TrackEvent::dispatch(AnalyticsEvent::UserAccountCreated, [
-            'user_id' => $$user->id,
+            'user_id' => $user->id,
         ]);
 
         Auth::login($user);
