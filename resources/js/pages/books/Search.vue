@@ -224,12 +224,14 @@ defineOptions({
                             </DrawerTrigger>
                             <DrawerContent>
                                 <DrawerHeader>
-                                    <DrawerTitle>Search for a book via the barcode</DrawerTitle>
+                                    <DrawerTitle>Search for a book via barcode</DrawerTitle>
                                 </DrawerHeader>
                                 <div class="flex flex-col px-4 overflow-auto">
                                     <BarcodeScanner />
-                                    <DrawerFooter class="px-0">
-                                        <div class="flex justify-end">
+                                    <DrawerFooter
+                                        class="px-0"
+                                        style="padding-bottom: env(safe-area-inset-bottom)">
+                                        <div class="flex justify-end pb-4">
                                             <DrawerClose>
                                                 <Button variant="outline">
                                                     Cancel
