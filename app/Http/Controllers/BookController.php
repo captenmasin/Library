@@ -101,7 +101,7 @@ class BookController extends Controller
 
         ImportBookFromData::dispatchAfterResponse($identifier);
 
-        TrackEvent::dispatch(AnalyticsEvent::BookPreviewed, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookPreviewed, [
             'user_id' => $request->user()?->id,
             'book' => [
                 'identifier' => $identifier,

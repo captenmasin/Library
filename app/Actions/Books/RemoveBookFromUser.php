@@ -26,7 +26,7 @@ class RemoveBookFromUser
             $cover->delete();
         });
 
-        TrackEvent::dispatch(AnalyticsEvent::BookRemoved, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookRemoved, [
             'user_id' => $user->id,
             'book' => [
                 'identifier' => $book->identifier,

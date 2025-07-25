@@ -64,14 +64,14 @@ class ProfileController extends Controller
             $request->user()->addMedia($request->file('avatar'))
                 ->toMediaCollection('avatar');
 
-            TrackEvent::dispatch(AnalyticsEvent::UserAccountAvatarUpdated, [
+            TrackEvent::dispatchAfterResponse(AnalyticsEvent::UserAccountAvatarUpdated, [
                 'user_id' => $request->user()?->id,
             ]);
         }
 
         if ($request->filled('profile_colour')) {
             $request->user()->settings()->update('profile.colour', $request->input('profile_colour'));
-            TrackEvent::dispatch(AnalyticsEvent::UserAccountProfileColourUpdated, [
+            TrackEvent::dispatchAfterResponse(AnalyticsEvent::UserAccountProfileColourUpdated, [
                 'user_id' => $request->user()?->id,
                 'profile_colour' => $request->input('profile_colour'),
             ]);
@@ -86,7 +86,7 @@ class ProfileController extends Controller
     {
         $request->user()->clearMediaCollection('avatar');
 
-        TrackEvent::dispatch(AnalyticsEvent::UserAccountAvatarRemoved, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::UserAccountAvatarRemoved, [
             'user_id' => $request->user()?->id,
         ]);
 
@@ -105,7 +105,7 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
-        TrackEvent::dispatch(AnalyticsEvent::UserAccountDeleted, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::UserAccountDeleted, [
             'user_id' => $request->user()?->id,
         ]);
 

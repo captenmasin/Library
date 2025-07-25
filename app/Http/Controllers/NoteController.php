@@ -43,7 +43,7 @@ class NoteController extends Controller
             'content' => $request->validated('content'),
         ]);
 
-        TrackEvent::dispatch(AnalyticsEvent::BookNoteAdded, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookNoteAdded, [
             'user_id' => $request->user()?->id,
             'book' => [
                 'book_identifier' => $book->identifier,
@@ -70,7 +70,7 @@ class NoteController extends Controller
     {
         $note->delete();
 
-        TrackEvent::dispatch(AnalyticsEvent::BookNoteRemoved, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookNoteRemoved, [
             'user_id' => $request->user()?->id,
             'book' => [
                 'book_identifier' => $book->identifier,

@@ -16,7 +16,7 @@ class UpdateUserSettings
 
     public function handle(User $user, array $settings): void
     {
-        TrackEvent::dispatch(AnalyticsEvent::MultipleSettingsUpdated, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::MultipleSettingsUpdated, [
             'user_id' => $user->id,
             'settings' => json_encode($settings),
         ]);

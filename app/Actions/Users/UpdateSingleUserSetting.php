@@ -16,7 +16,7 @@ class UpdateSingleUserSetting
 
     public function handle(User $user, string $settingName, mixed $value): void
     {
-        TrackEvent::dispatch(AnalyticsEvent::SettingUpdated, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::SettingUpdated, [
             'user_id' => $user->id,
             'setting' => $settingName,
             'value' => $value,

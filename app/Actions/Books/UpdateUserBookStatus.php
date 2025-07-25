@@ -28,7 +28,7 @@ class UpdateUserBookStatus
             throw new ModelNotFoundException('Book not found in your library.');
         }
 
-        TrackEvent::dispatch(AnalyticsEvent::BookStatusUpdated, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookStatusUpdated, [
             'user_id' => $user->id,
             'book' => [
                 'identifier' => $book->identifier,

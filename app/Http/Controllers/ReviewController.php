@@ -53,7 +53,7 @@ class ReviewController extends Controller
             ]
         );
 
-        TrackEvent::dispatch(
+        TrackEvent::dispatchAfterResponse(
             $existing ? AnalyticsEvent::BookReviewUpdated : AnalyticsEvent::BookReviewAdded,
             [
                 'user_id' => $request->user()?->id,
@@ -82,7 +82,7 @@ class ReviewController extends Controller
     {
         $review->delete();
 
-        TrackEvent::dispatch(AnalyticsEvent::BookReviewRemoved, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookReviewRemoved, [
             'user_id' => $request->user()?->id,
             'book' => [
                 'book_identifier' => $book->identifier,

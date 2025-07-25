@@ -23,7 +23,7 @@ class AddBookToUser
             throw new \Exception('Book already exists in your library.');
         }
 
-        TrackEvent::dispatch(AnalyticsEvent::BookAdded, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookAdded, [
             'user_id' => $user->id,
             'book' => [
                 'identifier' => $book->identifier,

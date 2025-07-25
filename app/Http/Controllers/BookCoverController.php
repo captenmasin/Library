@@ -25,7 +25,7 @@ class BookCoverController extends Controller
 
             $newCover->addMedia($request->file('cover'))->toMediaCollection('image');
 
-            TrackEvent::dispatch(AnalyticsEvent::BookCoverUpdated, [
+            TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookCoverUpdated, [
                 'user_id' => $request->user()?->id,
                 'book' => [
                     'book_identifier' => $book->identifier,
@@ -48,7 +48,7 @@ class BookCoverController extends Controller
 
     public function destroy(Request $request, Book $book)
     {
-        TrackEvent::dispatch(AnalyticsEvent::BookCoverRemoved, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookCoverRemoved, [
             'user_id' => $request->user()?->id,
             'book' => [
                 'book_identifier' => $book->identifier,

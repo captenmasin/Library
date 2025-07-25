@@ -20,7 +20,7 @@ class RatingController extends Controller
                 'user_id' => $request->user()->id,
             ]);
 
-        TrackEvent::dispatch(AnalyticsEvent::BookRatingAdded, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookRatingAdded, [
             'user_id' => $request->user()?->id,
             'book' => [
                 'rating_value' => $request->integer('rating.value'),
@@ -39,7 +39,7 @@ class RatingController extends Controller
             'value' => $request->integer('rating.value'),
         ]);
 
-        TrackEvent::dispatch(AnalyticsEvent::BookRatingUpdated, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookRatingUpdated, [
             'user_id' => $request->user()?->id,
             'book' => [
                 'rating_value' => $request->integer('rating.value'),
@@ -56,7 +56,7 @@ class RatingController extends Controller
     {
         $rating->forceDelete();
 
-        TrackEvent::dispatch(AnalyticsEvent::BookRatingRemoved, [
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookRatingRemoved, [
             'user_id' => $request->user()?->id,
             'book' => [
                 'book_identifier' => $book->identifier,

@@ -69,14 +69,14 @@ const stats = [
     {
         name: 'Completed',
         value: props.statValues.completedBooks,
-        link: useRoute('user.books.index', { status: UserBookStatus.Completed }),
+        link: useRoute('user.books.index', { 'status[]': UserBookStatus.Completed }),
         icon: 'CircleCheck',
         color: 'text-green-500'
     },
     {
         name: 'Reading',
         value: props.statValues.readingBooks,
-        link: useRoute('user.books.index', { status: UserBookStatus.Reading }),
+        link: useRoute('user.books.index', { 'status[]': UserBookStatus.Reading }),
         icon: 'BookOpen',
         color: 'text-yellow-500'
     },
@@ -84,7 +84,7 @@ const stats = [
         name: 'Plan to read',
         // value: props.statValues.pagesRead,
         value: props.statValues.planToRead,
-        link: useRoute('user.books.index', { status: UserBookStatus.PlanToRead }),
+        link: useRoute('user.books.index', { 'status[]': UserBookStatus.PlanToRead }),
         icon: 'BookMarked',
         color: 'text-blue-500'
     }
