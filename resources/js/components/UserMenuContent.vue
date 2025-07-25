@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import UserInfo from '@/components/UserInfo.vue'
 import type { User } from '@/types'
-import { Link, router } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 import { UserPermission } from '@/enums/UserPermission'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
-import { LogOut, Settings, Shield, BriefcaseBusiness, NotebookPen, Star, Activity } from 'lucide-vue-next'
+import { LogOut, Settings, ChartLine, Shield, BriefcaseBusiness, NotebookPen, Star, Activity } from 'lucide-vue-next'
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 
 interface Props {
@@ -13,6 +13,8 @@ interface Props {
 }
 
 const { hasPermission } = useAuthedUser()
+
+const page = usePage()
 
 const handleLogout = () => {
     router.flushAll()
@@ -81,6 +83,18 @@ defineProps<Props>()
                 href="/admin">
                 <Shield class="mr-2 h-4 w-4" />
                 Admin
+            </a>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+            v-if="hasPermission(UserPermission.VIEW_ANALYTICS)"
+            :as-child="true">
+            <a
+                class="block w-full"
+                target="_blank"
+                :href="`https://dashboard.pirsch.io/?domain=${page.props.app.domain}&start=600&interval=live&scale=day`">
+                <ChartLine class="mr-2 h-4 w-4" />
+                Analytics
             </a>
         </DropdownMenuItem>
 

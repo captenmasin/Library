@@ -48,6 +48,7 @@ class HandleInertiaRequests extends Middleware
             'app' => [
                 'name' => config('app.name'),
                 'url' => config('app.url'),
+                'domain' => parse_url(config('app.url'), PHP_URL_HOST),
                 'route' => $request->route()?->getName(),
                 'storage_url' => config('filesystems.disks.public.url'),
             ],

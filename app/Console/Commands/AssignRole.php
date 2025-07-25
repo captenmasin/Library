@@ -41,7 +41,7 @@ class AssignRole extends Command
         $users = User::whereIn('id', $users)->get();
         foreach ($users as $user) {
             foreach ($roles as $role) {
-                $user->assignRole($role);
+                $user->load('roles')->assignRole($role);
             }
 
             info("Assigned roles to user: {$user->name}");
