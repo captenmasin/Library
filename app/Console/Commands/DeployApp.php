@@ -55,6 +55,9 @@ class DeployApp extends Command
         // Horizon again
         $this->callSilent(TerminateCommand::class);
 
+        // Generate Sitemap
+        $this->call(GenerateSitemap::class);
+
         // Generate Robots.txt
         $this->call(GenerateRobotsTxt::class);
 

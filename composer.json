@@ -30,6 +30,7 @@
         "spatie/laravel-medialibrary": "^11.13",
         "spatie/laravel-passkeys": "^1.0",
         "spatie/laravel-permission": "^6.20",
+        "spatie/laravel-sitemap": "^7.3",
         "spatie/laravel-sluggable": "^3.7",
         "spatie/robots-txt": "^2.5",
         "symfony/http-client": "^7.3",

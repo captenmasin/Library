@@ -24,6 +24,7 @@ class GenerateRobotsTxt extends Command
 
             $robots->addAllow('/');
             $robots->addSitemap(config('app.url').'/sitemap.xml');
+            $robots->addSitemap(config('app.url').'/sitemap_books.xml');
         } else {
             $robots->addDisallow('/');
         }
