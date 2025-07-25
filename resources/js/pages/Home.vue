@@ -132,6 +132,9 @@ defineOptions({ layout: AppLayout })
                         <Icon
                             :name="action.icon"
                             class="size-4" />
+                        <span class="sr-only">
+                            {{ action.name }}
+                        </span>
                         <span class="hidden xl:inline">
                             {{ action.name }}
                         </span>
