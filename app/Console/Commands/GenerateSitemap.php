@@ -11,10 +11,7 @@ class GenerateSitemap extends Command
 {
     protected $signature = 'app:sitemap:generate';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function handle(): void
     {
         $sitemap = Sitemap::create()
             ->add(

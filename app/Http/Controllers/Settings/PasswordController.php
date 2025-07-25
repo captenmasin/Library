@@ -54,7 +54,6 @@ class PasswordController extends Controller
         return back();
     }
 
-    // POST profile.passkeys.create
     public function storePassKey()
     {
         $data = request()->validate([
@@ -84,7 +83,6 @@ class PasswordController extends Controller
         }
     }
 
-    // DELETE profile.passkeys.delete
     public function deletePasskey(Request $request, string $id)
     {
         $request->user()->passkeys()->where('id', $id)->delete();

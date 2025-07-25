@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Auth;
 use App\Models\Book;
 use Inertia\Inertia;
+use App\Actions\TrackEvent;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Enums\AnalyticsEvent;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\ReviewResource;
 use App\Actions\Books\FetchOrCreateBook;
@@ -91,13 +93,20 @@ class BookController extends Controller
         ]);
     }
 
-    public function preview(string $identifier)
+    public function preview(Request $request, string $identifier)
     {
         if (Book::where('identifier', $identifier)->exists()) {
             return redirect()->route('books.show', Book::where('identifier', $identifier)->first());
         }
 
         ImportBookFromData::dispatchAfterResponse($identifier);
+
+        TrackEvent::dispatch(AnalyticsEvent::BookPreviewed, [
+            'user_id' => $request->user()?->id,
+            'book' => [
+                'identifier' => $identifier,
+            ],
+        ]);
 
         return Inertia::render('books/Preview', [
             'identifier' => $identifier,
@@ -117,6 +126,5 @@ class BookController extends Controller
         Auth::user()->books()->detach($book);
 
         return redirect()->route('user.books.index');
-        //            ->banner('Book '.$book->code.' removed successfully');
     }
 }

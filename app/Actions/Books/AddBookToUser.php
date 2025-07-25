@@ -4,7 +4,9 @@ namespace App\Actions\Books;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Actions\TrackEvent;
 use App\Enums\ActivityType;
+use App\Enums\AnalyticsEvent;
 use App\Enums\UserBookStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -20,6 +22,15 @@ class AddBookToUser
         if ($user->books()->where('book_id', $book->id)->exists()) {
             throw new \Exception('Book already exists in your library.');
         }
+
+        TrackEvent::dispatch(AnalyticsEvent::BookAdded, [
+            'user_id' => $user->id,
+            'book' => [
+                'identifier' => $book->identifier,
+                'title' => $book->title,
+                'status' => $status?->value ?? UserBookStatus::PlanToRead->value,
+            ],
+        ]);
 
         $user->books()->attach($book, [
             'status' => $status->value ?? UserBookStatus::PlanToRead,

@@ -3,7 +3,9 @@
 namespace App\Actions\Users;
 
 use App\Models\User;
+use App\Actions\TrackEvent;
 use Illuminate\Http\Request;
+use App\Enums\AnalyticsEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -14,6 +16,12 @@ class UpdateSingleUserSetting
 
     public function handle(User $user, string $settingName, mixed $value): void
     {
+        TrackEvent::dispatch(AnalyticsEvent::SettingUpdated, [
+            'user_id' => $user->id,
+            'setting' => $settingName,
+            'value' => $value,
+        ]);
+
         $user->settings()->set($settingName, $value);
     }
 

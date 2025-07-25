@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Actions\TrackEvent;
 use Illuminate\Http\Request;
+use App\Enums\AnalyticsEvent;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -49,6 +51,10 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
+
+        TrackEvent::dispatch(AnalyticsEvent::UserAccountCreated, [
+            'user_id' => $$user->id,
+        ]);
 
         Auth::login($user);
 

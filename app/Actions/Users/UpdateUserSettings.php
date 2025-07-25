@@ -3,7 +3,9 @@
 namespace App\Actions\Users;
 
 use App\Models\User;
+use App\Actions\TrackEvent;
 use Illuminate\Http\Request;
+use App\Enums\AnalyticsEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -14,6 +16,11 @@ class UpdateUserSettings
 
     public function handle(User $user, array $settings): void
     {
+        TrackEvent::dispatch(AnalyticsEvent::MultipleSettingsUpdated, [
+            'user_id' => $user->id,
+            'settings' => json_encode($settings),
+        ]);
+
         $user->settings()->setMultiple($settings);
     }
 

@@ -4,7 +4,9 @@ namespace App\Actions\Books;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Actions\TrackEvent;
 use App\Enums\ActivityType;
+use App\Enums\AnalyticsEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -23,6 +25,14 @@ class RemoveBookFromUser
         $user->book_covers->where('book_id', $book->id)->each(function ($cover) {
             $cover->delete();
         });
+
+        TrackEvent::dispatch(AnalyticsEvent::BookRemoved, [
+            'user_id' => $user->id,
+            'book' => [
+                'identifier' => $book->identifier,
+                'title' => $book->title,
+            ],
+        ]);
 
         $user->logActivity(
             ActivityType::BookRemoved,

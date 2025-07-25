@@ -14,6 +14,12 @@ return [
     |
     */
 
+    'pirsch' => [
+        'enabled' => env('PIRSCH_ENABLED', false),
+        'token' => env('PIRSCH_TOKEN'),
+        'site_id' => env('PIRSCH_SITE_ID'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

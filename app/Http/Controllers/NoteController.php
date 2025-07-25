@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Note;
 use Inertia\Inertia;
+use App\Actions\TrackEvent;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
+use App\Enums\AnalyticsEvent;
 use App\Http\Resources\NoteResource;
 use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\DestroyNoteRequest;
@@ -41,6 +43,15 @@ class NoteController extends Controller
             'content' => $request->validated('content'),
         ]);
 
+        TrackEvent::dispatch(AnalyticsEvent::BookNoteAdded, [
+            'user_id' => $request->user()?->id,
+            'book' => [
+                'book_identifier' => $book->identifier,
+                'book_title' => $book->title,
+                'note' => $note->content,
+            ],
+        ]);
+
         $request->user()->logActivity(
             //            $note ? ActivityType::BookNoteUpdated : ActivityType::BookNoteAdded,
             ActivityType::BookNoteAdded,
@@ -58,6 +69,14 @@ class NoteController extends Controller
     public function destroy(DestroyNoteRequest $request, Book $book, Note $note)
     {
         $note->delete();
+
+        TrackEvent::dispatch(AnalyticsEvent::BookNoteRemoved, [
+            'user_id' => $request->user()?->id,
+            'book' => [
+                'book_identifier' => $book->identifier,
+                'book_title' => $book->title,
+            ],
+        ]);
 
         $request->user()->logActivity(ActivityType::BookNoteRemoved, $book, [
             'book_identifier' => $book->identifier,

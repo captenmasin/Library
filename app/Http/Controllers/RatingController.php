@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Rating;
+use App\Actions\TrackEvent;
+use App\Enums\AnalyticsEvent;
 use App\Http\Requests\Ratings\StoreRatingRequest;
 use App\Http\Requests\Ratings\UpdateRatingRequest;
 use App\Http\Requests\Ratings\DestroyRatingRequest;
@@ -18,6 +20,15 @@ class RatingController extends Controller
                 'user_id' => $request->user()->id,
             ]);
 
+        TrackEvent::dispatch(AnalyticsEvent::BookRatingAdded, [
+            'user_id' => $request->user()?->id,
+            'book' => [
+                'rating_value' => $request->integer('rating.value'),
+                'book_identifier' => $book->identifier,
+                'book_title' => $book->title,
+            ],
+        ]);
+
         return redirect()->back()
             ->with('success', 'Rating added successfully.');
     }
@@ -28,6 +39,15 @@ class RatingController extends Controller
             'value' => $request->integer('rating.value'),
         ]);
 
+        TrackEvent::dispatch(AnalyticsEvent::BookRatingUpdated, [
+            'user_id' => $request->user()?->id,
+            'book' => [
+                'rating_value' => $request->integer('rating.value'),
+                'book_identifier' => $book->identifier,
+                'book_title' => $book->title,
+            ],
+        ]);
+
         return redirect()->back()
             ->with('success', 'Rating updated successfully.');
     }
@@ -35,6 +55,14 @@ class RatingController extends Controller
     public function destroy(DestroyRatingRequest $request, Book $book, Rating $rating)
     {
         $rating->forceDelete();
+
+        TrackEvent::dispatch(AnalyticsEvent::BookRatingRemoved, [
+            'user_id' => $request->user()?->id,
+            'book' => [
+                'book_identifier' => $book->identifier,
+                'book_title' => $book->title,
+            ],
+        ]);
 
         return redirect()->back()
             ->with('success', 'Rating deleted successfully.');

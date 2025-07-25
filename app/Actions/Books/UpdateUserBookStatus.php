@@ -5,7 +5,9 @@ namespace App\Actions\Books;
 use Exception;
 use App\Models\Book;
 use App\Models\User;
+use App\Actions\TrackEvent;
 use App\Enums\ActivityType;
+use App\Enums\AnalyticsEvent;
 use App\Enums\UserBookStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -25,6 +27,15 @@ class UpdateUserBookStatus
         if (! $updated) {
             throw new ModelNotFoundException('Book not found in your library.');
         }
+
+        TrackEvent::dispatch(AnalyticsEvent::BookStatusUpdated, [
+            'user_id' => $user->id,
+            'book' => [
+                'identifier' => $book->identifier,
+                'title' => $book->title,
+                'status' => $status,
+            ],
+        ]);
 
         $user->logActivity(ActivityType::BookStatusUpdated, $book, [
             'book_identifier' => $book->identifier,

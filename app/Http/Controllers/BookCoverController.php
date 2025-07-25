@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Actions\TrackEvent;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
+use App\Enums\AnalyticsEvent;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,6 +25,14 @@ class BookCoverController extends Controller
 
             $newCover->addMedia($request->file('cover'))->toMediaCollection('image');
 
+            TrackEvent::dispatch(AnalyticsEvent::BookCoverUpdated, [
+                'user_id' => $request->user()?->id,
+                'book' => [
+                    'book_identifier' => $book->identifier,
+                    'book_title' => $book->title,
+                ],
+            ]);
+
             $request->user()->logActivity(
                 ActivityType::BookCoverUpdated,
                 $newCover,
@@ -38,6 +48,14 @@ class BookCoverController extends Controller
 
     public function destroy(Request $request, Book $book)
     {
+        TrackEvent::dispatch(AnalyticsEvent::BookCoverRemoved, [
+            'user_id' => $request->user()?->id,
+            'book' => [
+                'book_identifier' => $book->identifier,
+                'book_title' => $book->title,
+            ],
+        ]);
+
         $request->user()->logActivity(
             ActivityType::BookCoverRemoved,
             null,

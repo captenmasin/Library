@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Settings;
 
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Actions\TrackEvent;
 use Illuminate\Http\Request;
+use App\Enums\AnalyticsEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -61,10 +63,18 @@ class ProfileController extends Controller
         if ($request->file('avatar')) {
             $request->user()->addMedia($request->file('avatar'))
                 ->toMediaCollection('avatar');
+
+            TrackEvent::dispatch(AnalyticsEvent::UserAccountAvatarUpdated, [
+                'user_id' => $request->user()?->id,
+            ]);
         }
 
         if ($request->filled('profile_colour')) {
             $request->user()->settings()->update('profile.colour', $request->input('profile_colour'));
+            TrackEvent::dispatch(AnalyticsEvent::UserAccountProfileColourUpdated, [
+                'user_id' => $request->user()?->id,
+                'profile_colour' => $request->input('profile_colour'),
+            ]);
         }
 
         $request->user()->save();
@@ -76,6 +86,10 @@ class ProfileController extends Controller
     {
         $request->user()->clearMediaCollection('avatar');
 
+        TrackEvent::dispatch(AnalyticsEvent::UserAccountAvatarRemoved, [
+            'user_id' => $request->user()?->id,
+        ]);
+
         return redirect()->back()
             ->with('success', 'Your avatar has been deleted.');
     }
@@ -85,12 +99,15 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);
 
         $user = $request->user();
+
+        TrackEvent::dispatch(AnalyticsEvent::UserAccountDeleted, [
+            'user_id' => $request->user()?->id,
+        ]);
 
         Auth::logout();
 

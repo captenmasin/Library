@@ -31,6 +31,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+    @include('partials.meta.analytics')
     @include('partials.meta.seo')
     @include('partials.meta.pwa')
 

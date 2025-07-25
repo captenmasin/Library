@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Inertia\Inertia;
 use App\Models\Review;
+use App\Actions\TrackEvent;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
+use App\Enums\AnalyticsEvent;
 use App\Http\Resources\ReviewResource;
 use App\Http\Requests\DestroyReviewRequest;
 
@@ -34,10 +36,6 @@ class ReviewController extends Controller
 
     public function store(Request $request, Book $book)
     {
-        ray('REVIEW POSTED', [
-            'data' => $request->only(['title', 'content']),
-        ]);
-
         $validated = $request->validate([
             'title' => 'nullable|string|max:256',
             'content' => 'nullable|string|max:2000',
@@ -55,6 +53,18 @@ class ReviewController extends Controller
             ]
         );
 
+        TrackEvent::dispatch(
+            $existing ? AnalyticsEvent::BookReviewUpdated : AnalyticsEvent::BookReviewAdded,
+            [
+                'user_id' => $request->user()?->id,
+                'book' => [
+                    'book_identifier' => $book->identifier,
+                    'book_title' => $book->title,
+                    'review_title' => $review->title,
+                    'review_content' => $review->content,
+                ],
+            ]);
+
         $request->user()->logActivity(
             $existing ? ActivityType::BookReviewUpdated : ActivityType::BookReviewAdded,
             $review,
@@ -71,6 +81,14 @@ class ReviewController extends Controller
     public function destroy(DestroyReviewRequest $request, Book $book, Review $review)
     {
         $review->delete();
+
+        TrackEvent::dispatch(AnalyticsEvent::BookReviewRemoved, [
+            'user_id' => $request->user()?->id,
+            'book' => [
+                'book_identifier' => $book->identifier,
+                'book_title' => $book->title,
+            ],
+        ]);
 
         $request->user()->logActivity(
             ActivityType::BookReviewRemoved,
