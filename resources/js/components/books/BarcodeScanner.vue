@@ -109,10 +109,10 @@ onMounted(() => {
         <!-- mirrored only on front cam -->
         <div
             v-show="scanning"
-            class="relative">
+            class="relative h-32 overflow-hidden rounded shadow">
             <video
                 ref="video"
-                class="mx-auto h-24 bg-muted w-full rounded shadow"
+                class="mx-auto bg-muted absolute top-1/2 -translate-y-1/2 left-0 w-full"
                 autoplay
                 playsinline
                 muted
