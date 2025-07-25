@@ -55,6 +55,9 @@ class DeployApp extends Command
         // Horizon again
         $this->callSilent(TerminateCommand::class);
 
+        // Generate Robots.txt
+        $this->call(GenerateRobotsTxt::class);
+
         // Generate PWA manifest
         $this->call(GeneratePwaManifest::class);
 
