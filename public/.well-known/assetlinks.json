@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.bookbound.twa",
+        "sha256_cert_fingerprints": ["CF:C3:9A:5A:8E:D5:7F:77:0E:12:56:1B:E3:80:A1:89:A1:AE:FF:D8:2B:87:77:60:B4:59:56:50:D5:BA:B3:95"]
+      }
+    }]
