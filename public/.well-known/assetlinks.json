@@ -3,6 +3,6 @@
       "target": {
         "namespace": "android_app",
         "package_name": "app.bookbound.twa",
-        "sha256_cert_fingerprints": ["CF:C3:9A:5A:8E:D5:7F:77:0E:12:56:1B:E3:80:A1:89:A1:AE:FF:D8:2B:87:77:60:B4:59:56:50:D5:BA:B3:95"]
+        "sha256_cert_fingerprints": ["4E:57:2A:B7:9F:4C:6C:53:49:6D:5D:CD:64:D6:7C:0F:A0:48:DF:BE:F7:7B:CF:D9:A7:C3:6B:12:EB:98:38:09"]
       }
     }]
