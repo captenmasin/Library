@@ -163,43 +163,23 @@ defineOptions({
                             elit.
                         </span>
                     </div>
-                    <div>
-                        <Dialog
-                            v-if="isDesktop"
-                            v-model:open="showBarcodeScanner">
-                            <DialogTrigger as-child>
+                    <div class="md:hidden">
+                        <Drawer v-model:open="showBarcodeScanner">
+                            <DrawerTrigger as-child>
                                 <Button
                                     variant="default"
-                                    class="w-full">
+                                    class="w-full flex-1">
                                     <Icon name="ScanBarcode" />
-                                    Scan Barcode
+                                    Scan
                                 </Button>
-                            </DialogTrigger>
-                            <DialogContent class="sm:max-w-[425px]">
-                                <DialogHeader>
-                                    <DialogTitle>Search for a book via the barcode</DialogTitle>
-                                </DialogHeader>
-                                <BarcodeScanner />
-                            </DialogContent>
-                        </Dialog>
-                        <div v-else>
-                            <Drawer v-model:open="showBarcodeScanner">
-                                <DrawerTrigger as-child>
-                                    <Button
-                                        variant="default"
-                                        class="w-full flex-1">
-                                        <Icon name="ScanBarcode" />
-                                        Scan
-                                    </Button>
-                                </DrawerTrigger>
-                                <DrawerContent>
-                                    <DrawerHeader />
-                                    <div class="flex flex-col overflow-auto px-4">
-                                        <BarcodeScanner @close="showBarcodeScanner = false" />
-                                    </div>
-                                </DrawerContent>
-                            </Drawer>
-                        </div>
+                            </DrawerTrigger>
+                            <DrawerContent>
+                                <DrawerHeader />
+                                <div class="flex flex-col overflow-auto px-4">
+                                    <BarcodeScanner @close="showBarcodeScanner = false" />
+                                </div>
+                            </DrawerContent>
+                        </Drawer>
                     </div>
                     <Deferred
                         data="previousSearches">
@@ -208,7 +188,7 @@ defineOptions({
                         <div
                             v-if="previousSearches && previousSearches.length"
                             class="hidden md:flex flex-col">
-                            <h2 class="mb-0 mt-4 font-serif text-xl font-semibold text-accent-foreground">
+                            <h2 class="font-serif text-xl font-semibold text-accent-foreground">
                                 Previous searches...
                             </h2>
                             <ul
