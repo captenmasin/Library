@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppLogo from '@/components/AppLogo.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
 import UserMenuContent from '@/components/UserMenuContent.vue'
@@ -45,7 +46,7 @@ router.on('navigate', (event) => {
 <template>
     <div class="sticky md:static top-0 bg-background z-50">
         <div class="border-b border-sidebar-border/80">
-            <div class="mx-auto flex h-12 md:h-16 justify-center items-center px-4 md:max-w-7xl">
+            <div class="mx-auto flex h-12 md:h-16 items-center px-4 md:max-w-7xl">
                 <Link
                     :href="useRoute('home')"
                     prefetch
@@ -53,7 +54,8 @@ router.on('navigate', (event) => {
                     <span class="sr-only">
                         Go to Home
                     </span>
-                    <div class="flex aspect-square items-center justify-center size-9 md:size-8">
+                    <AppLogo class="flex items-center lg:hidden" />
+                    <div class="hidden lg:flex aspect-square items-center justify-center size-9 md:size-8">
                         <AppLogoIcon class="rounded-lg fill-current text-white size-full dark:text-black" />
                     </div>
                 </Link>
