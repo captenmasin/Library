@@ -51,7 +51,9 @@ router.on('navigate', (event) => {
         <AppContent class="mt-4">
             <slot />
         </AppContent>
-        <div class="sticky bg-background/75 py-1 border-t border-background-foreground backdrop-blur-sm px-1 bottom-0 left-0 right-0 z-50">
+        <div
+            style="padding-bottom: env(safe-area-inset-bottom)"
+            class="sticky bg-background/75 pt-1 border-t border-background-foreground backdrop-blur-sm px-1 bottom-0 left-0 right-0 z-50">
             <ul class="flex items-center w-full">
                 <li
                     v-for="item in mainNavItems"
