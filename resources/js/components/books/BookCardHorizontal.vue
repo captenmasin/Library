@@ -87,7 +87,9 @@ const { userRating } = useBook(props.book)
                         </h3>
                     </component>
                 </div>
-                <p class="-mt-0.5 md:mt-0.5 line-clamp-1 text-xs text-muted-foreground/65 md:text-sm">
+                <p
+                    v-if="book.authors && book.authors.length > 0"
+                    class="-mt-0.5 md:mt-0.5 line-clamp-1 text-xs text-muted-foreground/65 md:text-sm">
                     By {{ book.authors?.map((a) => a.name).join(', ') }}
                 </p>
                 <p

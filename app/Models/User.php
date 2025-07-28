@@ -152,6 +152,11 @@ class User extends Authenticatable implements FilamentUser, HasMedia, HasPasskey
         return $this->hasMany(Note::class);
     }
 
+    public function previousSearches(): Builder|HasMany
+    {
+        return $this->hasMany(PreviousSearch::class);
+    }
+
     public function reviews(): Builder|HasMany
     {
         return $this->hasMany(Review::class);

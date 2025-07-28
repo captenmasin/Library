@@ -15,6 +15,7 @@ use App\Actions\Books\FetchOrCreateBook;
 use App\Actions\Books\ImportBookFromData;
 use App\Actions\Books\SearchBooksFromApi;
 use App\Http\Requests\Books\StoreBookRequest;
+use App\Http\Resources\PreviousSearchResource;
 
 class BookController extends Controller
 {
@@ -23,16 +24,29 @@ class BookController extends Controller
         $page = (int) $request->get('page', 1);
         $perPage = 10;
 
+        $originalQuery = $request->get('q');
+        $author = Str::of($originalQuery)->after('author:')->trim()->value();
+        $query = Str::of($originalQuery)->before('author:')->trim()->value();
+
+        if ($request->filled('q')) {
+            $request->user()->previousSearches()->updateOrCreate(
+                ['search_term' => $originalQuery, 'user_id' => Auth::id()],
+                [
+                    'search_term' => $originalQuery,
+                ]
+            );
+        }
+
         return Inertia::render('books/Search', [
-            'initialQuery' => $request->get('q'),
-            'initialAuthor' => $request->get('author'),
+            'initialQuery' => $originalQuery,
             'scan' => $request->get('scan', false),
             'page' => $page,
             'perPage' => $perPage,
+            'previousSearches' => Inertia::defer(fn () => PreviousSearchResource::collection($request->user()->previousSearches()->limit(10)->orderBy('id', 'desc')->get())),
             'results' => Inertia::defer(
                 fn () => SearchBooksFromApi::run(
-                    query: $request->get('q'),
-                    author: $request->get('author'),
+                    query: $query,
+                    author: $author,
                     maxResults: $perPage,
                     page: $page,
                 )

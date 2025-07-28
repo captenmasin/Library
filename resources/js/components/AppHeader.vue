@@ -8,7 +8,7 @@ import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
-import { Home, LibraryBig, Menu, SearchIcon } from 'lucide-vue-next'
+import { Home, LibraryBig, Menu, SearchIcon, PlusSquareIcon } from 'lucide-vue-next'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -56,9 +56,9 @@ const mainNavItems: NavItem[] = [
         icon: LibraryBig
     },
     {
-        title: 'Find Books',
+        title: 'Add Books',
         href: useRoute('books.search'),
-        icon: SearchIcon
+        icon: PlusSquareIcon
     }
 ]
 
