@@ -139,7 +139,7 @@ defineOptions({
                                     type="button"
                                     variant="link"
                                     as-child
-                                    class="h-full cursor-pointer rounded-none border-r"
+                                    class="h-full cursor-pointer rounded-none border-r border-muted-foreground/10"
                                     size="icon"
                                 >
                                     <Link :href="useRoute('books.search')">

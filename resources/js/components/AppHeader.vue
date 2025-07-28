@@ -8,6 +8,7 @@ import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
+import { useIsCurrentUrl } from '@/composables/useIsCurrentUrl'
 import { Home, LibraryBig, Menu, SearchIcon, PlusSquareIcon } from 'lucide-vue-next'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -16,10 +17,12 @@ import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuT
 
 interface Props {
     breadcrumbs?: BreadcrumbItem[];
+    navItems?: NavItem[];
 }
 
 withDefaults(defineProps<Props>(), {
-    breadcrumbs: () => []
+    breadcrumbs: () => [],
+    navItems: () => []
 })
 
 const page = usePage()
@@ -28,39 +31,9 @@ const { authed, authedUser } = useAuthedUser()
 
 const mobileMenuOpen = ref(false)
 
-const isCurrentRoute = computed(() => (url: string) => {
-    let cleanedUrl = url.replace(page.props.app.url, '')
-    if (cleanedUrl === '') {
-        cleanedUrl = '/'
-    }
-
-    // remove parameters from the URL
-    const cleanedPageUrl = page.url.split('?')[0]
-
-    return cleanedPageUrl === cleanedUrl
-})
-
 const activeItemStyles = computed(
-    () => (url: string) => (isCurrentRoute.value(url) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : '')
+    () => (url: string) => (useIsCurrentUrl(url) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : '')
 )
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Home',
-        href: useRoute('home'),
-        icon: Home
-    },
-    {
-        title: 'Library',
-        href: useRoute('user.books.index'),
-        icon: LibraryBig
-    },
-    {
-        title: 'Add Books',
-        href: useRoute('books.search'),
-        icon: PlusSquareIcon
-    }
-]
 
 const rightNavItems: NavItem[] = []
 
@@ -70,70 +43,9 @@ router.on('navigate', (event) => {
 </script>
 
 <template>
-    <div>
+    <div class="sticky md:static top-0 bg-background z-50">
         <div class="border-b border-sidebar-border/80">
-            <div class="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
-                <!-- Mobile Menu -->
-                <div class="lg:hidden">
-                    <Sheet v-model:open="mobileMenuOpen">
-                        <SheetTrigger :as-child="true">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                class="mr-2 h-9 w-9">
-                                <span class="sr-only">
-                                    Open Navigation Menu
-                                </span>
-                                <Menu class="h-5 w-5" />
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent
-                            side="left"
-                            class="p-6 w-[300px]">
-                            <SheetTitle class="sr-only">
-                                Navigation Menu
-                            </SheetTitle>
-                            <SheetHeader class="flex p-0 justify-start text-left">
-                                <AppLogoIcon class="rounded-xl fill-current text-black size-10 dark:text-white" />
-                            </SheetHeader>
-                            <div class="flex h-full flex-1 flex-col justify-between space-y-4">
-                                <nav class="-mx-3 space-y-1">
-                                    <Link
-                                        v-for="item in mainNavItems"
-                                        :key="item.title"
-                                        prefetch
-                                        :href="item.href"
-                                        class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent"
-                                        :class="activeItemStyles(item.href)"
-                                    >
-                                        <component
-                                            :is="item.icon"
-                                            v-if="item.icon"
-                                            class="h-5 w-5" />
-                                        {{ item.title }}
-                                    </Link>
-                                </nav>
-                                <div class="flex flex-col space-y-4">
-                                    <a
-                                        v-for="item in rightNavItems"
-                                        :key="item.title"
-                                        :href="item.href"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="flex items-center text-sm font-medium space-x-2"
-                                    >
-                                        <component
-                                            :is="item.icon"
-                                            v-if="item.icon"
-                                            class="h-5 w-5" />
-                                        <span>{{ item.title }}</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </SheetContent>
-                    </Sheet>
-                </div>
-
+            <div class="mx-auto flex h-12 md:h-16 justify-center items-center px-4 md:max-w-7xl">
                 <Link
                     :href="useRoute('home')"
                     prefetch
@@ -141,7 +53,7 @@ router.on('navigate', (event) => {
                     <span class="sr-only">
                         Go to Home
                     </span>
-                    <div class="flex aspect-square items-center justify-center size-8">
+                    <div class="flex aspect-square items-center justify-center size-9 md:size-8">
                         <AppLogoIcon class="rounded-lg fill-current text-white size-full dark:text-black" />
                     </div>
                 </Link>
@@ -151,7 +63,7 @@ router.on('navigate', (event) => {
                     <NavigationMenu class="ml-10 flex h-full items-stretch">
                         <NavigationMenuList class="flex h-full items-stretch space-x-2">
                             <NavigationMenuItem
-                                v-for="(item, index) in mainNavItems"
+                                v-for="(item, index) in navItems"
                                 :key="index"
                                 class="relative flex h-full items-center">
                                 <Link
@@ -166,7 +78,7 @@ router.on('navigate', (event) => {
                                     {{ item.title }}
                                 </Link>
                                 <div
-                                    v-if="isCurrentRoute(item.href)"
+                                    v-if="useIsCurrentUrl(item.href)"
                                     class="absolute bottom-0 left-0 w-full translate-y-px bg-black h-0.5 dark:bg-white"
                                 />
                             </NavigationMenuItem>
@@ -174,7 +86,7 @@ router.on('navigate', (event) => {
                     </NavigationMenu>
                 </div>
 
-                <div class="ml-auto flex items-center space-x-2">
+                <div class="md:ml-auto absolute top-1/2 -translate-y-1/2 md:static md:translate-0 right-4 flex items-center space-x-2">
                     <div class="relative flex items-center space-x-1">
                         <div class="hidden space-x-1 lg:flex">
                             <template
