@@ -34,7 +34,7 @@ const mainNavItems = ref<NavItem[]>([
 ])
 
 const activeItemStyles = computed(
-    () => (item: NavItem) => (item.isActive ? 'text-primary bg-primary/10' : '')
+    () => (item: NavItem) => (item.isActive ? 'text-primary' : '')
 )
 
 onMounted(() => {
@@ -67,8 +67,8 @@ router.on('navigate', (event) => {
         </AppContent>
         <div
             style="padding-bottom: env(safe-area-inset-bottom)"
-            class="sticky lg:hidden bg-background/75 border-t border-background-foreground backdrop-blur-sm px-1 bottom-0 left-0 right-0 z-50">
-            <ul class="flex items-center w-full pt-1 pb-2 max-w-md mx-auto">
+            class="sticky lg:hidden bg-background/75 border-t border-background-foreground backdrop-blur-sm bottom-0 left-0 right-0 z-50">
+            <ul class="flex items-center w-full  pb-2 max-w-md mx-auto">
                 <li
                     v-for="item in mainNavItems"
                     :key="item.title"
@@ -77,11 +77,15 @@ router.on('navigate', (event) => {
                         :href="item.href"
                         prefetch
                         :class="[activeItemStyles(item)]"
-                        class="flex py-3 gap-2 w-full rounded-lg items-center justify-center text-sm text-foreground hover:text-primary"
+                        class="flex py-2 gap-2 relative w-full items-center justify-center text-sm text-foreground hover:text-primary"
                         @click="handleClick(item)">
-                        <component
-                            :is="item.icon"
-                            class="size-5 sm:size-4" />
+                        <div
+                            :class="[item.isActive ? 'bg-primary/10' : 'bg-transparent']"
+                            class="rounded-full px-4 sm:px-0 sm:py-0 py-1 transition-all">
+                            <component
+                                :is="item.icon"
+                                class="size-5 sm:size-4" />
+                        </div>
                         <Label class="font-medium hidden sm:flex">
                             {{ item.title }}
                         </Label>
