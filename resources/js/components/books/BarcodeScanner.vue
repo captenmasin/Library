@@ -11,6 +11,7 @@ import { useRequest } from '@/composables/useRequest'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { Button } from '@/components/ui/button/index.js'
 import { BrowserMultiFormatReader } from '@zxing/browser'
+import { DialogFooter } from '@/components/ui/dialog/index.js'
 
 // refs for UI state
 const video = ref(null)
@@ -39,6 +40,7 @@ async function startScan () {
     // useRequest(useRoute('api.books.fetch_or_create', '9780307763051'), 'GET')
     //     .then(response => {
     //         book.value = response.book
+    //         result.value = '9780307763051'
     //     })
 
     try {
@@ -96,6 +98,8 @@ function stopScan () {
     }
 }
 
+const emit = defineEmits(['close'])
+
 // cleanup if user navigates away --------------------------------------------
 onBeforeUnmount(stopScan)
 
@@ -108,7 +112,7 @@ onMounted(() => {
     <div class="relative">
         <!-- mirrored only on front cam -->
         <div
-            v-show="scanning"
+            v-show="scanning && !result"
             class="relative h-48 overflow-hidden rounded shadow">
             <video
                 ref="video"
@@ -121,22 +125,25 @@ onMounted(() => {
         </div>
 
         <div
-            v-if="!scanning"
-            class="flex items-center justify-center">
+            v-if="!scanning && !result"
+            class="flex mb-5 items-center justify-center">
             <Button
-                variant="secondary"
+                class="w-full"
+                variant="default"
                 @click="startScan">
                 <Icon
                     name="ScanBarcode"
                     class="w-4" />
-                {{ result ? 'Scan again' : 'Start scanning' }}
+                Start scanning
             </Button>
         </div>
 
         <div
             v-if="result"
-            class="mt-2 rounded border-2 p-2 font-mono text-sm bg-muted border-primary/10 text-primary">
-            Barcode scanned: <strong>{{ result }}</strong>
+            class="mt-2 rounded border-2 p-2 justify-between gap-4 flex items-center font-mono text-sm bg-muted border-primary/10 text-primary">
+            <Icon
+                name="Barcode"
+                class="size-5" /> <strong>{{ result }}</strong>
         </div>
 
         <HorizontalSkeleton
@@ -153,5 +160,28 @@ onMounted(() => {
                 :book="book"
                 :narrow="true" />
         </div>
+
+        <DialogFooter>
+            <div
+                class="flex justify-between gap-2 items-center mt-5 mb-5 md:mb-0 w-full"
+                style="padding-bottom: env(safe-area-inset-bottom)">
+                <div>
+                    <Button
+                        v-if="result"
+                        variant="secondary"
+                        @click="startScan">
+                        <Icon
+                            name="ScanBarcode"
+                            class="w-4" />
+                        Scan again
+                    </Button>
+                </div>
+                <Button
+                    variant="outline"
+                    @click="emit('close')">
+                    Cancel
+                </Button>
+            </div>
+        </DialogFooter>
     </div>
 </template>
