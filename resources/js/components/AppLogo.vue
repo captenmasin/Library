@@ -11,7 +11,7 @@ const page = usePage()
             <AppLogoIcon class="rounded-lg fill-current text-white size-full dark:text-black" />
         </div>
         <div class="ml-1 grid flex-1 text-left text-sm text-primary">
-            <span class="truncate font-semibold leading-tight font-serif text-lg mb-0.5">
+            <span class="truncate font-semibold leading-tight tracking-tight font-serif text-lg mb-0.5">
                 {{ page.props.app.name }}
             </span>
         </div>

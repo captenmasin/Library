@@ -232,3 +232,13 @@
         }
     }
 }
+
+@layer utilities {
+    ::selection {
+        @apply text-white bg-primary/75;
+    }
+
+    ::-moz-selection {
+        @apply text-white bg-primary/75;
+    }
+}

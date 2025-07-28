@@ -246,7 +246,7 @@ defineOptions({ layout: AppLayout })
                     </ul>
                 </section>
             </div>
-            <div class="w-72">
+            <div class="w-full md:w-72">
                 <div>
                     <h2 class="mb-2 font-serif text-xl font-semibold text-accent-foreground">
                         Top tags

@@ -76,15 +76,21 @@ class BookController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function show(Book $book)
+    public function show(Request $request, Book $book)
     {
         $book->load(['authors', 'reviews', 'ratings', 'publisher', 'tags', 'covers',
             'users' => fn ($query) => $query->where('user_id', Auth::id()),
             'notes' => fn ($query) => $query->where('user_id', Auth::id()),
         ]);
 
+        $backUrl = null;
+        if ($request->filled('src') && Str::startsWith($request->get('src'), config('app.url'))) {
+            $backUrl = $request->get('src');
+        }
+
         return Inertia::render('books/Show', [
             'book' => new BookResource($book),
+            'backUrl' => $backUrl,
             'averageRating' => number_format($book->ratings->avg('value') ?? 0, 1),
             'related' => Inertia::defer(function () use ($book) {
                 $relatedBooks = $book->relatedBooksByAuthorsAndTags(4);

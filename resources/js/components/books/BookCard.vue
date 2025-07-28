@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import Image from '@/components/Image.vue'
 import StarRatingDisplay from '@/components/StarRatingDisplay.vue'
-import type { PropType } from 'vue'
 import { Link } from '@inertiajs/vue3'
 import type { Book } from '@/types/book'
+import { computed, PropType } from 'vue'
 import { useBook } from '@/composables/useBook'
 import { useColours } from '@/composables/useColours'
 import { useContrast } from '@/composables/useContrast'
+import { useAddCurrentUrl } from '@/composables/useAddCurrentUrl'
 
 const props = defineProps({
     book: {
@@ -21,6 +22,12 @@ const props = defineProps({
 
 const { changeColourOpacity } = useColours()
 const { userRating } = useBook(props.book)
+
+const url = computed(() => {
+    const url = props.book.links?.show ?? null
+
+    return useAddCurrentUrl(url)
+})
 </script>
 
 <template>
@@ -37,7 +44,7 @@ const { userRating } = useBook(props.book)
             ]"
         >
             <Link
-                :href="book.links.show"
+                :href="url"
                 prefetch>
                 <div class="relative w-full overflow-hidden aspect-book group">
                     <span

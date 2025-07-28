@@ -13,9 +13,10 @@ import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
 import { Review } from '@/types/review'
 import type { Book } from '@/types/book'
 import { type PropType, ref, watch } from 'vue'
-import { Deferred, router } from '@inertiajs/vue3'
+import { Button } from '@/components/ui/button'
 import { usePlural } from '@/composables/usePlural'
 import { useMarkdown } from '@/composables/useMarkdown'
+import { Deferred, Link, router } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
 import { useUserSettings } from '@/composables/useUserSettings'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -102,7 +103,7 @@ defineOptions({
                             {{ book.title }}
                         </h2>
                         <p
-                            v-if="book.authors"
+                            v-if="book.authors && book.authors.length > 0"
                             class="text-xs text-muted-foreground">
                             By {{ book.authors.map((a) => a.name).join(', ') }}
                         </p>
@@ -141,11 +142,10 @@ defineOptions({
                         {{ book.title }}
                     </h2>
                     <p
-                        v-if="book.authors"
+                        v-if="book.authors && book.authors.length > 0"
                         class="mt-2 text-sm text-muted-foreground">
                         By {{ book.authors.map((a) => a.name).join(', ') }}
                     </p>
-
                     <div
                         v-if="book.ratings_count"
                         class="mt-1 flex items-center gap-2">

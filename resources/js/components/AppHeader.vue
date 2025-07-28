@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import AppLogo from '@/components/AppLogo.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
@@ -71,7 +72,19 @@ router.on('navigate', (event) => {
         class="sticky md:static top-0 md:translate-y-0 bg-background z-50 transition-all duration-300 ease-in-out"
         :class="{ '-translate-y-full': !isVisible }">
         <div class="border-b border-sidebar-border/80">
-            <div class="mx-auto flex h-12 md:h-16 items-center px-4 md:max-w-7xl">
+            <div class="mx-auto flex h-14 md:h-16 items-center px-4 md:max-w-7xl">
+                <div
+                    v-if="$page.props.backUrl"
+                    class="md:hidden mr-2">
+                    <Link
+                        class="flex -ml-4 pl-2 text-primary"
+                        :href="$page.props.backUrl">
+                        <Icon
+                            name="ChevronLeft"
+                            class="size-8 stroke-[1.5px]" />
+                    </Link>
+                </div>
+
                 <Link
                     :href="useRoute('home')"
                     prefetch

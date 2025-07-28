@@ -83,10 +83,10 @@ router.on('navigate', (event) => {
                         @click="handleClick(item)">
                         <div
                             :class="[item.isActive ? 'bg-primary/10' : 'bg-transparent']"
-                            class="rounded-full px-5 sm:px-0 sm:py-0 py-1.5 transition-all">
+                            class="rounded-full px-5 sm:px-4 sm:py-1 py-1.5 transition-all">
                             <component
                                 :is="item.icon"
-                                class="size-5 sm:size-4" />
+                                class="size-5" />
                         </div>
                         <Label class="font-medium text-xs sm:text-sm">
                             {{ item.title }}

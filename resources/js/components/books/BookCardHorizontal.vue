@@ -6,6 +6,7 @@ import { Link } from '@inertiajs/vue3'
 import { computed, PropType } from 'vue'
 import { useBook } from '@/composables/useBook'
 import { Book, BookApiResult } from '@/types/book'
+import { useAddCurrentUrl } from '@/composables/useAddCurrentUrl'
 
 const props = defineProps({
     book: {
@@ -23,6 +24,10 @@ const props = defineProps({
     target: {
         type: String as PropType<'_blank' | '_self'>,
         default: '_self'
+    },
+    linkSrc: {
+        type: [String, null] as PropType<string | null>,
+        default: null
     }
 })
 
@@ -43,7 +48,9 @@ const linkTag = computed(() => {
 })
 
 const url = computed(() => {
-    return props.book.links?.show ?? null
+    const url = props.book.links?.show ?? null
+
+    return useAddCurrentUrl(url)
 })
 
 const { userRating } = useBook(props.book)
