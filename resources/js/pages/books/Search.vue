@@ -116,7 +116,7 @@ defineOptions({
 <template>
     <div>
         <div class="flex items-center justify-between">
-            <PageTitle> Add Books </PageTitle>
+            <PageTitle> Add Book </PageTitle>
         </div>
 
         <div class="mt-4 flex flex-col items-start gap-8 md:mt-4 md:flex-row">

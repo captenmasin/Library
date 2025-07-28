@@ -26,7 +26,7 @@ const mainNavItems = ref<NavItem[]>([
         isActive: false
     },
     {
-        title: 'Add Books',
+        title: 'Add Book',
         href: useRoute('books.search'),
         icon: PlusSquareIcon,
         isActive: false
@@ -77,16 +77,16 @@ router.on('navigate', (event) => {
                         :href="item.href"
                         prefetch
                         :class="[activeItemStyles(item)]"
-                        class="flex py-2 gap-2 relative w-full items-center justify-center text-sm text-foreground hover:text-primary"
+                        class="flex flex-col sm:flex-row py-2 gap-1 sm:gap-2 relative w-full items-center justify-center text-sm text-foreground hover:text-primary"
                         @click="handleClick(item)">
                         <div
                             :class="[item.isActive ? 'bg-primary/10' : 'bg-transparent']"
-                            class="rounded-full px-5 sm:px-0 sm:py-0 py-2 transition-all">
+                            class="rounded-full px-5 sm:px-0 sm:py-0 py-1.5 transition-all">
                             <component
                                 :is="item.icon"
                                 class="size-5 sm:size-4" />
                         </div>
-                        <Label class="font-medium hidden sm:flex">
+                        <Label class="font-medium text-xs sm:text-sm">
                             {{ item.title }}
                         </Label>
                     </Link>
