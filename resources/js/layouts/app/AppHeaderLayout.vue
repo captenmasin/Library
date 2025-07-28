@@ -67,8 +67,8 @@ router.on('navigate', (event) => {
         </AppContent>
         <div
             style="padding-bottom: env(safe-area-inset-bottom)"
-            class="sticky md:hidden bg-background/75 border-t border-background-foreground backdrop-blur-sm px-1 bottom-0 left-0 right-0 z-50">
-            <ul class="flex items-center w-full pt-1 pb-2">
+            class="sticky lg:hidden bg-background/75 border-t border-background-foreground backdrop-blur-sm px-1 bottom-0 left-0 right-0 z-50">
+            <ul class="flex items-center w-full pt-1 pb-2 max-w-md mx-auto">
                 <li
                     v-for="item in mainNavItems"
                     :key="item.title"
@@ -77,10 +77,14 @@ router.on('navigate', (event) => {
                         :href="item.href"
                         prefetch
                         :class="[activeItemStyles(item)]"
-                        class="flex py-3 w-full rounded-lg items-center justify-center text-sm text-foreground hover:text-primary"
+                        class="flex py-3 gap-2 w-full rounded-lg items-center justify-center text-sm text-foreground hover:text-primary"
                         @click="handleClick(item)">
                         <component
-                            :is="item.icon" />
+                            :is="item.icon"
+                            class="size-5 sm:size-4" />
+                        <Label class="font-medium hidden sm:flex">
+                            {{ item.title }}
+                        </Label>
                     </Link>
                 </li>
             </ul>
