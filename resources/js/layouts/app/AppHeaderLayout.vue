@@ -12,7 +12,7 @@ import { Home, LibraryBig, PlusSquareIcon } from 'lucide-vue-next'
 const page = usePage()
 const breadcrumbs = ref(page.props.breadcrumbs as BreadcrumbItemType[] | undefined)
 
-const mainNavItems = ref([
+const mainNavItems = ref<NavItem[]>([
     {
         title: 'Home',
         href: useRoute('home'),
@@ -38,24 +38,22 @@ const activeItemStyles = computed(
 )
 
 onMounted(() => {
-    // Set active state for main navigation items based on current URL
     mainNavItems.value.forEach(item => {
         item.isActive = useIsCurrentUrl(item.href)
     })
 })
 
 function handleClick (item: NavItem) {
-    // Update the active state when a navigation item is clicked
     mainNavItems.value.forEach(navItem => {
         navItem.isActive = (navItem.href === item.href)
     })
 }
 
 router.on('navigate', (event) => {
-    const newBreadcrumbs = event.detail.page.props.breadcrumbs as BreadcrumbItemType[] | undefined
-    if (newBreadcrumbs) {
-        breadcrumbs.value = newBreadcrumbs
-    }
+    // const newBreadcrumbs = event.detail.page.props.breadcrumbs as BreadcrumbItemType[] | undefined
+    // if (newBreadcrumbs) {
+    //     breadcrumbs.value = newBreadcrumbs
+    // }
 })
 </script>
 
@@ -69,7 +67,7 @@ router.on('navigate', (event) => {
         </AppContent>
         <div
             style="padding-bottom: env(safe-area-inset-bottom)"
-            class="sticky bg-background/75 border-t border-background-foreground backdrop-blur-sm px-1 bottom-0 left-0 right-0 z-50">
+            class="sticky md:hidden bg-background/75 border-t border-background-foreground backdrop-blur-sm px-1 bottom-0 left-0 right-0 z-50">
             <ul class="flex items-center w-full pt-1 pb-2">
                 <li
                     v-for="item in mainNavItems"
@@ -79,7 +77,7 @@ router.on('navigate', (event) => {
                         :href="item.href"
                         prefetch
                         :class="[activeItemStyles(item)]"
-                        class="flex py-3 w-full rounded-xl items-center justify-center text-sm text-foreground hover:text-primary"
+                        class="flex py-3 w-full rounded-lg items-center justify-center text-sm text-foreground hover:text-primary"
                         @click="handleClick(item)">
                         <component
                             :is="item.icon" />
