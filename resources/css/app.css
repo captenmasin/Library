@@ -225,4 +225,10 @@
     ::view-transition-new(*) {
         animation: none;
     }
+
+    ol.toaster{
+        @media (width < 48rem){
+            --mobile-offset-bottom: 4.5rem !important;
+        }
+    }
 }
