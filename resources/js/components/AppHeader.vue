@@ -3,12 +3,12 @@ import AppLogo from '@/components/AppLogo.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
 import UserMenuContent from '@/components/UserMenuContent.vue'
-import { computed, ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useIsCurrentUrl } from '@/composables/useIsCurrentUrl'
 import { Home, LibraryBig, Menu, SearchIcon, PlusSquareIcon } from 'lucide-vue-next'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -38,13 +38,38 @@ const activeItemStyles = computed(
 
 const rightNavItems: NavItem[] = []
 
+const isVisible = ref(true)
+let lastScroll = window.scrollY
+
+const handleScroll = () => {
+    const currentScroll = window.scrollY
+
+    if (currentScroll > lastScroll && currentScroll > 50) {
+        isVisible.value = false // scrolling down
+    } else if (currentScroll < lastScroll) {
+        isVisible.value = true // scrolling up
+    }
+
+    lastScroll = currentScroll
+}
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll)
+})
+
 router.on('navigate', (event) => {
     mobileMenuOpen.value = false
 })
 </script>
 
 <template>
-    <div class="sticky md:static top-0 bg-background z-50">
+    <div
+        class="sticky md:static top-0 md:translate-y-0 bg-background z-50 transition-all duration-300 ease-in-out"
+        :class="{ '-translate-y-full': !isVisible }">
         <div class="border-b border-sidebar-border/80">
             <div class="mx-auto flex h-12 md:h-16 items-center px-4 md:max-w-7xl">
                 <Link

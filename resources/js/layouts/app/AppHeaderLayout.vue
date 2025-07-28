@@ -2,10 +2,11 @@
 import AppShell from '@/components/AppShell.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import AppContent from '@/components/AppContent.vue'
-import { computed, onMounted, ref } from 'vue'
+import { Label } from '@/components/ui/label'
 import { useRoute } from '@/composables/useRoute'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import type { BreadcrumbItemType, NavItem } from '@/types'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useIsCurrentUrl } from '@/composables/useIsCurrentUrl'
 import { Home, LibraryBig, PlusSquareIcon } from 'lucide-vue-next'
 
@@ -62,7 +63,8 @@ router.on('navigate', (event) => {
         <AppHeader
             :nav-items="mainNavItems"
             :breadcrumbs="breadcrumbs" />
-        <AppContent class="mt-4">
+        <AppContent
+            class="mt-4">
             <slot />
         </AppContent>
         <div
@@ -95,3 +97,15 @@ router.on('navigate', (event) => {
         </div>
     </AppShell>
 </template>
+
+<style scoped>
+.slide-down-enter-active,
+.slide-down-leave-active {
+    transition: transform 0.3s ease-in-out;
+}
+
+.slide-down-enter-from,
+.slide-down-leave-to {
+    transform: translateY(-100%);
+}
+</style>
