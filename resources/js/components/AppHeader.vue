@@ -74,12 +74,10 @@ router.on('navigate', (event) => {
         <div class="border-b border-sidebar-border/80">
             <div class="mx-auto flex h-14 md:h-16 items-center px-4 md:max-w-7xl">
                 <div
-                    :class="
-                        [
-                            $page.props.backUrl ? 'ml-0 opacity-100' : '-ml-8 opacity-0'
-                        ]"
+                    :class="$page.props.backUrl ? 'ml-0 opacity-100' : '-ml-8 opacity-0'"
                     class="md:hidden mr-2 transition-all duration-300">
                     <Link
+                        tabindex="-1"
                         class="flex -ml-4 pl-2 text-primary"
                         :href="$page.props.backUrl ?? useRoute('home')">
                         <Icon

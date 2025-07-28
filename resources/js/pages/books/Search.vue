@@ -158,9 +158,8 @@ defineOptions({
                                 </Button>
                             </div>
                         </div>
-                        <span class="pl-1 text-xs text-muted-foreground">
-                            author: etc lorem ipsum dolor sit amet, consectetur adipiscing elit. lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit.
+                        <span class="pl-1 hidden md:flex text-xs text-muted-foreground">
+                            Search by author using <code class="bg-muted px-1 rounded-sm">author: name</code>
                         </span>
                     </div>
                     <div class="md:hidden">
@@ -207,11 +206,14 @@ defineOptions({
                         </div>
                     </Deferred>
                 </form>
+                <span class="pl-1 text-xs text-muted-foreground">
+                    Search by author using <code class="bg-muted px-1 rounded-sm">author: name</code>
+                </span>
             </aside>
             <section class="flex w-full flex-1 flex-col md:w-auto">
                 <div
                     v-if="hasSearch && results && results.total > 0"
-                    class="mb-4 flex justify-between text-sm text-muted-foreground">
+                    class="mb-4 flex font-medium justify-between text-sm text-muted-foreground">
                     <p class="hidden md:flex">
                         Found {{ formatNumber(results.total) }} books
                     </p>
