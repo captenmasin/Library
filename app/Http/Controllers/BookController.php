@@ -25,8 +25,13 @@ class BookController extends Controller
         $perPage = 10;
 
         $originalQuery = $request->get('q');
-        $author = Str::of($originalQuery)->after('author:')->trim()->value();
-        $query = Str::of($originalQuery)->before('author:')->trim()->value();
+        if (! Str::contains($originalQuery, 'author:')) {
+            $query = $originalQuery;
+            $author = null;
+        } else {
+            $author = Str::of($originalQuery)->after('author:')->trim()->value();
+            $query = Str::of($originalQuery)->before('author:')->trim()->value();
+        }
 
         if ($request->filled('q')) {
             $request->user()->previousSearches()->updateOrCreate(
@@ -83,14 +88,8 @@ class BookController extends Controller
             'notes' => fn ($query) => $query->where('user_id', Auth::id()),
         ]);
 
-        $backUrl = null;
-        if ($request->filled('src') && Str::startsWith($request->get('src'), config('app.url'))) {
-            $backUrl = $request->get('src');
-        }
-
         return Inertia::render('books/Show', [
             'book' => new BookResource($book),
-            'backUrl' => $backUrl,
             'averageRating' => number_format($book->ratings->avg('value') ?? 0, 1),
             'related' => Inertia::defer(function () use ($book) {
                 $relatedBooks = $book->relatedBooksByAuthorsAndTags(4);

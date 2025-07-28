@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Inertia\Inertia;
 use Inertia\Middleware;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +43,11 @@ class HandleInertiaRequests extends Middleware
             ? (new UserResource($request->user()->load('books', 'roles', 'permissions')))->asUser()
             : null;
 
+        $backUrl = null;
+        if ($request->filled('src') && Str::startsWith($request->get('src'), config('app.url'))) {
+            $backUrl = $request->get('src');
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -58,6 +64,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => $currentUser,
                 'check' => Auth::check(),
             ],
+
+            'backUrl' => $backUrl,
 
             'flash' => Inertia::always(fn () => [
                 'success' => fn () => $request->hasSession() ? $request->session()->get('success') : null,

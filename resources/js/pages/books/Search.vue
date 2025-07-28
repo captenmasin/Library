@@ -206,7 +206,7 @@ defineOptions({
                         </div>
                     </Deferred>
                 </form>
-                <span class="pl-1 text-xs text-muted-foreground">
+                <span class="pl-1 pt-1 text-xs flex md:hidden text-muted-foreground">
                     Search by author using <code class="bg-muted px-1 rounded-sm">author: name</code>
                 </span>
             </aside>
