@@ -6,12 +6,12 @@ import BookCard from '@/components/books/BookCard.vue'
 import SingleActivity from '@/components/SingleActivity.vue'
 import { Tag } from '@/types/tag'
 import { Book } from '@/types/book'
-import { Link } from '@inertiajs/vue3'
 import { Author } from '@/types/author'
-import { computed, PropType } from 'vue'
 import { Activity } from '@/types/activity'
+import { Link, router } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
+import { computed, onMounted, PropType } from 'vue'
 import { UserBookStatus } from '@/enums/UserBookStatus'
 import { useAuthedUser } from '@/composables/useAuthedUser'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
@@ -101,6 +101,20 @@ const stats = [
 const firstName = computed(() => {
     if (!authedUser.value) return ''
     return authedUser.value.name.split(' ')[0]
+})
+
+onMounted(() => {
+    router.prefetch(
+        useRoute('user.books.index'),
+        { method: 'get' },
+        { cacheFor: '5m' }
+    )
+
+    router.prefetch(
+        useRoute('books.search'),
+        { method: 'get' },
+        { cacheFor: '5m' }
+    )
 })
 
 defineOptions({ layout: AppLayout })
