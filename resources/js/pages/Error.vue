@@ -11,47 +11,49 @@ const props = defineProps({
 
 const title = computed(() => {
     return {
-        503: 'Under maintenance',
+        503: 'We’re doing some maintenance',
         500: 'Something went wrong',
-        404: 'Oops!',
-        403: 'Oops!'
+        404: 'Page not found',
+        403: 'Page not found'
     }[props.status]
 })
 
 const message = computed(() => {
     return {
-        503: 'We\'re running some routine maintenance. We\'ll be right back!',
-        500: 'Try refreshing, or contact us if the issue persists.',
-        404: 'We couldn\'t find the page you\'re looking for.',
-        403: 'We couldn\'t find the page you\'re looking for.'
+        503: 'BookBound is down for a bit of re-shelving. Please check back soon.\n',
+        500: 'Our library shelves are a bit messy right now. We’re working to tidy things up.\n',
+        404: 'The page you\'re looking for doesn\'t exist or has been shelved.\n',
+        403: 'The page you\'re looking for doesn\'t exist or has been shelved.\n'
     }[props.status]
 })
 </script>
 
 <template>
     <AppLayout>
-        <div class="mx-auto w-full max-w-6xl px-6 py-24 lg:px-8">
-            <div class="flex items-center">
-                <div class="w-1/2">
-                    <p class="text-[10rem] font-serif font-semibold leading-[1] text-primary dark:text-white">
-                        {{ status }}
-                    </p>
-                    <h1 class="text-lg font-semibold font-heading line-height-1 md:mt-2">
-                        {{ title }}
-                    </h1>
-                    <p class="mt-1 max-w-xs text-base text-zinc-600 text-pretty dark:text-zinc-400 sm:text-xl md:mt-6">
-                        {{ message }}
-                    </p>
-                    <div
-                        v-if="[404, 403].includes(status)"
-                        class="mt-4 flex">
-                        <Button
-                            as-child>
-                            <Link :href="useRoute('home')">
+        <div class="md:min-h-[80vh] py-20 md:py-0 flex items-center justify-center px-6">
+            <div class="max-w-md mx-auto h-full flex flex-col justify-center text-center">
+                <div class="text-8xl font-bold font-serif text-primary">
+                    {{ status }}
+                </div>
+                <h1 class="text-2xl font-semibold font-serif text-foreground">
+                    {{ title }}
+                </h1>
+                <p class="mt-2 text-base text-foreground/50 text-pretty">
+                    {{ message }}
+                </p>
+
+                <div class="mt-6">
+                    <Button
+                        as-child>
+                        <Link :href="useRoute('home')">
+                            <span v-if="[404, 403].includes(status)">
                                 Go home
-                            </Link>
-                        </Button>
-                    </div>
+                            </span>
+                            <span v-if="[500].includes(status)">
+                                Try Again
+                            </span>
+                        </Link>
+                    </Button>
                 </div>
             </div>
         </div>

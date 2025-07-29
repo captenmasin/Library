@@ -6,6 +6,7 @@ import { Link } from '@inertiajs/vue3'
 import { computed, PropType } from 'vue'
 import { useBook } from '@/composables/useBook'
 import { Book, BookApiResult } from '@/types/book'
+import { useAddCurrentUrl } from '@/composables/useAddCurrentUrl'
 
 const props = defineProps({
     book: {
@@ -23,6 +24,10 @@ const props = defineProps({
     target: {
         type: String as PropType<'_blank' | '_self'>,
         default: '_self'
+    },
+    linkSrc: {
+        type: [String, null] as PropType<string | null>,
+        default: null
     }
 })
 
@@ -43,7 +48,9 @@ const linkTag = computed(() => {
 })
 
 const url = computed(() => {
-    return props.book.links?.show ?? null
+    const url = props.book.links?.show ?? null
+
+    return useAddCurrentUrl(url)
 })
 
 const { userRating } = useBook(props.book)
@@ -51,7 +58,8 @@ const { userRating } = useBook(props.book)
 
 <template>
     <div
-        class="flex w-full flex-col group gap-2 md:items-center"
+        :id="`book-card-${book.id}`"
+        class="flex w-full flex-col group gap-2 md:items-center book-card-horizontal"
         :class="narrow ? '' : 'md:flex-row md:gap-8'">
         <div class="flex w-full gap-4">
             <component
@@ -62,7 +70,7 @@ const { userRating } = useBook(props.book)
                 <div class="aspect-book relative w-20 shrink-0 overflow-hidden rounded-sm shadow-sm md:w-22">
                     <span
                         v-if="book.binding"
-                        class="absolute opacity-0 group-hover:opacity-100 transition-all top-1 right-1 text-xs bg-white/75 text-zinc-900 px-1.5 py-px rounded-full">
+                        class="absolute opacity-0 group-hover:opacity-100 transition-all top-1 right-1 text-[10px] bg-white/75 text-zinc-900 px-1.5 py-px rounded-full">
                         {{ book.binding }}
                     </span>
                     <img
@@ -86,7 +94,9 @@ const { userRating } = useBook(props.book)
                         </h3>
                     </component>
                 </div>
-                <p class="-mt-0.5 md:mt-0.5 line-clamp-1 text-xs text-muted-foreground/65 md:text-sm">
+                <p
+                    v-if="book.authors && book.authors.length > 0"
+                    class="-mt-0.5 md:mt-0.5 line-clamp-1 text-xs text-muted-foreground/65 md:text-sm">
                     By {{ book.authors?.map((a) => a.name).join(', ') }}
                 </p>
                 <p

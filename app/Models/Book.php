@@ -6,6 +6,7 @@ use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Sluggable\SlugOptions;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -188,12 +189,18 @@ class Book extends Model implements HasMedia
 
     public function getPrimaryCoverAttribute(): string
     {
-        if (! $this->primaryCover()?->hasMedia('image')) {
+        $primaryCover = $this->primaryCover();
+        $primaryCoverImagePath = $primaryCover?->getFirstMediaPath('image');
+
+        if (
+            ! $this->primaryCover()?->hasMedia('image')
+            || ! File::exists($primaryCoverImagePath)
+        ) {
             return
                 $this->original_cover ??
                 Vite::asset('resources/images/default-cover.svg');
         }
 
-        return $this->primaryCover()->image;
+        return $primaryCover->image;
     }
 }

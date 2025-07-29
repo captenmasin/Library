@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Settings;
 
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Actions\TrackEvent;
 use Illuminate\Http\Request;
+use App\Enums\AnalyticsEvent;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -21,6 +23,10 @@ class ProfileController extends Controller
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+                ['title' => 'Settings', 'href' => route('user.settings.profile.edit')],
+            ],
         ])->withMeta([
             'title' => 'Profile Settings',
             'description' => 'Manage your profile information, including your name, email, and avatar.',
@@ -29,7 +35,13 @@ class ProfileController extends Controller
 
     public function danger(Request $request): Response
     {
-        return Inertia::render('settings/Danger')
+        return Inertia::render('settings/Danger', [
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+                ['title' => 'Settings', 'href' => route('user.settings.profile.edit')],
+                ['title' => 'Danger zone', 'href' => route('user.settings.profile.danger')],
+            ],
+        ])
             ->withMeta([
                 'title' => 'Danger Zone',
                 'description' => 'Delete your account.',
@@ -51,10 +63,18 @@ class ProfileController extends Controller
         if ($request->file('avatar')) {
             $request->user()->addMedia($request->file('avatar'))
                 ->toMediaCollection('avatar');
+
+            TrackEvent::dispatchAfterResponse(AnalyticsEvent::UserAccountAvatarUpdated, [
+                'user_id' => $request->user()?->id,
+            ]);
         }
 
         if ($request->filled('profile_colour')) {
             $request->user()->settings()->update('profile.colour', $request->input('profile_colour'));
+            TrackEvent::dispatchAfterResponse(AnalyticsEvent::UserAccountProfileColourUpdated, [
+                'user_id' => $request->user()?->id,
+                'profile_colour' => $request->input('profile_colour'),
+            ]);
         }
 
         $request->user()->save();
@@ -65,6 +85,10 @@ class ProfileController extends Controller
     public function destroyAvatar(Request $request)
     {
         $request->user()->clearMediaCollection('avatar');
+
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::UserAccountAvatarRemoved, [
+            'user_id' => $request->user()?->id,
+        ]);
 
         return redirect()->back()
             ->with('success', 'Your avatar has been deleted.');
@@ -81,6 +105,10 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        TrackEvent::dispatchAfterResponse(AnalyticsEvent::UserAccountDeleted, [
+            'user_id' => $request->user()?->id,
+        ]);
+
         Auth::logout();
 
         $user->delete();
@@ -88,6 +116,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

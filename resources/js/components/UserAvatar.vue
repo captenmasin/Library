@@ -43,7 +43,7 @@ const textColour = computed(() => {
         :class="cn('size-8 overflow-hidden rounded-full', props.class)">
         <AvatarImage
             v-if="user.avatar && user.avatar !== ''"
-            :src="getImageUrl(user.avatar, { width: size, height: size, crop: 'center' })"
+            :src="getImageUrl(user.avatar, { width: size, height: size, crop: 'center', scale: false })"
             :alt="user.name"
         />
         <AvatarFallback

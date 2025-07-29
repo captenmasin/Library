@@ -3,6 +3,8 @@
 use App\Http\Middleware\StripCookies;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\HandleAppearance;
+use Pirsch\Http\Middleware\TrackPageview;
+use App\Http\Middleware\ClientHintsHeaders;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -21,7 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(
             append: [
+                //                TrackPageview::class,
                 HandleAppearance::class,
+                ClientHintsHeaders::class,
                 HandleInertiaRequests::class,
                 AddLinkHeadersForPreloadedAssets::class,
             ],

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { AvatarImage } from 'reka-ui'
+// eslint-disable-next-line no-duplicate-imports
 import type { AvatarImageProps } from 'reka-ui'
 
 const props = defineProps<AvatarImageProps>()

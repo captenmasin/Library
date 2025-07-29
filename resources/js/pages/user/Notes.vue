@@ -7,10 +7,7 @@ import CustomPagination from '@/components/CustomPagination.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import { PropType } from 'vue'
 import { Note } from '@/types/note'
-import { Link } from '@inertiajs/vue3'
 import { Paginated } from '@/types/pagination'
-import { Button } from '@/components/ui/button'
-import { useRoute } from '@/composables/useRoute'
 
 defineOptions({ layout: AppLayout })
 

@@ -162,7 +162,7 @@ return [
      */
 
     'collectors' => [
-        'phpinfo' => false,  // Php version
+        'phpinfo' => true,  // Php version
         'messages' => true,  // Messages
         'time' => true,  // Time Datalogger
         'memory' => true,  // Memory usage

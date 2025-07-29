@@ -2,7 +2,7 @@
 
 use App\Models\User;
 
-test('user can register and be redirected to books', function () {
+test('user can register and be redirected to verify emails', function () {
     $this->browse(function ($browser) {
         $password = Str::random(16);
         $browser->visit('/register')
@@ -12,9 +12,9 @@ test('user can register and be redirected to books', function () {
             ->type('#password', $password)
             ->type('#password_confirmation', $password)
             ->press('Create account')
-            ->waitForLocation('/books')
-            ->assertPathIs('/books')
-            ->assertSee('Books')
+            ->waitForLocation('/verify-email')
+            ->assertPathIs('/verify-email')
+            ->assertSee('Verify email')
             ->fullLogout();
     });
 });

@@ -4,9 +4,9 @@ import { PropType } from 'vue'
 import { cn } from '@/lib/utils'
 import { Book } from '@/types/book'
 import { Note } from '@/types/note'
+import { router } from '@inertiajs/vue3'
 import { useDateFormat } from '@vueuse/core'
 import { Badge } from '@/components/ui/badge'
-import { Link, router } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { useMarkdown } from '@/composables/useMarkdown'
@@ -56,6 +56,7 @@ function deleteNote () {
                         </template>
                         <template #trigger>
                             <Button
+                                :id="`delete-note-` + note.id"
                                 variant="link"
                                 class="text-destructive py-0 h-auto text-xs">
                                 Delete
@@ -64,6 +65,7 @@ function deleteNote () {
                     </ConfirmationModal>
                 </div>
                 <Badge
+                    v-if="note.status"
                     variant="secondary"
                     class="text-xs">
                     {{ note.status }}

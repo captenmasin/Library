@@ -5,25 +5,37 @@ namespace App\Console\Commands;
 use Laravel\Octane\Octane;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Cache\Console\ClearCommand;
+use Laravel\Horizon\Console\TerminateCommand;
 
 class DeployApp extends Command
 {
-    protected $signature = 'app:deploy';
+    protected $signature = 'app:deploy {--ssr : Enable server-side rendering}';
 
     public function handle(): int
     {
         $this->info('🔧 Starting deployment...');
 
+        $this->info('📀 Storage link');
+        $this->call('storage:link');
+
         // NPM
         $this->runShell('npm ci');
-        $this->runShell('npm run build');
+
+        if ($this->option('ssr')) {
+            $this->info('🌐 Running SSR build...');
+            $this->runShell('npm run build:ssr');
+        } else {
+            $this->info('📦 Running frontend build...');
+            $this->runShell('npm run build');
+        }
 
         // Terminate Horizon
-        $this->callSilent('horizon:terminate');
+        $this->callSilent(TerminateCommand::class);
 
         // Laravel caches
         $this->info('🗄️  Clearing and caching Laravel configurations...');
-        $this->call('cache:clear');
+        $this->call(ClearCommand::class);
         $this->call('config:clear');
         $this->call('route:clear');
         $this->call('view:clear');
@@ -41,7 +53,16 @@ class DeployApp extends Command
         $this->call('db:seed', ['--force' => true]);
 
         // Horizon again
-        $this->callSilent('horizon:terminate');
+        $this->callSilent(TerminateCommand::class);
+
+        // Generate Sitemap
+        $this->call(GenerateSitemap::class);
+
+        // Generate Robots.txt
+        $this->call(GenerateRobotsTxt::class);
+
+        // Generate PWA manifest
+        $this->call(GeneratePwaManifest::class);
 
         // Reload Octane if running
         if ($this->isOctaneRunning()) {

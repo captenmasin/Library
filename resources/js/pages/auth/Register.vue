@@ -2,11 +2,11 @@
 import AuthBase from '@/layouts/AuthLayout.vue'
 import TextLink from '@/components/TextLink.vue'
 import InputError from '@/components/InputError.vue'
+import { useForm } from '@inertiajs/vue3'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { LoaderCircle } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Head, useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 
 const form = useForm({
@@ -99,6 +99,10 @@ const submit = () => {
                             autocomplete="new-password"
                             placeholder="Confirm password"
                         />
+                    </div>
+
+                    <div class="-mt-3">
+                        <InputError :message="form.errors.password" />
                         <InputError :message="form.errors.password_confirmation" />
                     </div>
                 </div>

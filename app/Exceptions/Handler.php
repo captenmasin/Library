@@ -49,10 +49,10 @@ class Handler extends ExceptionHandler
             // Just flash a message if it's an Inertia request
             if ($request->headers->get('x-inertia') === 'true') {
                 if ($response->status() === 403) {
-                    flash()->error('Unauthorized action');
+                    return back()->with('error', 'Unauthorized action');
                 }
                 if (in_array($response->status(), [500, 503])) {
-                    flash()->error('Something went wrong');
+                    return back()->with('error', 'Something went wrong');
                 }
 
                 return back();
@@ -60,15 +60,17 @@ class Handler extends ExceptionHandler
 
             // Flash a message if it's 419, inertia or otherwise
             if ($response->status() === 419) {
-                flash()->error('The page expired, please try again.');
-
-                return back();
+                return back()->with('error', 'The page expired, please try again.');
             }
 
             // Return a nice error page for some error codes
             if (in_array($response->status(), [500, 503, 404, 403]) && ! config('app.debug')) {
                 return Inertia::render('Error', [
                     'status' => $response->status(),
+                    'breadcrumbs' => [
+                        ['title' => 'Home', 'href' => route('home')],
+                        ['title' => 'Error '.$response->status()],
+                    ],
                 ])->withMeta(['title' => 'Error '.$response->status()])
                     ->toResponse($request)->setStatusCode($response->status());
             }

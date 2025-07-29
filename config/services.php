@@ -14,6 +14,12 @@ return [
     |
     */
 
+    'pirsch' => [
+        'enabled' => env('PIRSCH_ENABLED', false),
+        'token' => env('PIRSCH_TOKEN'),
+        'site_id' => env('PIRSCH_SITE_ID'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
@@ -30,6 +36,13 @@ return [
 
     'resend' => [
         'key' => env('RESEND_KEY'),
+    ],
+
+    'mailgun' => [
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
+        'endpoint' => env('MAILGUN_ENDPOINT', 'api.eu.mailgun.net'),
+        'scheme' => 'https',
     ],
 
     'slack' => [

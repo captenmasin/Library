@@ -70,6 +70,7 @@ class GenerateFrontendEnums extends Command
             }
 
             $outputString .= sprintf('%s = %s', $key, json_encode($value));
+            $outputString = str_replace('"', "'", $outputString);
 
             if ($i++ < count($constants) - 1) {
                 $outputString .= ',';
@@ -81,6 +82,7 @@ class GenerateFrontendEnums extends Command
         $outputString .= "\n";
         $outputString .= '/* eslint-disable no-unused-vars */';
         $outputString .= "\n";
+        $outputString = str_replace('\/', '/', $outputString);
 
         // Write the output string to the specified path.
         Storage::disk('enum-js')->put($outputPath, $outputString);

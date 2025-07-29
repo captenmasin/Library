@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue'
 import InputError from '@/components/InputError.vue'
 import HeadingSmall from '@/components/HeadingSmall.vue'
 import SettingsLayout from '@/layouts/settings/Layout.vue'
-import { toast } from 'vue-sonner'
 import { PropType, ref } from 'vue'
 import { UserPasskey } from '@/types/user'
 import { Input } from '@/components/ui/input'
@@ -75,115 +73,114 @@ function deletePasskey (id) {
 }
 
 defineOptions({
-    layout: AppLayout
+    layout: SettingsLayout
 })
 </script>
 
 <template>
-    <div>
-        <SettingsLayout>
-            <div class="flex flex-col space-y-8">
-                <form
-                    class="space-y-4 md:space-y-5"
-                    @submit.prevent="updatePassword">
-                    <div class="grid gap-4 grid-cols-2">
-                        <div class="grid gap-1">
-                            <Label for="password">New password</Label>
-                            <Input
-                                id="password"
-                                ref="passwordInput"
-                                v-model="form.password"
-                                type="password"
-                                class="mt-1 block w-full"
-                                autocomplete="new-password"
-                            />
-                            <InputError :message="form.errors.password" />
-                        </div>
-
-                        <div class="grid gap-1">
-                            <Label for="password_confirmation">Confirm password</Label>
-                            <Input
-                                id="password_confirmation"
-                                v-model="form.password_confirmation"
-                                type="password"
-                                class="mt-1 block w-full"
-                                autocomplete="new-password"
-                            />
-                            <InputError :message="form.errors.password_confirmation" />
-                        </div>
-                    </div>
-
-                    <div class="grid gap-1">
-                        <Label for="current_password">Current password</Label>
-                        <Input
-                            id="current_password"
-                            ref="currentPasswordInput"
-                            v-model="form.current_password"
-                            type="password"
-                            class="mt-1 block w-full"
-                            autocomplete="current-password"
-                        />
-                        <InputError :message="form.errors.current_password" />
-                    </div>
-
-                    <div class="flex items-center justify-end gap-4">
-                        <Transition
-                            enter-active-class="transition ease-in-out"
-                            enter-from-class="opacity-0"
-                            leave-active-class="transition ease-in-out"
-                            leave-to-class="opacity-0"
-                        >
-                            <p
-                                v-show="form.recentlySuccessful"
-                                class="text-sm text-neutral-600">
-                                Saved.
-                            </p>
-                        </Transition>
-                        <Button :disabled="form.processing">
-                            Save password
-                        </Button>
-                    </div>
-                </form>
-
-                <HeadingSmall
-                    title="Passkeys"
-                    description="Use passkeys to log in without a password"
-                />
-
-                <div
-                    v-if="passkeys && passkeys?.length > 0"
-                    class="flex flex-col gap-6">
-                    <div
-                        v-for="passkey in passkeys"
-                        :key="passkey.id"
-                        class="flex items-center justify-between">
-                        <div class="flex flex-col gap-1">
-                            <div class="flex">
-                                <p class="font-mono bg-muted flex text-xs text-muted-foreground px-2 py-0.5 rounded-full">
-                                    {{ passkey.name }}
-                                </p>
-                            </div>
-                            <p class="text-sm px-1">
-                                Last used at: {{ passkey.last_used_at || 'Never' }}
-                            </p>
-                        </div>
-                        <Button
-                            variant="link"
-                            class="text-destructive"
-                            @click="deletePasskey(passkey.id)">
-                            Delete
-                        </Button>
-                    </div>
+    <div class="flex flex-col space-y-8">
+        <form
+            class="space-y-4 md:space-y-5"
+            @submit.prevent="updatePassword">
+            <div class="grid gap-4 grid-cols-2">
+                <div class="grid gap-1">
+                    <Label for="password">New password</Label>
+                    <Input
+                        id="password"
+                        ref="passwordInput"
+                        v-model="form.password"
+                        type="password"
+                        class="mt-1 block w-full"
+                        autocomplete="new-password"
+                    />
                 </div>
 
-                <div class="flex justify-end">
-                    <Button
-                        variant="secondary"
-                        @click.prevent="addPassKey">
-                        Add a passkey
-                    </Button>
+                <div class="grid gap-1">
+                    <Label for="password_confirmation">Confirm password</Label>
+                    <Input
+                        id="password_confirmation"
+                        v-model="form.password_confirmation"
+                        type="password"
+                        class="mt-1 block w-full"
+                        autocomplete="new-password"
+                    />
+                </div>
+
+                <div class="grid-cols-2 -mt-4">
+                    <InputError :message="form.errors.password" />
+                    <InputError :message="form.errors.password_confirmation" />
                 </div>
             </div>
-        </SettingsLayout>
+
+            <div class="grid gap-1">
+                <Label for="current_password">Current password</Label>
+                <Input
+                    id="current_password"
+                    ref="currentPasswordInput"
+                    v-model="form.current_password"
+                    type="password"
+                    class="mt-1 block w-full"
+                    autocomplete="current-password"
+                />
+                <InputError :message="form.errors.current_password" />
+            </div>
+
+            <div class="flex items-center justify-end gap-4">
+                <Transition
+                    enter-active-class="transition ease-in-out"
+                    enter-from-class="opacity-0"
+                    leave-active-class="transition ease-in-out"
+                    leave-to-class="opacity-0"
+                >
+                    <p
+                        v-show="form.recentlySuccessful"
+                        class="text-sm text-neutral-600">
+                        Saved.
+                    </p>
+                </Transition>
+                <Button :disabled="form.processing">
+                    Save password
+                </Button>
+            </div>
+        </form>
+
+        <HeadingSmall
+            title="Passkeys"
+            description="Use passkeys to log in without a password"
+        />
+
+        <div
+            v-if="passkeys && passkeys?.length > 0"
+            class="flex flex-col gap-6">
+            <div
+                v-for="passkey in passkeys"
+                :key="passkey.id"
+                class="flex items-center justify-between">
+                <div class="flex flex-col gap-1">
+                    <div class="flex">
+                        <p class="font-mono bg-muted flex text-xs text-muted-foreground px-2 py-0.5 rounded-full">
+                            {{ passkey.name }}
+                        </p>
+                    </div>
+                    <p class="text-sm px-1">
+                        Last used at: {{ passkey.last_used_at || 'Never' }}
+                    </p>
+                </div>
+                <Button
+                    variant="link"
+                    class="text-destructive"
+                    @click="deletePasskey(passkey.id)">
+                    Delete
+                </Button>
+            </div>
+        </div>
+
+        <div class="flex justify-end">
+            <Button
+                variant="secondary"
+                @click.prevent="addPassKey">
+                Add a passkey
+            </Button>
+        </div>
     </div>
 </template>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import TextLink from '@/components/TextLink.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
+import { useForm } from '@inertiajs/vue3'
 import { LoaderCircle } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
-import { Head, useForm } from '@inertiajs/vue3'
 import { useRoute } from '@/composables/useRoute'
 
 defineProps<{

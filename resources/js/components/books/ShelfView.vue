@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import Image from '@/components/Image.vue'
-import { PropType } from 'vue'
 import { Book } from '@/types/book'
 import { Link } from '@inertiajs/vue3'
+import { computed, PropType } from 'vue'
 import { useColours } from '@/composables/useColours'
 import { useContrast } from '@/composables/useContrast'
 import { useUserSettings } from '@/composables/useUserSettings'
+import { useAddCurrentUrl } from '@/composables/useAddCurrentUrl'
 
 defineProps({
     books: {
@@ -72,15 +73,21 @@ function isTilted (identifier: string, index: number): boolean {
     tiltedCache[identifier] = rand < 0.35
     return tiltedCache[identifier]
 }
+
+function getUrl (book: Book): string {
+    const url = book.links?.show ?? null
+
+    return useAddCurrentUrl(url)
+}
 </script>
 <template>
     <ul class="flex flex-wrap items-end">
         <li
             v-for="(book, index) in books"
             :key="book.identifier"
-            class="mb-8 border-b-2 border-amber-900 group pb-[2px]">
+            class="mb-8 border-b-2 border-amber-900 book-card-shelf-item group pb-[2px]">
             <Link
-                :href="book.links.show"
+                :href="getUrl(book)"
                 prefetch
                 :data-tilted="isTilted(book.identifier, index)"
                 :style="{

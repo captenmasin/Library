@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { PropType } from 'vue'
-import { cn } from '@/lib/utils'
 import { Link, router } from '@inertiajs/vue3'
 import {
     Pagination,
     PaginationContent,
-    PaginationEllipsis,
-    PaginationFirst,
     PaginationItem,
     PaginationNext,
     PaginationPrevious

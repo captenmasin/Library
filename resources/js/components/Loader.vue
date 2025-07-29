@@ -310,6 +310,8 @@ const filterStyles = computed(() => {
         const solver = new Solver(color)
         return solver.solve()
     }
+
+    return ''
 })
 </script>
 

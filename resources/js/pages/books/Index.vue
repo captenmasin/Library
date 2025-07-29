@@ -7,12 +7,10 @@ import CheckboxList from '@/components/CheckboxList.vue'
 import ShelfView from '@/components/books/ShelfView.vue'
 import BookViewTabs from '@/components/books/BookViewTabs.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
-import { cn } from '@/lib/utils'
 import { Tag } from '@/types/tag'
 import type { Book } from '@/types/book'
 import type { Author } from '@/types/author'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useUrlSearchParams } from '@vueuse/core'
@@ -23,7 +21,6 @@ import { useUserBookStatus } from '@/composables/useUserBookStatus'
 import { computed, ref, watch, type PropType, nextTick } from 'vue'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox'
 
 /* --------------------------------------------------------------------------
  * Props & Refs
@@ -147,7 +144,7 @@ defineOptions({ layout: AppLayout })
                 </PageTitle>
                 <BookViewTabs
                     v-model="view"
-                    class="flex w-32 flex-1 shrink-0 max-w-32 md:hidden" />
+                    class="flex w-32 book-view-tabs mobile-book-view-tabs flex-1 shrink-0 max-w-32 md:hidden" />
             </div>
 
             <!-- View & Sort Controls ---------------------------------------- -->
@@ -155,7 +152,7 @@ defineOptions({ layout: AppLayout })
                 <!-- View toggle -->
                 <BookViewTabs
                     v-model="view"
-                    class="hidden md:flex" />
+                    class="hidden book-view-tabs desktop-book-view-tabs md:flex" />
 
                 <!-- Sort dropdown & order -->
                 <div class="flex w-full items-center justify-end gap-2.5 md:w-56 md:gap-2">
@@ -165,6 +162,9 @@ defineOptions({ layout: AppLayout })
                                 v-if="sort"
                                 class="text-muted-foreground">Sort:</span>
                             <SelectValue placeholder="Sort by..." />
+                            <span class="sr-only">
+                                Select sort option
+                            </span>
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
@@ -188,6 +188,9 @@ defineOptions({ layout: AppLayout })
                                     size="icon"
                                     @click="order = order === 'asc' ? 'desc' : 'asc'"
                                 >
+                                    <span class="sr-only">
+                                        Toggle sort order
+                                    </span>
                                     <Icon :name="order === 'asc' ? 'ArrowUpWideNarrow' : 'ArrowDownWideNarrow'" />
                                 </Button>
                             </TooltipTrigger>
@@ -242,6 +245,9 @@ defineOptions({ layout: AppLayout })
                                         variant="link"
                                         class="cursor-pointer"
                                         size="icon">
+                                        <span class="sr-only">
+                                            Search
+                                        </span>
                                         <Icon name="Search" />
                                     </Button>
                                 </div>
@@ -254,6 +260,9 @@ defineOptions({ layout: AppLayout })
                             <Select v-model="author">
                                 <SelectTrigger class="w-full">
                                     <SelectValue placeholder="Filter by author" />
+                                    <span class="sr-only">
+                                        Select author filter
+                                    </span>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
@@ -281,6 +290,9 @@ defineOptions({ layout: AppLayout })
                                 class="w-full flex">
                                 <SelectTrigger class="w-full md:max-w-72">
                                     <SelectValue placeholder="Filter by tag" />
+                                    <span class="sr-only">
+                                        Select tag filter
+                                    </span>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>

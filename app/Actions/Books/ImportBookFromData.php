@@ -117,6 +117,10 @@ class ImportBookFromData
             }
         }
 
-        return $book;
+        return $book->load(
+            'authors',
+            'tags',
+            'publisher',
+            'covers');
     }
 }

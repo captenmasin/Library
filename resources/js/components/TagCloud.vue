@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Tag } from '@/types/tag'
+import { PropType, ref } from 'vue'
 import { Link } from '@inertiajs/vue3'
-import { PropType, ref, toRef } from 'vue'
 import { useRoute } from '@/composables/useRoute'
 
 const props = defineProps({

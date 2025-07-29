@@ -30,12 +30,16 @@
         "lorisleiva/laravel-actions": "^2.9",
         "meilisearch/meilisearch-php": "^1.15",
         "nativephp/electron": "^1.1",
+        "pirsch-analytics/laravel-pirsch": "^1.0",
         "spatie/laravel-data": "^4.17",
         "spatie/laravel-medialibrary": "^11.13",
         "spatie/laravel-passkeys": "^1.0",
         "spatie/laravel-permission": "^6.20",
+        "spatie/laravel-sitemap": "^7.3",
         "spatie/laravel-sluggable": "^3.7",
         "spatie/robots-txt": "^2.5",
+        "symfony/http-client": "^7.3",
+        "symfony/mailgun-mailer": "^7.3",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {

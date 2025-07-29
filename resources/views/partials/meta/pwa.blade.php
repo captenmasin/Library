@@ -15,7 +15,7 @@
 
     <script type="module">
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/pwa.js?v={{ Vite::manifestHash('build') }}')
+            navigator.serviceWorker.register('/service-worker.js?v={{ Vite::manifestHash('build') }}')
                 .then((registration) => {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 })

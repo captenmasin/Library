@@ -4,16 +4,17 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import TagCloud from '@/components/TagCloud.vue'
 import BookCard from '@/components/books/BookCard.vue'
 import SingleActivity from '@/components/SingleActivity.vue'
-import CircularText from '@/components/Bits/CircularText.vue'
-import { PropType } from 'vue'
 import { Tag } from '@/types/tag'
 import { Book } from '@/types/book'
-import { Link } from '@inertiajs/vue3'
 import { Author } from '@/types/author'
 import { Activity } from '@/types/activity'
+import { Link, router } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
+import { computed, onMounted, PropType } from 'vue'
 import { UserBookStatus } from '@/enums/UserBookStatus'
+import { useAuthedUser } from '@/composables/useAuthedUser'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 type Stats = {
     booksInLibrary: number;
@@ -46,10 +47,15 @@ const props = defineProps({
     }
 })
 
+const { authedUser } = useAuthedUser()
+
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const mdAndSmaller = breakpoints.smallerOrEqual('md')
+
 const actions = [
-    { name: 'View your books', icon: 'LibraryBig', url: 'viewAllBooks' },
-    { name: 'Find a new book', icon: 'plus', url: 'addBook' },
-    { name: 'Scan a barcode', icon: 'ScanBarcode', url: 'addBook' }
+    { name: 'View your library', smallName: 'Your library', icon: 'LibraryBig', url: useRoute('user.books.index') },
+    { name: 'Find a new book', smallName: 'Find book', icon: 'Search', url: useRoute('books.search') },
+    { name: 'Scan a barcode', smallName: 'Scan barcode', icon: 'ScanBarcode', url: useRoute('books.search', { scan: true }) }
 ]
 
 const stats = [
@@ -63,14 +69,14 @@ const stats = [
     {
         name: 'Completed',
         value: props.statValues.completedBooks,
-        link: useRoute('user.books.index', { status: UserBookStatus.Completed }),
+        link: useRoute('user.books.index', { 'status[]': UserBookStatus.Completed }),
         icon: 'CircleCheck',
         color: 'text-green-500'
     },
     {
         name: 'Reading',
         value: props.statValues.readingBooks,
-        link: useRoute('user.books.index', { status: UserBookStatus.Reading }),
+        link: useRoute('user.books.index', { 'status[]': UserBookStatus.Reading }),
         icon: 'BookOpen',
         color: 'text-yellow-500'
     },
@@ -78,7 +84,7 @@ const stats = [
         name: 'Plan to read',
         // value: props.statValues.pagesRead,
         value: props.statValues.planToRead,
-        link: useRoute('user.books.index', { status: UserBookStatus.PlanToRead }),
+        link: useRoute('user.books.index', { 'status[]': UserBookStatus.PlanToRead }),
         icon: 'BookMarked',
         color: 'text-blue-500'
     }
@@ -92,42 +98,69 @@ const stats = [
     // }
 ]
 
+const firstName = computed(() => {
+    if (!authedUser.value) return ''
+    return authedUser.value.name.split(' ')[0]
+})
+
+onMounted(() => {
+    router.prefetch(
+        useRoute('user.books.index'),
+        { method: 'get' },
+        { cacheFor: '5m' }
+    )
+
+    router.prefetch(
+        useRoute('books.search'),
+        { method: 'get' },
+        { cacheFor: '5m' }
+    )
+})
+
 defineOptions({ layout: AppLayout })
 </script>
 
 <template>
-    <div class="container">
-        <header class="mt-6 mb-4 flex w-full items-center justify-between">
-            <div class="flex flex-col">
+    <div class="container mx-auto">
+        <header class="mt-0 md:mt-6 mb-4 flex w-full gap-2.5 md:items-center justify-between flex-col xs:flex-row">
+            <div
+                v-if="authedUser"
+                class="flex flex-col">
                 <h1 class="font-serif text-2xl font-semibold text-foreground md:text-3xl">
-                    Welcome back, Mason
+                    Welcome back, {{ firstName }}
                 </h1>
                 <p class="text-sm text-accent-foreground">
                     Here's a quick look at your library
                 </p>
             </div>
-            <ul class="NOflex hidden gap-4">
+            <ul class="flex gap-1 md:gap-4">
                 <li
                     v-for="action in actions"
                     :key="action.name">
                     <Button
-                        variant="ghost"
-                        size="sm"
-                        class="cursor-pointer text-primary"
-                        :href="action.url">
+                        :variant="mdAndSmaller ? 'ghost' : 'ghost'"
+                        :size="mdAndSmaller ? 'icon' : 'sm'"
+                        :as="Link"
+                        :href="action.url"
+                        class="md:text-primary">
                         <Icon
                             :name="action.icon"
                             class="size-4" />
-                        {{ action.name }}
+                        <span class="sr-only">
+                            {{ action.name }}
+                        </span>
+                        <span class="hidden xl:inline">
+                            {{ action.name }}
+                        </span>
+                        <span class="hidden md:inline xl:hidden">
+                            {{ action.smallName }}
+                        </span>
                     </Button>
                 </li>
             </ul>
         </header>
 
         <section>
-            <!--            <h2 class="mb-4 text-xl font-semibold text-accent-foreground">-->
-            <!--                Your reading summary-->
-            <!--            </h2>-->
             <div class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4">
                 <Link
                     v-for="stat in stats"
@@ -152,8 +185,8 @@ defineOptions({ layout: AppLayout })
             </div>
         </section>
 
-        <div class="mt-2 flex flex-col items-start gap-8 md:mt-8 md:flex-row">
-            <div class="mt-4 flex w-full flex-col md:mt-0 md:w-auto md:flex-1">
+        <div class="mt-4 flex flex-col items-start gap-6 md:gap-8 md:mt-12 md:flex-row">
+            <div class="flex w-full flex-col md:mt-0 md:w-auto md:flex-1">
                 <section>
                     <h2
                         v-if="currentlyReading && currentlyReading.length"
@@ -182,16 +215,16 @@ defineOptions({ layout: AppLayout })
                         </ul>
                     </div>
 
-                    <div
+                    <article
                         v-else
                         class="mb-4 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/10 px-4 py-8 md:py-12 text-center text-sm text-muted-foreground"
                     >
                         <Icon
                             name="BookOpen"
                             class="size-8" />
-                        <h3 class="font-serif text-2xl font-semibold">
+                        <h2 class="font-serif text-2xl font-semibold">
                             Currently reading
-                        </h3>
+                        </h2>
                         <p>You aren't reading anything right now</p>
                         <Button
                             class="mt-2"
@@ -200,12 +233,12 @@ defineOptions({ layout: AppLayout })
                                 Add books to your library
                             </Link>
                         </Button>
-                    </div>
+                    </article>
                 </section>
 
                 <section
                     v-if="activities && activities.length"
-                    class="mt-8">
+                    class="mt-4 md:mt-12">
                     <div class="mb-1 flex items-center justify-between">
                         <h2 class="font-serif text-xl font-semibold text-accent-foreground">
                             Recent activity
@@ -227,7 +260,7 @@ defineOptions({ layout: AppLayout })
                     </ul>
                 </section>
             </div>
-            <div class="w-72">
+            <div class="w-full md:w-72">
                 <div>
                     <h2 class="mb-2 font-serif text-xl font-semibold text-accent-foreground">
                         Top tags

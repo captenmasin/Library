@@ -2,17 +2,11 @@
 import Icon from '@/components/Icon.vue'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageTitle from '@/components/PageTitle.vue'
-import SingleNote from '@/components/SingleNote.vue'
 import SingleActivity from '@/components/SingleActivity.vue'
 import CustomPagination from '@/components/CustomPagination.vue'
-import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import { PropType } from 'vue'
-import { Note } from '@/types/note'
-import { Link } from '@inertiajs/vue3'
 import { Activity } from '@/types/activity'
 import { Paginated } from '@/types/pagination'
-import { Button } from '@/components/ui/button'
-import { useRoute } from '@/composables/useRoute'
 
 defineOptions({ layout: AppLayout })
 

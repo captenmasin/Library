@@ -4,10 +4,14 @@
 /public/build
 /public/hot
 /public/storage
+/public/robots.txt
+/public/sitemap*.xml
 /storage/*.key
 /storage/pail
 /vendor
 /public/manifest.json
+/public/images
+/public/service-worker.js
 .env
 .env.backup
 .env.production

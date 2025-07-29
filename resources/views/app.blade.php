@@ -8,16 +8,24 @@
 
     $buildId = Vite::manifestHash('build');
 @endphp
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    @class([
+    'dark' => ($appearance ?? 'system') == 'dark',
+    'pwa' => \Illuminate\Support\Facades\Cookie::get('pwa-mode') === 'true',
+    'pwa-ios' => \Illuminate\Support\Facades\Cookie::get('pwa-device') === 'ios',
+    'pwa-android' => \Illuminate\Support\Facades\Cookie::get('pwa-device') === 'android',
+    ])
+>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <title>{!! $pageTitle !!}</title>
 
     <link rel="icon" type="image/png" href="/favicon-96x96.png?v={{ $buildId }}" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v={{ $buildId }}" />
-    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico?v={{ $buildId }}" />
+    <link rel="mask-icon" href="/favicon-mask.svg?v={{ $buildId }}" color="{{ config('pwa.manifest.primary_color') }}">
 
     @if(!empty($meta['preload']))
         @foreach($meta['preload'] as $preload)
@@ -27,23 +35,25 @@
         @endforeach
     @endif
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+    @include('partials.meta.analytics')
     @include('partials.meta.seo')
     @include('partials.meta.pwa')
 
     <script>
-        (function() {
-            const appearance = '{{ $appearance ?? "system" }}';
+        (function () {
+            const appearance = '{{ $appearance ?? "system" }}'
 
             if (appearance === 'system') {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
 
                 if (prefersDark) {
-                    document.documentElement.classList.add('dark');
+                    document.documentElement.classList.add('dark')
                 }
             }
-        })();
+        })()
     </script>
 
     <style>

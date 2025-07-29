@@ -11,14 +11,15 @@ test('user can login and be redirected to books', function () {
             'password' => $password,
         ]);
 
+        $browser->fullLogout();
         $browser->visit('/login')
             ->assertSee('Log in')
             ->type('#login', $user->email) // email OR username
             ->type('#password', $password)
             ->press('Log in')
-            ->waitForLocation('/books')
-            ->assertPathIs('/books')
-            ->assertSee('Books')
+            ->waitForLocation('/')
+            ->assertPathIs('/')
+            ->assertSee('Welcome')
             ->fullLogout();
     });
 });
@@ -37,9 +38,9 @@ test('user can login using username', function () {
             ->type('#login', 'testuser123')
             ->type('#password', $password)
             ->press('Log in')
-            ->waitForLocation('/books')
-            ->assertPathIs('/books')
-            ->assertSee('Books')
+            ->waitForLocation('/')
+            ->assertPathIs('/')
+            ->assertSee('Welcome')
             ->fullLogout();
     });
 });

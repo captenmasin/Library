@@ -95,15 +95,19 @@ test('single book details can be viewed', function () {
 });
 
 test('single book preview redirects if book exists', function () {
+    $user = User::factory()->create();
     $book = Book::factory()->create();
 
-    $response = $this->get(route('books.preview', $book->identifier));
+    $response = $this->actingAs($user)
+        ->get(route('books.preview', $book->identifier));
 
     $response->assertRedirect(route('books.show', $book));
 });
 
 test('single book preview displays for new book', function () {
     $identifier = '9780747532743';
+    $user = User::factory()->create();
+
     $mock = Mockery::mock(BookApiServiceInterface::class);
     $mock->shouldReceive('get')
         ->with($identifier)
@@ -127,7 +131,8 @@ test('single book preview displays for new book', function () {
 
     \Illuminate\Support\Facades\Queue::fake();
 
-    $response = $this->get(route('books.preview', ['identifier' => $identifier]));
+    $response = $this->actingAs($user)
+        ->get(route('books.preview', ['identifier' => $identifier]));
 
     ImportBookFromData::assertPushed(1);
 

@@ -75,6 +75,9 @@ class HomeController extends Controller
             'authors' => AuthorResource::collection(
                 $authors
             ),
+            'breadcrumbs' => [
+                ['title' => 'Home', 'href' => route('home')],
+            ],
         ])->withMeta([
             'title' => 'Home',
             'description' => 'Your personal dashboard.',

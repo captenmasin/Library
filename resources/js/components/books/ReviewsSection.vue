@@ -6,9 +6,7 @@ import { Book } from '@/types/book'
 import { Review } from '@/types/review'
 import { computed, PropType, ref } from 'vue'
 import { Button } from '@/components/ui/button'
-import { usePlural } from '@/composables/usePlural'
 import { Separator } from '@/components/ui/separator'
-import { useMarkdown } from '@/composables/useMarkdown'
 import { useAuthedUser } from '@/composables/useAuthedUser'
 
 const props = defineProps({

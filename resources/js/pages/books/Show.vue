@@ -13,9 +13,10 @@ import UpdateBookCover from '@/components/books/UpdateBookCover.vue'
 import { Review } from '@/types/review'
 import type { Book } from '@/types/book'
 import { type PropType, ref, watch } from 'vue'
-import { Deferred, router } from '@inertiajs/vue3'
+import { Button } from '@/components/ui/button'
 import { usePlural } from '@/composables/usePlural'
 import { useMarkdown } from '@/composables/useMarkdown'
+import { Deferred, Link, router } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
 import { useUserSettings } from '@/composables/useUserSettings'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -102,7 +103,7 @@ defineOptions({
                             {{ book.title }}
                         </h2>
                         <p
-                            v-if="book.authors"
+                            v-if="book.authors && book.authors.length > 0"
                             class="text-xs text-muted-foreground">
                             By {{ book.authors.map((a) => a.name).join(', ') }}
                         </p>
@@ -141,11 +142,10 @@ defineOptions({
                         {{ book.title }}
                     </h2>
                     <p
-                        v-if="book.authors"
+                        v-if="book.authors && book.authors.length > 0"
                         class="mt-2 text-sm text-muted-foreground">
                         By {{ book.authors.map((a) => a.name).join(', ') }}
                     </p>
-
                     <div
                         v-if="book.ratings_count"
                         class="mt-1 flex items-center gap-2">
@@ -165,7 +165,7 @@ defineOptions({
                         <div class="flex mb-4 w-full md:w-auto">
                             <Tabs
                                 v-model="displayType"
-                                class="flex w-full flex-1"
+                                class="flex w-full flex-1 book-display-type"
                                 :default-value="displayType">
                                 <TabsList class="w-full">
                                     <TabsTrigger
@@ -183,9 +183,11 @@ defineOptions({
                     <div>
                         <NotesSection
                             v-if="displayType === 'notes'"
+                            class="notes-section"
                             :book="book" />
                         <ReviewsSection
                             v-if="displayType === 'reviews'"
+                            class="reviews-section"
                             :book="book"
                             :reviews="reviews" />
                     </div>
@@ -212,9 +214,9 @@ defineOptions({
                         class="mt-1"
                         star-size="size-5"
                         :book="book"
-                        @deleted="refresh"
-                        @added="refresh"
-                        @updated="refresh" />
+                        @deleted="refreshRating"
+                        @added="refreshRating"
+                        @updated="refreshRating" />
                 </div>
 
                 <div class="bg-secondary md:bg-transparent rounded-md mt-4">
