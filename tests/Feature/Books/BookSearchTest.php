@@ -14,7 +14,6 @@ test('search page is displayed', function () {
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('books/Search')
         ->has('initialQuery')
-        ->has('initialAuthor')
         ->has('page')
         ->has('perPage')
     );

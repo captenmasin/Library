@@ -17,6 +17,6 @@ test('user can see dashboard', function () {
         $browser->loginAs($user->id);
 
         $browser->visit('/books')
-            ->assertSee('Books');
+            ->assertSee('Your Library');
     });
 });

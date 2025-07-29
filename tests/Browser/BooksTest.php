@@ -25,7 +25,7 @@ test('user views books in grid by default', function () {
     $this->browse(function (Browser $browser) use ($user, $books) {
         $browser->loginAs($user)
             ->visit('/books')
-            ->assertSee('Books');
+            ->assertSee('Your Library');
 
         $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
         $this->assertTrue($tabButtons[0]->getAttribute('aria-selected') === 'true');
@@ -45,7 +45,7 @@ test('user books view is based on settings', function () {
     $this->browse(function (Browser $browser) use ($user, $books) {
         $browser->loginAs($user)
             ->visit('/books')
-            ->assertSee('Books');
+            ->assertSee('Your Library');
 
         $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
         $this->assertTrue($tabButtons[1]->getAttribute('aria-selected') === 'true');
@@ -64,7 +64,7 @@ test('user grid view renders correctly', function () {
         $browser->loginAs($user)
             ->visit('/books')
             ->waitFor('.desktop-book-view-tabs')
-            ->assertSee('Books');
+            ->assertSee('Your Library');
 
         // Get ShadCN tab buttons (via role="tab")
         $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
@@ -102,7 +102,7 @@ test('user list view renders correctly', function () {
         $browser->loginAs($user)
             ->visit('/books')
             ->waitFor('.desktop-book-view-tabs')
-            ->assertSee('Books');
+            ->assertSee('Your Library');
 
         // Get ShadCN tab buttons (via role="tab")
         $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
@@ -138,7 +138,7 @@ test('user shelf view renders correctly', function () {
         $browser->loginAs($user)
             ->visit('/books')
             ->waitFor('.desktop-book-view-tabs')
-            ->assertSee('Books');
+            ->assertSee('Your Library');
 
         // Get ShadCN tab buttons (via role="tab")
         $tabButtons = $browser->elements('.desktop-book-view-tabs [role="tab"]');
