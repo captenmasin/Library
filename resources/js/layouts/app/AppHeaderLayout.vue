@@ -6,9 +6,9 @@ import { Label } from '@/components/ui/label'
 import { useRoute } from '@/composables/useRoute'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import type { BreadcrumbItemType, NavItem } from '@/types'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useIsCurrentUrl } from '@/composables/useIsCurrentUrl'
 import { Home, LibraryBig, PlusSquareIcon } from 'lucide-vue-next'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 const page = usePage()
 const breadcrumbs = ref(page.props.breadcrumbs as BreadcrumbItemType[] | undefined)
@@ -38,11 +38,11 @@ const activeItemStyles = computed(
     () => (item: NavItem) => (item.isActive ? 'text-primary' : '')
 )
 
-onMounted(() => {
+function setActiveItems () {
     mainNavItems.value.forEach(item => {
         item.isActive = useIsCurrentUrl(item.href)
     })
-})
+}
 
 function handleClick (item: NavItem) {
     mainNavItems.value.forEach(navItem => {
@@ -50,11 +50,17 @@ function handleClick (item: NavItem) {
     })
 }
 
+onMounted(() => nextTick(() => setActiveItems()))
+
 router.on('navigate', (event) => {
     // const newBreadcrumbs = event.detail.page.props.breadcrumbs as BreadcrumbItemType[] | undefined
     // if (newBreadcrumbs) {
     //     breadcrumbs.value = newBreadcrumbs
     // }
+
+    nextTick(() => {
+        setActiveItems()
+    })
 })
 </script>
 
