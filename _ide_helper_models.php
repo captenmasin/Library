@@ -211,6 +211,27 @@ namespace App\Models{
 namespace App\Models{
     /**
      * @property int $id
+     * @property int $user_id
+     * @property string $search_term
+     * @property \Illuminate\Support\Carbon|null $created_at
+     * @property \Illuminate\Support\Carbon|null $updated_at
+     * @property-read \App\Models\User $user
+     *
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|PreviousSearch newModelQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|PreviousSearch newQuery()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|PreviousSearch query()
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|PreviousSearch whereCreatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|PreviousSearch whereId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|PreviousSearch whereSearchTerm($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|PreviousSearch whereUpdatedAt($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<static>|PreviousSearch whereUserId($value)
+     */
+    class PreviousSearch extends \Eloquent {}
+}
+
+namespace App\Models{
+    /**
+     * @property int $id
      * @property string $name
      * @property \Illuminate\Support\Carbon|null $created_at
      * @property \Illuminate\Support\Carbon|null $updated_at
@@ -338,6 +359,8 @@ namespace App\Models{
      * @property-read int|null $passkeys_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
      * @property-read int|null $permissions_count
+     * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PreviousSearch> $previousSearches
+     * @property-read int|null $previous_searches_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
      * @property-read int|null $ratings_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews

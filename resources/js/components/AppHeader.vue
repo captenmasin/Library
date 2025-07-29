@@ -91,10 +91,10 @@ router.on('navigate', (event) => {
                     <span class="sr-only">
                         Go to Home
                     </span>
-                    <AppLogo class="flex items-center lg:hidden" />
-                    <div class="hidden lg:flex aspect-square items-center justify-center size-9 md:size-8">
-                        <AppLogoIcon class="rounded-lg fill-current text-white size-full dark:text-black" />
-                    </div>
+                    <AppLogo class="flex items-center" />
+                    <!--                    <div class="hidden lg:flex aspect-square items-center justify-center size-9 md:size-12">-->
+                    <!--                        <AppLogoIcon class="rounded-lg fill-current text-white size-full dark:text-black" />-->
+                    <!--                    </div>-->
                 </Link>
 
                 <!-- Desktop Menu -->

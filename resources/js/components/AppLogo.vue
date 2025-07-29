@@ -7,11 +7,11 @@ const page = usePage()
 
 <template>
     <div>
-        <div class="aspect-square items-center justify-center size-8 md:size-8">
+        <div class="aspect-square items-center justify-center size-10 md:size-9">
             <AppLogoIcon class="rounded-lg fill-current text-white size-full dark:text-black" />
         </div>
-        <div class="ml-1 grid flex-1 text-left text-sm text-primary">
-            <span class="truncate font-semibold leading-tight tracking-tight font-serif text-lg mb-0.5">
+        <div class="ml-1 hidden flex-1 text-left text-sm text-primary">
+            <span class="truncate font-semibold leading-tight tracking-tight font-serif text-2xl mb-0.5">
                 {{ page.props.app.name }}
             </span>
         </div>
