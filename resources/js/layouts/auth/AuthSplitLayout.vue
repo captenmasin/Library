@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BookPile from '~/images/book-pile.png'
+import AppLogo from '@/components/AppLogo.vue'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
 import BookPileSmall from '~/images/book-pile-small.png'
 import ProgressiveImage from '@/components/ProgressiveImage.vue'
@@ -65,7 +66,10 @@ const points = [
         </div>
         <div class="lg:p-8">
             <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-sm py-4">
-                <AppLogoIcon class="rounded-lg fill-current size-10 mx-auto lg:hidden mb-2" />
+                <AppLogo
+                    logo-size="size-12"
+                    text-size="text-2xl"
+                    class="text-primary items-center gap-1 justify-center flex flex-col mx-auto lg:hidden mb-5" />
                 <div class="flex flex-col text-center space-y-1">
                     <h1
                         v-if="title"

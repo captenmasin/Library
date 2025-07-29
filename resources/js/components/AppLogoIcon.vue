@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Logo from '~/images/logo.svg?raw'
-import TestLogo from '~/images/test-logo.svg?raw'
 
 defineProps({
     white: {
@@ -20,5 +19,5 @@ defineProps({
         v-bind="$attrs"
         :style="white ? '--color-primary: #fff; --color-secondary: #fff;' : ''"
         class="flex items-center justify-center overflow-hidden"
-        v-html="TestLogo" />
+        v-html="Logo" />
 </template>
