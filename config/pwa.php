@@ -115,6 +115,12 @@ return [
                 'purpose' => 'maskable',
             ],
             [
+                'src' => config('app.url').'/images/pwa/icons/384.png',
+                'type' => 'image/png',
+                'sizes' => '384x384',
+                'purpose' => 'maskable',
+            ],
+            [
                 'src' => config('app.url').'/images/pwa/icons/512.png',
                 'type' => 'image/png',
                 'sizes' => '512x512',
