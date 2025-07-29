@@ -27,8 +27,6 @@ withDefaults(defineProps<Props>(), {
     navItems: () => []
 })
 
-const page = usePage()
-
 const { authed, authedUser } = useAuthedUser()
 
 const mobileMenuOpen = ref(false)
@@ -128,39 +126,6 @@ router.on('navigate', (event) => {
                 </div>
 
                 <div class="md:ml-auto absolute top-1/2 -translate-y-1/2 md:static md:translate-0 right-4 flex items-center space-x-2">
-                    <div class="relative flex items-center space-x-1">
-                        <div class="hidden space-x-1 lg:flex">
-                            <template
-                                v-for="item in rightNavItems"
-                                :key="item.title">
-                                <TooltipProvider :delay-duration="0">
-                                    <Tooltip>
-                                        <TooltipTrigger>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                as-child
-                                                class="h-9 w-9 cursor-pointer group">
-                                                <a
-                                                    :href="item.href"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer">
-                                                    <span class="sr-only">{{ item.title }}</span>
-                                                    <component
-                                                        :is="item.icon"
-                                                        class="opacity-80 size-5 group-hover:opacity-100" />
-                                                </a>
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>{{ item.title }}</p>
-                                        </TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                            </template>
-                        </div>
-                    </div>
-
                     <DropdownMenu v-if="authed && authedUser">
                         <DropdownMenuTrigger :as-child="true">
                             <Button
