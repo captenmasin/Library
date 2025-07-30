@@ -7,6 +7,8 @@
             : $seoMeta::getTitle();
 
     $buildId = Vite::manifestHash('build');
+
+    $isPwa = \Illuminate\Support\Facades\Cookie::get('pwa-mode') === 'true';
 @endphp
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
     @class([
@@ -18,7 +20,11 @@
 >
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    @if($isPwa)
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    @else
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    @endif
 
     <title>{!! $pageTitle !!}</title>
 
