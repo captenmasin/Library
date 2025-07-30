@@ -21,7 +21,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <title>{!! $pageTitle !!}</title>
-    
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v={{ $buildId }}" />
     <link rel="mask-icon" href="/favicon-mask.svg?v={{ $buildId }}" color="{{ config('pwa.manifest.primary_color') }}">
     <link rel="shortcut icon" href="{{ $appearance === 'dark' ? '/favicon_dark.ico?v='.$buildId : '/favicon.ico?v='.$buildId }}" />

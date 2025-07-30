@@ -4,6 +4,7 @@ import AppLogo from '@/components/AppLogo.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 import AppLogoIcon from '@/components/AppLogoIcon.vue'
 import UserMenuContent from '@/components/UserMenuContent.vue'
+import { usePwa } from '@/composables/usePwa'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
@@ -28,6 +29,8 @@ withDefaults(defineProps<Props>(), {
 })
 
 const { authed, authedUser } = useAuthedUser()
+
+const { isMacos } = usePwa()
 
 const mobileMenuOpen = ref(false)
 
@@ -68,7 +71,7 @@ router.on('navigate', (event) => {
 <template>
     <div
         class="sticky md:static top-0 md:translate-y-0 bg-background z-50 transition-all duration-300 ease-in-out"
-        :class="{ '-translate-y-full': !isVisible }">
+        :class="{ '-translate-y-full': !isVisible, 'bg-red-400' : isMacos }">
         <div class="border-b border-sidebar-border/80">
             <div class="mx-auto flex h-14 md:h-16 items-center px-4 md:max-w-7xl">
                 <div

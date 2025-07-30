@@ -5,6 +5,7 @@ export function usePwa () {
     const isPwa = pwaMode ? pwaMode.split('=')[1] === 'true' : false
     const isAndroid = pwaDevice ? pwaDevice.split('=')[1] === 'android' : false
     const isIos = pwaDevice ? pwaDevice.split('=')[1] === 'ios' : false
+    const isMacos = pwaDevice ? pwaDevice.split('=')[1] === 'macos' : false
 
-    return { isPwa, isAndroid, isIos }
+    return { isPwa, isAndroid, isIos, isMacos }
 }
