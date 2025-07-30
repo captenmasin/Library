@@ -28,7 +28,7 @@ const { authed, authedUser } = useAuthedUser()
 const mobileMenuOpen = ref(false)
 
 const activeItemStyles = computed(
-    () => (url: string) => (useIsCurrentUrl(url) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : '')
+    () => (url: string) => (useIsCurrentUrl(url) ? 'text-primary hover:text-primary dark:bg-neutral-800 dark:text-neutral-100' : '')
 )
 
 const isVisible = ref(true)
@@ -113,7 +113,7 @@ router.on('navigate', (event) => {
                                 </Link>
                                 <div
                                     v-if="useIsCurrentUrl(item.href)"
-                                    class="absolute bottom-0 left-0 w-full translate-y-px bg-black h-0.5 dark:bg-white"
+                                    class="absolute bottom-0 left-0 w-full translate-y-px bg-primary h-0.5 dark:bg-white"
                                 />
                             </NavigationMenuItem>
                         </NavigationMenuList>
