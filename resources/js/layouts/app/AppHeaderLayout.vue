@@ -7,9 +7,8 @@ import { useRoute } from '@/composables/useRoute'
 import { Link, router, usePage } from '@inertiajs/vue3'
 import { computed, nextTick, onMounted, ref } from 'vue'
 import type { BreadcrumbItemType, NavItem } from '@/types'
-import { useAuthedUser } from '@/composables/useAuthedUser'
 import { useIsCurrentUrl } from '@/composables/useIsCurrentUrl'
-import { Home, LibraryBig, PlusSquareIcon } from 'lucide-vue-next'
+import { Home, LibraryBig, PlusSquareIcon, ScanBarcode } from 'lucide-vue-next'
 
 const page = usePage()
 const breadcrumbs = ref(page.props.breadcrumbs as BreadcrumbItemType[] | undefined)
@@ -32,6 +31,13 @@ const mainNavItems = ref<NavItem[]>([
         href: useRoute('books.search'),
         icon: PlusSquareIcon,
         isActive: false
+    },
+    {
+        title: 'Scan Book',
+        href: useRoute('books.search', { scan: true }),
+        icon: ScanBarcode,
+        isActive: false,
+        mobileOnly: true
     }
 ])
 
@@ -77,7 +83,7 @@ router.on('navigate', (event) => {
         <div
             style="padding-bottom: env(safe-area-inset-bottom)"
             class="sticky lg:hidden bg-background/75 border-t border-background-foreground backdrop-blur-sm bottom-0 left-0 right-0 z-50">
-            <ul class="flex items-center w-full  pb-2 max-w-md mx-auto">
+            <ul class="flex items-center w-full  pb-2 max-w-xl mx-auto">
                 <li
                     v-for="item in mainNavItems"
                     :key="item.title"

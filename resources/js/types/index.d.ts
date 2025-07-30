@@ -17,6 +17,7 @@ export interface NavItem {
     icon?: LucideIcon;
     secondaryIcon?: LucideIcon;
     isActive?: boolean;
+    mobileOnly?: boolean;
 }
 
 export type AppPageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {

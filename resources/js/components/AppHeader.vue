@@ -98,6 +98,7 @@ router.on('navigate', (event) => {
                             <NavigationMenuItem
                                 v-for="(item, index) in navItems"
                                 :key="index"
+                                :class="item.mobileOnly ? 'flex lg:hidden' : 'flex lg:flex-1'"
                                 class="relative flex h-full items-center">
                                 <Link
                                     prefetch
