@@ -1,5 +1,6 @@
 <link rel="icon" sizes="512x512" href="{{ url('/images/pwa/icons/512.png') }}">
-<link rel="apple-touch-icon" href="{{ url('/images/pwa/icons/512.png') }}">
+<link rel="apple-touch-icon" href="{{ url('/apple-touch-icon.png') }}" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="{{ url('apple-touch-icon-dark.png') }}" media="(prefers-color-scheme: dark)">
 
 <link rel="apple-touch-startup-image" href="{{ url('/images/pwa/splash/2048x2732.jpeg') }}" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
 <link rel="apple-touch-startup-image" href="{{ url('/images/pwa/splash/2732x2048.jpeg') }}" media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">

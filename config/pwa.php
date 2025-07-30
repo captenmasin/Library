@@ -14,7 +14,7 @@ return [
         'primary_color' => '#913608',
         'background_color' => '#fcfbf8',
         'dark_background_color' => '#0f0f0f',
-        'theme_color' => '#fcfbf8',
+        'theme_color' => '#913608',
         'orientation' => 'any',
         'status_bar' => '#fcfbf8',
         'appleMobileWebAppCapable' => 'yes',

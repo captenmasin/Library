@@ -24,8 +24,10 @@
 
     <link rel="icon" type="image/png" href="/favicon-96x96.png?v={{ $buildId }}" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v={{ $buildId }}" />
-    <link rel="shortcut icon" href="/favicon.ico?v={{ $buildId }}" />
     <link rel="mask-icon" href="/favicon-mask.svg?v={{ $buildId }}" color="{{ config('pwa.manifest.primary_color') }}">
+    <link rel="shortcut icon" href="{{ $appearance === 'dark' ? '/favicon_dark.ico?v='.$buildId : '/favicon.ico?v='.$buildId }}" />
+    <link rel="icon" href="/favicon.ico?v={{ $buildId }}" type="image/x-icon" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="/favicon_dark.ico?v={{ $buildId }}" type="image/x-icon" media="(prefers-color-scheme: dark)">
 
     @if(!empty($meta['preload']))
         @foreach($meta['preload'] as $preload)
