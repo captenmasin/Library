@@ -1,14 +1,11 @@
 [
     {
-        "relation": [
-            "delegate_permission/common.handle_all_urls"
-        ],
+        "relation": ["delegate_permission/common.handle_all_urls"],
         "target": {
             "namespace": "android_app",
             "package_name": "app.bookbound.twa",
-            "sha256_cert_fingerprints": [
-                "CD:A8:74:9C:B4:2B:6B:88:5A:67:FD:54:DC:B1:BC:8F:DE:D0:DC:B5:CB:6A:1A:91:EA:6D:65:7C:2D:2C:F6:EE"
-            ]
+            "sha256_cert_fingerprints":
+            ["CD:A8:74:9C:B4:2B:6B:88:5A:67:FD:54:DC:B1:BC:8F:DE:D0:DC:B5:CB:6A:1A:91:EA:6D:65:7C:2D:2C:F6:EE"]
         }
     }
 ]
