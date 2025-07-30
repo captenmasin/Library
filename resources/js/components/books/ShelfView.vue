@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Image from '@/components/Image.vue'
+import { PropType } from 'vue'
 import { Book } from '@/types/book'
 import { Link } from '@inertiajs/vue3'
-import { computed, PropType } from 'vue'
 import { useColours } from '@/composables/useColours'
 import { useContrast } from '@/composables/useContrast'
 import { useUserSettings } from '@/composables/useUserSettings'

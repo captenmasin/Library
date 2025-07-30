@@ -2,18 +2,14 @@
 import AppShell from '@/components/AppShell.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import AppContent from '@/components/AppContent.vue'
-import UserAvatar from '@/components/UserAvatar.vue'
-import UserMenuContent from '@/components/UserMenuContent.vue'
 import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import { Link, router, usePage } from '@inertiajs/vue3'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import type { BreadcrumbItemType, NavItem } from '@/types'
 import { useAuthedUser } from '@/composables/useAuthedUser'
 import { useIsCurrentUrl } from '@/composables/useIsCurrentUrl'
 import { Home, LibraryBig, PlusSquareIcon } from 'lucide-vue-next'
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 const page = usePage()
 const breadcrumbs = ref(page.props.breadcrumbs as BreadcrumbItemType[] | undefined)
@@ -42,7 +38,6 @@ const mainNavItems = ref<NavItem[]>([
 const activeItemStyles = computed(
     () => (item: NavItem) => (item.isActive ? 'text-primary' : '')
 )
-const { authed, authedUser } = useAuthedUser()
 
 function setActiveItems () {
     mainNavItems.value.forEach(item => {
@@ -109,15 +104,3 @@ router.on('navigate', (event) => {
         </div>
     </AppShell>
 </template>
-
-<style scoped>
-.slide-down-enter-active,
-.slide-down-leave-active {
-    transition: transform 0.3s ease-in-out;
-}
-
-.slide-down-enter-from,
-.slide-down-leave-to {
-    transform: translateY(-100%);
-}
-</style>

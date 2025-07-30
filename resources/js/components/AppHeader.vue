@@ -2,19 +2,14 @@
 import Icon from '@/components/Icon.vue'
 import AppLogo from '@/components/AppLogo.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
-import AppLogoIcon from '@/components/AppLogoIcon.vue'
 import UserMenuContent from '@/components/UserMenuContent.vue'
-import { usePwa } from '@/composables/usePwa'
+import { Link, router } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button'
 import { useRoute } from '@/composables/useRoute'
 import type { BreadcrumbItem, NavItem } from '@/types'
-import { Link, router, usePage } from '@inertiajs/vue3'
 import { useAuthedUser } from '@/composables/useAuthedUser'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useIsCurrentUrl } from '@/composables/useIsCurrentUrl'
-import { Home, LibraryBig, Menu, SearchIcon, PlusSquareIcon } from 'lucide-vue-next'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu'
 
@@ -30,15 +25,11 @@ withDefaults(defineProps<Props>(), {
 
 const { authed, authedUser } = useAuthedUser()
 
-const { isMacos } = usePwa()
-
 const mobileMenuOpen = ref(false)
 
 const activeItemStyles = computed(
     () => (url: string) => (useIsCurrentUrl(url) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : '')
 )
-
-const rightNavItems: NavItem[] = []
 
 const isVisible = ref(true)
 let lastScroll = window.scrollY
@@ -71,7 +62,7 @@ router.on('navigate', (event) => {
 <template>
     <div
         class="sticky md:static top-0 md:translate-y-0 bg-background z-50 transition-all duration-300 ease-in-out"
-        :class="{ '-translate-y-full': !isVisible, 'bg-red-400' : isMacos }">
+        :class="{ '-translate-y-full': !isVisible }">
         <div class="border-b border-sidebar-border/80">
             <div class="mx-auto flex h-14 md:h-16 items-center px-4 md:max-w-7xl">
                 <div

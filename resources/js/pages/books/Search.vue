@@ -7,7 +7,6 @@ import BarcodeScanner from '@/components/books/BarcodeScanner.vue'
 import HorizontalSkeleton from '@/components/books/HorizontalSkeleton.vue'
 import BookCardHorizontal from '@/components/books/BookCardHorizontal.vue'
 import { BookApiResult } from '@/types/book'
-import { useMediaQuery } from '@vueuse/core'
 import { computed, PropType, ref } from 'vue'
 import { useRoute } from '@/composables/useRoute'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -15,7 +14,6 @@ import { Input } from '@/components/ui/input/index.js'
 import { Button } from '@/components/ui/button/index.js'
 import { Deferred, Link, router } from '@inertiajs/vue3'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTrigger } from '@/components/ui/drawer'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 
 const props = defineProps({
     results: {
@@ -105,8 +103,6 @@ const hasSearch = computed(() => {
 function formatNumber (num: number) {
     return new Intl.NumberFormat('en-US', { style: 'decimal' }).format(num)
 }
-
-const isDesktop = useMediaQuery('(min-width: 768px)')
 
 defineOptions({
     layout: AppLayout
