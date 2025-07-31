@@ -12,6 +12,7 @@
 @endphp
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
     @class([
+    'transition-colors duration-300 ease-in-out' => true,
     'dark' => ($appearance ?? 'system') == 'dark',
     'pwa' => \Illuminate\Support\Facades\Cookie::get('pwa-mode') === 'true',
     'pwa-ios' => \Illuminate\Support\Facades\Cookie::get('pwa-device') === 'ios',
