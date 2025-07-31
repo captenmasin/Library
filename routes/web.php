@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use App\Actions\ErrorPage;
 use Illuminate\Support\Benchmark;
+use App\Http\Middleware\PwaDevice;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\HomeController;
@@ -21,7 +22,7 @@ Horizon::auth(fn ($request) => Gate::check('viewHorizon', [$request->user()]));
 
 // Homepage
 Route::get('/', HomeController::class)
-    ->middleware(['auth', 'verified'])->name('home');
+    ->middleware(['auth', 'verified', PwaDevice::class])->name('home');
 
 // Test benchmarking route
 Route::get('test', function () {
