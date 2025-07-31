@@ -153,8 +153,18 @@ return [
         ],
         'shortcuts' => [
             [
+                'name' => 'My library',
+                'short_name' => 'My library',
+                'description' => 'View your personal library of books.',
+                'url' => 'route:user.books.index',
+                'icons' => [
+                    ['src' => config('app.url').'/images/pwa/shortcuts/library-192.png', 'sizes' => '192x192'],
+                    //                    ['src' => config('app.url').'/images/pwa/shortcuts/scan-96.png', 'sizes' => '96x96'],
+                ],
+            ],
+            [
                 'name' => 'Scan new book',
-                'short_name' => 'Scan',
+                'short_name' => 'Scan new book',
                 'description' => 'Scan the barcode of a book to add it to your collection.',
                 'url' => 'route:books.search'.'?scan=true',
                 'icons' => [
