@@ -121,7 +121,7 @@ defineOptions({ layout: AppLayout })
 </script>
 
 <template>
-    <div class="container mx-auto">
+    <div>
         <header class="mt-0 md:mt-6 mb-4 flex w-full gap-2.5 md:items-center justify-between flex-col xs:flex-row">
             <div
                 v-if="authedUser"

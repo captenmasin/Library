@@ -24,6 +24,10 @@ Horizon::auth(fn ($request) => Gate::check('viewHorizon', [$request->user()]));
 Route::get('/', HomeController::class)
     ->middleware(['auth', 'verified', PwaDevice::class])->name('home');
 
+Route::inertia('privacy-policy', 'PrivacyPolicy')
+    ->withoutMiddleware(['auth', 'verified'])
+    ->name('privacy-policy');
+
 // Test benchmarking route
 Route::get('test', function () {
     $booksApi = app(BookApiServiceInterface::class);

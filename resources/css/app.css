@@ -207,6 +207,12 @@
     --sidebar: hsl(240 5.9% 10%);
 }
 
+@custom-variant pwa (&:where(.pwa *));
+@custom-variant not-pwa (&:where(:not(.pwa *) *));
+
+@custom-variant pwa-ios (&:where(.pwa.pwa-ios *));
+@custom-variant pwa-android (&:where(.pwa.pwa-android *));
+
 @layer base {
     * {
         @apply border-border outline-ring/50;

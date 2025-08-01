@@ -125,7 +125,7 @@ defineOptions({ layout: AppLayout })
 </script>
 
 <template>
-    <div class="container mx-auto">
+    <div>
         <!-- Header --------------------------------------------------------- -->
         <div class="flex flex-col gap-2.5 md:flex-row md:items-center md:gap-4">
             <div class="flex items-center justify-between gap-8">
