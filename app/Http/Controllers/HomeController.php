@@ -19,6 +19,7 @@ class HomeController extends Controller
     public function __invoke(Request $request)
     {
         $books = $request->user()->books()
+            ->with(['covers', 'authors', 'tags', 'ratings'])
             ->withPivot('status')
             ->get();
 
