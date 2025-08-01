@@ -19,7 +19,6 @@ class HomeController extends Controller
     public function __invoke(Request $request)
     {
         $books = $request->user()->books()
-            ->with(['covers', 'authors', 'tags', 'ratings'])
             ->withPivot('status')
             ->get();
 
@@ -34,8 +33,7 @@ class HomeController extends Controller
             ->keys()
             ->take(10);
 
-        //        $tags = Tag::whereIn('name', $topTagNames)
-        $tags = Tag::whereIn('name', ['Classics', 'Fantasy', 'Science Fiction', 'Mystery', 'Romance', 'Thriller', 'Non-Fiction', 'Historical Fiction', 'Young Adult', 'Horror'])
+        $tags = Tag::whereIn('name', $topTagNames)
             ->get()->sortBy(fn ($tag) => $topTagNames->search($tag->name))->values();
 
         $authors = Author::query()
