@@ -4,9 +4,10 @@ import MetaHead from '@/components/MetaHead.vue'
 import AppHeaderLayout from '@/layouts/app/AppHeaderLayout.vue'
 import { watch } from 'vue'
 import { toast } from 'vue-sonner'
-import { usePage } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
 import { Toaster } from '@/components/ui/sonner'
 import type { BreadcrumbItemType } from '@/types'
+import { useRoute } from '@/composables/useRoute'
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
@@ -45,5 +46,17 @@ watch(
         <Toaster
             :duration="2000"
             class="pointer-events-auto" />
+        <footer class="mt-auto py-4 hidden lg:flex text-xs text-muted-foreground justify-between border-t border-secondary">
+            <p>
+                &copy; {{ new Date().getFullYear() }} {{ page.props.app.name }}. All rights reserved.
+            </p>
+            <div>
+                <Link
+                    :href="useRoute('privacy-policy')"
+                    class="hover:text-primary hover:underline">
+                    Privacy Policy
+                </Link>
+            </div>
+        </footer>
     </AppHeaderLayout>
 </template>

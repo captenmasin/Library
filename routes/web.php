@@ -14,6 +14,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserBookController;
 use App\Http\Controllers\BookCoverController;
 use App\Http\Controllers\ActivitiesController;
+use App\Http\Controllers\GeneralPageController;
 use App\Http\Controllers\ImageTransformerController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\PasswordController;
@@ -24,7 +25,7 @@ Horizon::auth(fn ($request) => Gate::check('viewHorizon', [$request->user()]));
 Route::get('/', HomeController::class)
     ->middleware(['auth', 'verified', PwaDevice::class])->name('home');
 
-Route::inertia('privacy-policy', 'PrivacyPolicy')
+Route::get('privacy-policy', [GeneralPageController::class, 'privacy'])
     ->withoutMiddleware(['auth', 'verified'])
     ->name('privacy-policy');
 

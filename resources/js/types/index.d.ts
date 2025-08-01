@@ -30,6 +30,7 @@ export type AppPageProps<T extends Record<string, unknown> = Record<string, unkn
         name: string
         url: string
         route: string
+        domain: string
         storage_url: string
     }
     currentUrl: string
