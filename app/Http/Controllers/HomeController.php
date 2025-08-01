@@ -23,6 +23,9 @@ class HomeController extends Controller
             ->withPivot('status')
             ->get();
 
+        $books = $books->sortByDesc(fn ($book) => $book->pivot->created_at)
+            ->values();
+
         $booksByStatus = $books->groupBy(fn ($book) => $book->pivot->status);
 
         $topTagNames = $books->flatMap(fn ($book) => $book->tags->pluck('name'))
@@ -31,7 +34,8 @@ class HomeController extends Controller
             ->keys()
             ->take(10);
 
-        $tags = Tag::whereIn('name', $topTagNames)
+        //        $tags = Tag::whereIn('name', $topTagNames)
+        $tags = Tag::whereIn('name', ['Classics', 'Fantasy', 'Science Fiction', 'Mystery', 'Romance', 'Thriller', 'Non-Fiction', 'Historical Fiction', 'Young Adult', 'Horror'])
             ->get()->sortBy(fn ($tag) => $topTagNames->search($tag->name))->values();
 
         $authors = Author::query()
@@ -67,7 +71,7 @@ class HomeController extends Controller
                 $currentlyReading
             ),
             'activities' => ActivityResource::collection(
-                $request->user()->activities->load('subject')->sortBy('id')->take(5)
+                $request->user()->activities->load('subject')->sortByDesc('id')->take(5)
             ),
             'tags' => TagResource::collection(
                 $tags

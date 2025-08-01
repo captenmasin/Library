@@ -237,11 +237,11 @@ defineOptions({
                             <div
                                 v-for="item in data"
                                 :key="item.title"
-                                class="py-2 flex items-center justify-between">
+                                class="py-2 flex flex-col xl:flex-row xl:items-center justify-between">
                                 <dt class="text-sm/6 font-medium">
                                     {{ item.title }}
                                 </dt>
-                                <dd class="text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
+                                <dd class="xl:text-right text-sm/6 text-muted-foreground sm:col-span-2 sm:mt-0">
                                     {{ item.value }}
                                 </dd>
                             </div>

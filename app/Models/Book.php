@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\ImportBookCover;
 use Laravel\Scout\Searchable;
 use Spatie\Sluggable\HasSlug;
 use Spatie\MediaLibrary\HasMedia;
@@ -196,9 +197,12 @@ class Book extends Model implements HasMedia
             ! $this->primaryCover()?->hasMedia('image')
             || ! File::exists($primaryCoverImagePath)
         ) {
-            return
-                $this->original_cover ??
+            $url = $this->original_cover ??
                 Vite::asset('resources/images/default-cover.svg');
+
+            ImportBookCover::dispatchAfterResponse($this, $url);
+
+            return $url;
         }
 
         return $primaryCover->image;

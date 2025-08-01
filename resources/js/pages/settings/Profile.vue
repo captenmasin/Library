@@ -164,6 +164,7 @@ defineOptions({
                                 <AvatarImage
                                     v-if="previewUrl"
                                     :src="previewUrl"
+                                    class="aspect-auto object-cover"
                                     :alt="authedUser?.name" />
                                 <AvatarFallback class="rounded-full bg-secondary font-semibold text-secondary-foreground">
                                     {{ getInitials(authedUser?.name) }}
