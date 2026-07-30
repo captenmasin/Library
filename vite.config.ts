@@ -44,14 +44,10 @@ export default defineConfig({
     },
     build: {
         target: 'esnext', // Assumes modern browser support
-        minify: 'esbuild', // Fastest minifier
         cssCodeSplit: true,
         emptyOutDir: true
     },
     optimizeDeps: {
-        include: ['vue', '@inertiajs/vue3', '@inertiajs/core'],
-        esbuildOptions: {
-            target: 'es2020'
-        }
+        include: ['vue', '@inertiajs/vue3', '@inertiajs/core']
     }
 })
