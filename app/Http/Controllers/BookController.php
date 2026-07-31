@@ -182,9 +182,6 @@ class BookController extends Controller
             'notes' => fn ($query) => $query->where('user_id', $request->user()->id),
         ]);
 
-        $relatedBooks = $book->relatedBooksBySearch(4);
-        $relatedBooks->each(fn (Book $related) => $related->loadMissing('authors'));
-
         $reviews = $book->reviews->load('user', 'book')
             ->reject(fn ($review) => $review->user_id === $request->user()->id)
             ->values();
@@ -192,7 +189,7 @@ class BookController extends Controller
         return response()->json([
             'book' => BookResource::make($book)->resolve($request),
             'average_rating' => number_format($book->ratings->avg('value') ?? 0, 1),
-            'related' => BookResource::collection($relatedBooks)->resolve($request),
+            'related' => [],
             'reviews' => ReviewResource::collection($reviews)->resolve($request),
         ]);
     }
