@@ -43,14 +43,14 @@ class SyncPostgresSequences extends Command
         }
 
         foreach ($sequences as $sequence) {
-            $maxId = DB::table($sequence->table_name)->max($sequence->column_name) ?? 0;
+            $maxId = DB::table($sequence->table_name)->max($sequence->column_name);
 
             DB::statement(
-                'SELECT setval(?, ?, true)',
-                [$sequence->sequence_name, $maxId]
+                'SELECT setval(?, ?, ?)',
+                [$sequence->sequence_name, $maxId ?? 1, $maxId !== null]
             );
 
-            $this->line("Synced {$sequence->table_name}.{$sequence->column_name} → {$maxId}");
+            $this->line("Synced {$sequence->table_name}.{$sequence->column_name} → ".($maxId ?? 0));
         }
 
         $this->info('Done.');
