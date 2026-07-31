@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Auth;
+use App\Models\Book;
+use App\Models\Review;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class DestroyReviewRequest extends FormRequest
 {
@@ -12,18 +14,24 @@ class DestroyReviewRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check() && $this->review->user()->is(Auth::user());
+        $book = $this->route('book');
+        $review = $this->route('review');
+        $user = $this->user();
+
+        return $book instanceof Book
+            && $review instanceof Review
+            && $user !== null
+            && $review->book_id === $book->id
+            && $review->user_id === $user->id;
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
-        return [
-
-        ];
+        return [];
     }
 }

@@ -8,20 +8,22 @@ use App\Enums\ActivityType;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Enums\UserBookStatus;
+use Illuminate\Http\JsonResponse;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\BookResource;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Resources\AuthorResource;
+use Inertia\Response as InertiaResponse;
 use App\Http\Requests\Books\DestroyBookUserRequest;
 
 class UserBookController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse|JsonResponse
     {
-        $bookQuery = Auth::user()->books()->with([
+        $bookQuery = $request->user()->books()->with([
             'authors',
             'ratings',
-            'users' => fn ($q) => $q->where('user_id', auth()->id()),
+            'users' => fn ($q) => $q->where('user_id', $request->user()->id),
         ]);
 
         if ($request->filled('status')) {
@@ -101,9 +103,41 @@ class UserBookController extends Controller
         }
 
         $selectedStatuses = $request->get('status', []);
+        $authors = fn () => AuthorResource::collection(
+            $request->user()->books()->with('authors')->get()
+                ->flatMap(fn (Book $book) => $book->authors)
+                ->unique('id')
+                ->sortBy('name')
+                ->values()
+        );
+        $tags = fn () => TagResource::collection(
+            $request->user()->books()->with('tags')->get()
+                ->flatMap(fn (Book $book) => $book->tags)
+                ->unique('slug')
+                ->sortBy('name')
+                ->values()
+        );
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'books' => BookResource::collection($books)->resolve($request),
+                'total' => $request->user()->books()->count(),
+                'filtered_total' => $books->count(),
+                'authors' => $authors()->resolve($request),
+                'tags' => $tags()->resolve($request),
+                'filters' => [
+                    'statuses' => Arr::wrap($selectedStatuses),
+                    'author' => $request->get('author'),
+                    'tag' => $request->get('tag'),
+                    'sort' => $sort,
+                    'order' => $request->get('order', 'desc'),
+                    'search' => $request->get('search', ''),
+                ],
+            ]);
+        }
 
         return Inertia::render('books/Index', [
-            'totalBooks' => $request->user()->books->count(),
+            'totalBooks' => $request->user()->books()->count(),
             'books' => BookResource::collection($books),
             'selectedStatuses' => $selectedStatuses,
             'selectedAuthor' => $request->get('author'),
@@ -112,13 +146,9 @@ class UserBookController extends Controller
             'selectedOrder' => $request->get('order', 'desc'),
             'searchQuery' => $request->get('search', ''),
 
-            'authors' => Inertia::defer(fn () => AuthorResource::collection($request->user()->books->load('authors')->flatMap(function ($book) {
-                return $book->authors;
-            })->sortBy('name')->all())),
+            'authors' => Inertia::defer($authors),
 
-            'tags' => Inertia::defer(fn () => TagResource::collection($request->user()->books->load('tags')->flatMap(function ($book) {
-                return $book->tags;
-            })->unique('slug')->all())),
+            'tags' => Inertia::defer($tags),
 
             'breadcrumbs' => [
                 ['title' => 'Dashboard', 'href' => route('dashboard')],
@@ -130,17 +160,29 @@ class UserBookController extends Controller
         ]);
     }
 
-    public function updateTags(Request $request, Book $book)
+    public function updateTags(Request $request, Book $book): RedirectResponse|JsonResponse
     {
-        $bookUser = $request->user()->books()->where('book_id', $book->id)->first()?->pivot;
-        $bookUser->tags = $request->get('tags', []);
+        $validated = $request->validate([
+            'tags' => ['present', 'array', 'max:20'],
+            'tags.*' => ['string', 'max:50', 'distinct'],
+        ]);
+
+        $bookUser = $request->user()->books()->whereKey($book->id)->firstOrFail()->pivot;
+        $bookUser->tags = $validated['tags'];
         $bookUser->save();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Tags updated successfully.',
+                'tags' => $bookUser->tags,
+            ]);
+        }
 
         return redirect()->back()
             ->with('success', 'Tags updated successfully');
     }
 
-    public function destroy(DestroyBookUserRequest $request, Book $book)
+    public function destroy(DestroyBookUserRequest $request, Book $book): RedirectResponse
     {
         if (! $request->user()->books()->where('book_id', $book->id)->exists()) {
             return redirect()->back()->with('message', 'Book not found in your collection.');

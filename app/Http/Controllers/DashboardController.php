@@ -8,15 +8,17 @@ use Inertia\Inertia;
 use App\Models\Author;
 use Illuminate\Http\Request;
 use App\Enums\UserBookStatus;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\ActivityResource;
+use Inertia\Response as InertiaResponse;
 
 class DashboardController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): InertiaResponse|JsonResponse
     {
         $request->user()->load('activities');
 
@@ -64,13 +66,32 @@ class DashboardController extends Controller
         $planToReadBooks = $booksByStatus[UserBookStatus::PlanToRead->value] ?? collect();
         $readingBooks = $booksByStatus[UserBookStatus::Reading->value] ?? collect();
 
+        $stats = [
+            'books_in_library' => $books->count(),
+            'completed_books' => $completedBooks->count(),
+            'reading_books' => $readingBooks->count(),
+            'plan_to_read' => $planToReadBooks->count(),
+        ];
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'stats' => $stats,
+                'currently_reading' => BookResource::collection($currentlyReading)->resolve($request),
+                'activities' => ActivityResource::collection(
+                    $request->user()->activities->sortByDesc('id')->take(5)
+                )->resolve($request),
+                'tags' => TagResource::collection($tags)->resolve($request),
+                'authors' => AuthorResource::collection($authors)->resolve($request),
+            ]);
+        }
+
         return Inertia::render('Dashboard', [
             'statValues' => [
-                'booksInLibrary' => $books->count(),
-                'completedBooks' => $completedBooks->count() ?? 0,
-                'readingBooks' => $readingBooks->count() ?? 0,
+                'booksInLibrary' => $stats['books_in_library'],
+                'completedBooks' => $stats['completed_books'],
+                'readingBooks' => $stats['reading_books'],
                 //                'pagesRead' => Number::format($completedBooks->sum('page_count')) ?? 0,
-                'planToRead' => $planToReadBooks->count() ?? 0,
+                'planToRead' => $stats['plan_to_read'],
             ],
             'currentlyReading' => BookResource::collection(
                 $currentlyReading

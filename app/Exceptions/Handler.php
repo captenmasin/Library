@@ -30,6 +30,10 @@ class Handler extends ExceptionHandler
     {
         $response = parent::render($request, $e);
 
+        if ($request->expectsJson()) {
+            return $response;
+        }
+
         if ($e instanceof ModelNotFoundException) {
             return $this->handleArticle($e, $request);
         }

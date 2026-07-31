@@ -9,10 +9,13 @@ use App\Actions\TrackEvent;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Enums\AnalyticsEvent;
+use Illuminate\Http\JsonResponse;
 use App\Http\Resources\BookResource;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\ReviewResource;
 use App\Actions\Books\FetchOrCreateBook;
+use Inertia\Response as InertiaResponse;
 use App\Actions\Books\ImportBookFromData;
 use App\Actions\Books\SearchBooksFromApi;
 use App\Actions\Books\GetPublicBookPageData;
@@ -21,7 +24,7 @@ use App\Http\Resources\PreviousSearchResource;
 
 class BookController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse|JsonResponse
     {
         $page = (int) $request->get('page', 1);
         $perPage = 10;
@@ -67,6 +70,25 @@ class BookController extends Controller
             return $request->user()->previousSearches()
                 ->limit(8)->orderBy('updated_at', 'desc')->get();
         });
+
+        if ($request->expectsJson()) {
+            $results = SearchBooksFromApi::run(
+                query: $query,
+                author: $author,
+                subject: $tag,
+                maxResults: $perPage,
+                page: $page,
+            );
+
+            return response()->json([
+                'query' => $originalQuery,
+                'page' => $page,
+                'per_page' => $perPage,
+                'total' => $results['total'],
+                'books' => $results['books'],
+                'previous_searches' => PreviousSearchResource::collection($previousSearches)->resolve($request),
+            ]);
+        }
 
         return Inertia::render('books/Search', [
             'initialQuery' => $originalQuery,
@@ -118,13 +140,22 @@ class BookController extends Controller
         return redirect()->back();
     }
 
-    public function show(Request $request, string $book)
+    public function show(Request $request, string $book): InertiaResponse|JsonResponse
     {
         if ($request->user()) {
             return $this->showAuthenticatedBook($request, $book);
         }
 
         $payload = GetPublicBookPageData::run($book, $request);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'book' => $payload['book'],
+                'average_rating' => $payload['average_rating'],
+                'related' => $payload['related'],
+                'reviews' => $payload['reviews'],
+            ]);
+        }
 
         return Inertia::render('books/Show', [
             'book' => $payload['book'],
@@ -139,9 +170,40 @@ class BookController extends Controller
         ])->withMeta($payload['meta']);
     }
 
-    private function showAuthenticatedBook(Request $request, string $path)
+    public function apiShow(Request $request, Book $book): JsonResponse
+    {
+        $book->load([
+            'authors',
+            'reviews',
+            'ratings',
+            'publisher',
+            'tags',
+            'users' => fn ($query) => $query->where('user_id', $request->user()->id),
+            'notes' => fn ($query) => $query->where('user_id', $request->user()->id),
+        ]);
+
+        $relatedBooks = $book->relatedBooksBySearch(4);
+        $relatedBooks->each(fn (Book $related) => $related->loadMissing('authors'));
+
+        $reviews = $book->reviews->load('user', 'book')
+            ->reject(fn ($review) => $review->user_id === $request->user()->id)
+            ->values();
+
+        return response()->json([
+            'book' => BookResource::make($book)->resolve($request),
+            'average_rating' => number_format($book->ratings->avg('value') ?? 0, 1),
+            'related' => BookResource::collection($relatedBooks)->resolve($request),
+            'reviews' => ReviewResource::collection($reviews)->resolve($request),
+        ]);
+    }
+
+    private function showAuthenticatedBook(Request $request, string $path): InertiaResponse|JsonResponse
     {
         $book = Book::query()->where('path', $path)->firstOrFail();
+
+        if ($request->expectsJson()) {
+            return $this->apiShow($request, $book);
+        }
 
         $book->load(['authors', 'reviews', 'ratings', 'publisher', 'tags',
             'users' => fn ($query) => $query->where('user_id', Auth::id()),
@@ -173,7 +235,7 @@ class BookController extends Controller
         ]);
     }
 
-    public function preview(Request $request, string $identifier)
+    public function preview(Request $request, string $identifier): InertiaResponse|RedirectResponse
     {
         if (Book::where('identifier', $identifier)->exists()) {
             return redirect()->route('books.show', Book::where('identifier', $identifier)->first());

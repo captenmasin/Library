@@ -5,22 +5,31 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Actions\TrackEvent;
 use App\Enums\ActivityType;
-use Illuminate\Http\Request;
 use App\Enums\AnalyticsEvent;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use App\Support\SubscriptionLimits;
+use App\Http\Resources\BookResource;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\UpdateBookCoverRequest;
 
 class BookCoverController extends Controller
 {
-    public function update(UpdateBookCoverRequest $request, Book $book)
+    public function update(UpdateBookCoverRequest $request, Book $book): JsonResponse|RedirectResponse
     {
         if (! SubscriptionLimits::allowCustomCovers($request->user())) {
-            return back()->with('error', 'Your current plan does not allow adding custom covers.');
+            $message = 'Your current plan does not allow adding custom covers.';
+
+            return $request->wantsJson()
+                ? response()->json(['message' => $message], 403)
+                : back()->with('error', $message);
         }
 
         // Validate via dedicated Form Request (sends errors to 'bookCoverBag')
         $request->validated();
+
+        $created = false;
 
         if ($request->file('cover')) {
             $newCover = $book->covers()->create([
@@ -28,6 +37,7 @@ class BookCoverController extends Controller
             ]);
 
             $newCover->addMedia($request->file('cover'))->toMediaCollection('image');
+            $created = true;
 
             TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookCoverUpdated, [
                 'user_id' => $request->user()?->id,
@@ -47,10 +57,12 @@ class BookCoverController extends Controller
             );
         }
 
-        return redirect()->back()->with('success', __('Book cover updated successfully.'));
+        return $request->wantsJson()
+            ? (new BookResource($book))->response()->setStatusCode($created ? 201 : 200)
+            : redirect()->back()->with('success', __('Book cover updated successfully.'));
     }
 
-    public function destroy(Request $request, Book $book)
+    public function destroy(UpdateBookCoverRequest $request, Book $book): ?Response
     {
         TrackEvent::dispatchAfterResponse(AnalyticsEvent::BookCoverRemoved, [
             'user_id' => $request->user()?->id,
@@ -70,5 +82,7 @@ class BookCoverController extends Controller
         );
 
         $request->user()->book_covers()->where('book_id', $book->id)->delete();
+
+        return $request->wantsJson() ? response()->noContent() : null;
     }
 }

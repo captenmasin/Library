@@ -15,7 +15,7 @@ class FetchOrCreateBook
 
     public function __construct(protected BookApiServiceInterface $booksApi) {}
 
-    public function handle(string $identifier)
+    public function handle(string $identifier): Book
     {
         $book = Book::where('identifier', $identifier)
             ->with(['authors', 'publisher', 'tags'])
@@ -24,8 +24,12 @@ class FetchOrCreateBook
         return $book ?: ImportBookFromData::run($identifier);
     }
 
-    public function asController(Request $request, string $identifier): JsonResponse
+    public function asController(Request $request, ?string $identifier = null): JsonResponse
     {
+        $identifier ??= $request->validate([
+            'identifier' => ['required', 'string', 'max:255'],
+        ])['identifier'];
+
         $book = $this->handle($identifier);
 
         return response()->json([

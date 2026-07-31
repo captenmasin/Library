@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Book;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class UpdateBookCoverRequest extends FormRequest
 {
@@ -11,13 +13,17 @@ class UpdateBookCoverRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $book = $this->route('book');
+
+        return $book instanceof Book
+            && $this->user() !== null
+            && $this->user()->books()->whereKey($book->id)->exists();
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

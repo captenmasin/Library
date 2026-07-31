@@ -6,6 +6,10 @@ use App\Models\Book;
 use App\Models\Rating;
 use App\Actions\TrackEvent;
 use App\Enums\AnalyticsEvent;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Resources\RatingResource;
 use App\Actions\Books\GetPublicBookPageData;
 use App\Http\Requests\Ratings\StoreRatingRequest;
 use App\Http\Requests\Ratings\UpdateRatingRequest;
@@ -15,9 +19,9 @@ class RatingController extends Controller
 {
     public function __construct(private GetPublicBookPageData $publicBookPageData) {}
 
-    public function store(StoreRatingRequest $request, Book $book)
+    public function store(StoreRatingRequest $request, Book $book): JsonResponse|RedirectResponse
     {
-        $book->ratings()
+        $rating = $book->ratings()
             ->create([
                 'value' => $request->integer('rating.value'),
                 'user_id' => $request->user()->id,
@@ -34,11 +38,12 @@ class RatingController extends Controller
 
         $this->publicBookPageData->forget($book);
 
-        return redirect()->back()
-            ->with('success', 'Rating added successfully.');
+        return $request->wantsJson()
+            ? (new RatingResource($rating))->response()->setStatusCode(201)
+            : redirect()->back()->with('success', 'Rating added successfully.');
     }
 
-    public function update(UpdateRatingRequest $request, Book $book, Rating $rating)
+    public function update(UpdateRatingRequest $request, Book $book, Rating $rating): JsonResponse|RedirectResponse
     {
         $rating->update([
             'value' => $request->integer('rating.value'),
@@ -55,11 +60,12 @@ class RatingController extends Controller
 
         $this->publicBookPageData->forget($book);
 
-        return redirect()->back()
-            ->with('success', 'Rating updated successfully.');
+        return $request->wantsJson()
+            ? (new RatingResource($rating))->response()
+            : redirect()->back()->with('success', 'Rating updated successfully.');
     }
 
-    public function destroy(DestroyRatingRequest $request, Book $book, Rating $rating)
+    public function destroy(DestroyRatingRequest $request, Book $book, Rating $rating): Response|RedirectResponse
     {
         $rating->forceDelete();
 
@@ -73,7 +79,8 @@ class RatingController extends Controller
 
         $this->publicBookPageData->forget($book);
 
-        return redirect()->back()
-            ->with('success', 'Rating deleted successfully.');
+        return $request->wantsJson()
+            ? response()->noContent()
+            : redirect()->back()->with('success', 'Rating deleted successfully.');
     }
 }

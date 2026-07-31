@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\Handler;
 use App\Http\Middleware\PwaDevice;
 use App\Http\Middleware\StripCookies;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
+        $middleware->throttleApi('60,1');
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state', 'pwa-mode', 'pwa-device']);
 
         $middleware->web(
@@ -36,6 +38,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $e, $request) {
-            return (new \App\Exceptions\Handler(app()))->render($request, $e);
+            return (new Handler(app()))->render($request, $e);
         });
     })->create();

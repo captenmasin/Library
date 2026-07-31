@@ -63,10 +63,20 @@ class SearchBooksFromApi
 
     public function asController(Request $request): JsonResponse
     {
+        $validated = $request->validate([
+            'q' => ['nullable', 'string', 'max:255'],
+            'author' => ['nullable', 'string', 'max:255'],
+            'subject' => ['nullable', 'string', 'max:255'],
+            'page' => ['nullable', 'integer', 'min:1'],
+            'per_page' => ['nullable', 'integer', 'min:1', 'max:30'],
+        ]);
+
         $results = $this->handle(
-            $request->query('q'),
-            $request->query('author'),
-            $request->query('subject'),
+            $validated['q'] ?? null,
+            $validated['author'] ?? null,
+            $validated['subject'] ?? null,
+            $validated['per_page'] ?? 30,
+            $validated['page'] ?? 1,
         );
 
         return response()->json($results);

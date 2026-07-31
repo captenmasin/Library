@@ -2,14 +2,18 @@
 
 namespace App\Http\Requests\Ratings;
 
-use Illuminate\Support\Facades\Auth;
+use App\Models\Book;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRatingRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return Auth::check() && $this->user()->books()->whereKey($this->book->id)->exists();
+        $book = $this->route('book');
+
+        return $book instanceof Book
+            && $this->user() !== null
+            && $this->user()->books()->whereKey($book->id)->exists();
     }
 
     public function rules(): array

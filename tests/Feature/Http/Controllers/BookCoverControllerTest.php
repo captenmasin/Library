@@ -2,6 +2,7 @@
 
 use App\Models\Book;
 use App\Models\User;
+use App\Enums\UserBookStatus;
 
 use function Pest\Laravel\post;
 use function Pest\Laravel\delete;
@@ -26,6 +27,7 @@ describe('BookCoverController', function () {
     it('prevents non-subscribed users from uploading a book cover', function () {
         $user = User::factory()->create();
         $book = Book::factory()->create();
+        $user->books()->attach($book, ['status' => UserBookStatus::PlanToRead->value]);
 
         actingAs($user);
 
@@ -46,6 +48,7 @@ describe('BookCoverController', function () {
     it('allows subscribed users to upload a book cover', function () {
         $user = User::factory()->create();
         $book = Book::factory()->create();
+        $user->books()->attach($book, ['status' => UserBookStatus::PlanToRead->value]);
 
         $this->giveActiveSubscription($user, config('subscriptions.plans.pro.key'));
 
@@ -69,6 +72,7 @@ describe('BookCoverController', function () {
     it('allows authenticated users to remove a book cover', function () {
         $user = User::factory()->create();
         $book = Book::factory()->create();
+        $user->books()->attach($book, ['status' => UserBookStatus::PlanToRead->value]);
         actingAs($user);
         $cover = $book->covers()->create(['user_id' => $user->id]);
 
@@ -79,6 +83,18 @@ describe('BookCoverController', function () {
             'book_id' => $book->id,
             'user_id' => $user->id,
         ]);
+    });
+
+    it('prevents users from removing covers for books outside their library', function () {
+        $user = User::factory()->create();
+        $book = Book::factory()->create();
+        $cover = $book->covers()->create(['user_id' => $user->id]);
+
+        actingAs($user)
+            ->delete(route('cover.destroy', $book))
+            ->assertForbidden();
+
+        assertDatabaseHas('covers', ['id' => $cover->id]);
     });
 
     it('redirects guests attempting to update a book cover', function () {
@@ -101,6 +117,7 @@ describe('BookCoverController', function () {
     it('rejects invalid file types for book covers', function () {
         $user = User::factory()->create();
         $book = Book::factory()->create();
+        $user->books()->attach($book, ['status' => UserBookStatus::PlanToRead->value]);
 
         $this->giveActiveSubscription($user, config('subscriptions.plans.pro.key'));
 

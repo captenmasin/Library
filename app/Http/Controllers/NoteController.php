@@ -9,20 +9,29 @@ use App\Actions\TrackEvent;
 use App\Enums\ActivityType;
 use Illuminate\Http\Request;
 use App\Enums\AnalyticsEvent;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use App\Support\SubscriptionLimits;
 use App\Http\Resources\NoteResource;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreNoteRequest;
+use Inertia\Response as InertiaResponse;
 use App\Http\Requests\DestroyNoteRequest;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class NoteController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse|AnonymousResourceCollection
     {
         $notes = $request->user()->notes()
             ->with(['book.authors', 'book.covers', 'book.ratings'])
             ->orderByDesc('created_at')
             ->paginate(10)
             ->withQueryString();
+
+        if ($request->expectsJson()) {
+            return NoteResource::collection($notes);
+        }
 
         return Inertia::render('user/Notes', [
             'notes' => NoteResource::collection($notes),
@@ -36,15 +45,23 @@ class NoteController extends Controller
         ]);
     }
 
-    public function store(StoreNoteRequest $request, Book $book)
+    public function store(StoreNoteRequest $request, Book $book): JsonResponse|RedirectResponse
     {
         // Enforce subscription limitation for private notes
         if (! SubscriptionLimits::allowPrivateNotes($request->user())) {
-            return back()->with('error', 'Your current plan does not allow adding notes.');
+            $message = 'Your current plan does not allow adding notes.';
+
+            return $request->wantsJson()
+                ? response()->json(['message' => $message], 403)
+                : back()->with('error', $message);
         }
 
         if (! $request->user()->books()->whereKey($book->id)->exists()) {
-            return back()->with('error', 'You can only add notes to books in your library.');
+            $message = 'You can only add notes to books in your library.';
+
+            return $request->wantsJson()
+                ? response()->json(['message' => $message], 403)
+                : back()->with('error', $message);
         }
 
         $note = $book->notes()->create([
@@ -73,10 +90,12 @@ class NoteController extends Controller
             ]
         );
 
-        return back()->with('success', 'Note added.');
+        return $request->wantsJson()
+            ? (new NoteResource($note))->response()->setStatusCode(201)
+            : back()->with('success', 'Note added.');
     }
 
-    public function destroy(DestroyNoteRequest $request, Book $book, Note $note)
+    public function destroy(DestroyNoteRequest $request, Book $book, Note $note): Response|RedirectResponse
     {
         $note->delete();
 
@@ -93,6 +112,8 @@ class NoteController extends Controller
             'book_title' => $book->title,
         ]);
 
-        return back()->with('success', 'Note deleted.');
+        return $request->wantsJson()
+            ? response()->noContent()
+            : back()->with('success', 'Note deleted.');
     }
 }

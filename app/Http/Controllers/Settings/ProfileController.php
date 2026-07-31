@@ -7,9 +7,12 @@ use Inertia\Response;
 use App\Actions\TrackEvent;
 use Illuminate\Http\Request;
 use App\Enums\AnalyticsEvent;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 
@@ -51,7 +54,7 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request): JsonResponse|RedirectResponse
     {
         $request->user()->fill($request->validated());
 
@@ -79,10 +82,12 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return to_route('user.settings.profile.edit');
+        return $request->wantsJson()
+            ? response()->json((new UserResource($request->user()->withoutRelations()))->asUser())
+            : to_route('user.settings.profile.edit');
     }
 
-    public function destroyAvatar(Request $request)
+    public function destroyAvatar(Request $request): HttpResponse|RedirectResponse
     {
         $request->user()->clearMediaCollection('avatar');
 
@@ -90,14 +95,15 @@ class ProfileController extends Controller
             'user_id' => $request->user()?->id,
         ]);
 
-        return redirect()->back()
-            ->with('success', 'Your avatar has been deleted.');
+        return $request->wantsJson()
+            ? response()->noContent()
+            : redirect()->back()->with('success', 'Your avatar has been deleted.');
     }
 
     /**
      * Delete the user's profile.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request): HttpResponse|RedirectResponse
     {
         $request->validate([
             'password' => ['required', 'current_password'],
@@ -108,6 +114,13 @@ class ProfileController extends Controller
         TrackEvent::dispatchAfterResponse(AnalyticsEvent::UserAccountDeleted, [
             'user_id' => $request->user()?->id,
         ]);
+
+        if ($request->wantsJson()) {
+            $user->tokens()->delete();
+            $user->delete();
+
+            return response()->noContent();
+        }
 
         Auth::logout();
 
