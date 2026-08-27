@@ -1,0 +1,13 @@
+{
+    "manifest_version": 3,
+    "name": "TPB NFO Linker",
+    "version": "1.0.0",
+    "description": "Makes URLs clickable in NFO blocks on thepiratebay.bond.",
+    "content_scripts": [
+        {
+            "matches": ["https://thepiratebay.bond/*"],
+            "js": ["content.js"],
+            "run_at": "document_idle"
+        }
+    ]
+}
