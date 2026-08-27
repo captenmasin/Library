@@ -7,33 +7,11 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 ## Foundational Context
 
-This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
+This application is a Laravel application running on PHP 8.5. You are an expert with the Laravel ecosystem. Always use the APIs that match the installed major version of each package — do not assume a version.
 
-- php - 8.5
-- filament/filament (FILAMENT) - v4
-- inertiajs/inertia-laravel (INERTIA_LARAVEL) - v2
-- laravel/cashier (CASHIER) - v15
-- laravel/framework (LARAVEL) - v13
-- laravel/horizon (HORIZON) - v5
-- laravel/nightwatch (NIGHTWATCH) - v1
-- laravel/prompts (PROMPTS) - v0
-- laravel/sanctum (SANCTUM) - v4
-- laravel/scout (SCOUT) - v10
-- livewire/livewire (LIVEWIRE) - v3
-- tightenco/ziggy (ZIGGY) - v2
-- laravel/boost (BOOST) - v2
-- laravel/dusk (DUSK) - v8
-- laravel/mcp (MCP) - v0
-- laravel/pail (PAIL) - v1
-- laravel/pint (PINT) - v1
-- laravel/sail (SAIL) - v1
-- pestphp/pest (PEST) - v4
-- phpunit/phpunit (PHPUNIT) - v12
-- @inertiajs/vue3 (INERTIA_VUE) - v2
-- tailwindcss (TAILWINDCSS) - v4
-- vue (VUE) - v3
-- eslint (ESLINT) - v8
-- prettier (PRETTIER) - v3
+Before relying on a package's API, confirm its installed version:
+- PHP packages: run `composer show --direct` to list direct dependencies with versions, or `composer show <vendor/package>` for a single package.
+- JS packages: check `package.json` for the installed versions.
 
 ## Conventions
 
@@ -66,6 +44,10 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 # Laravel Boost
 
+## Project Rules
+
+- This project contains committed, area-grouped rules in `.ai/rules` when that directory exists (settled decisions, non-obvious traps, standing constraints). Framework and package guidelines that only apply to specific paths (testing, frontend, components) also live there, under `.ai/rules/boost` — this is not just recorded decisions, it is load-bearing guidance you have not seen inline. Before you enter plan mode or create/edit any file, you MUST first: open @.ai/rules/index.md (it maps file globs to rule files), read every rule file whose globs cover the path(s) in scope, and run `grep -rin 'keyword' .ai/rules` to catch what a path match alone misses. Do not write code until you have read and are following every matching rule. If `.ai/rules` does not exist, continue without it.
+
 ## Artisan
 
 - Run Artisan commands directly via the command line (e.g., `php artisan route:list`). Use `php artisan list` to discover available commands and `php artisan [command] --help` to check parameters.
@@ -85,7 +67,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - Always use curly braces for control structures, even for single-line bodies.
 - Use PHP 8 constructor property promotion: `public function __construct(public GitHub $github) { }`. Do not leave empty zero-parameter `__construct()` methods unless the constructor is private.
 - Use explicit return type declarations and type hints for all method parameters: `function isAccessible(User $user, ?string $path = null): bool`
-- Use TitleCase for Enum keys: `FavoritePerson`, `BestLake`, `Monthly`.
+- Follow existing application Enum naming conventions.
 - Prefer PHPDoc blocks over inline comments. Only add inline comments for exceptionally complex logic.
 - Use array shape type definitions in PHPDoc blocks.
 
@@ -156,12 +138,19 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 === pest/core rules ===
 
-## Pest
+# Pest
 
-- This project uses Pest for testing. Create tests: `php artisan make:test --pest {name}`.
-- The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
-- Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
-- Do NOT delete tests without approval.
+- This project uses Pest. Create tests with `php artisan make:test --pest {name}`.
+- Do not include the test suite directory in `{name}`. Use `SomeFeatureTest`, not `Feature/SomeFeatureTest`.
+- Read the `testing-best-practices` skill for guidance on coverage, naming, structure, dependency isolation, and review.
+- Do not delete tests or test files without approval. They are part of the application.
+
+## Running Tests
+
+- Run the narrowest set of tests that covers the change. Pass a file path or `--filter=testName` to `php artisan test --compact`.
+- Rerun a test after each change to it.
+- Run `vendor/bin/pest` to call the test runner directly. It accepts the same file path and `--filter=testName` arguments.
+- After the feature tests pass, ask the user to run the complete suite with `php artisan test --compact`.
 
 === inertia-vue/core rules ===
 
